@@ -1,6 +1,6 @@
 # WebAssembly Core Specification Markdown Conversion Project
 
-This is a project to maintain an AI-assisted conversion of the latest official core WebAssembly specification (currently at version 3.0), originally written in reStructuredText (`.rst`) and LaTeX markup, to human-readable, GitHub flavored Markdown.
+This is a project to maintain an AI-assisted conversion of the [latest official core WebAssembly specification](https://github.com/WebAssembly/spec/tree/main/document/core) (currently at version 3.0), originally written in reStructuredText (`.rst`) and LaTeX markup, to human-readable, GitHub flavored Markdown.
 
 ## Goals
 
