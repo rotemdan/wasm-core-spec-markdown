@@ -1,9 +1,6 @@
 ## Instructions
 
-Instructions are encoded by *opcodes*.
-Each opcode is represented by a single byte,
-and is followed by the instruction's immediate arguments, where present.
-The only exception are structured control instructions, which consist of several opcodes bracketing their nested instruction sequences.
+Instructions are encoded by *opcodes*. Each opcode is represented by a single byte, and is followed by the instruction's immediate arguments, where present. The only exception are structured control instructions, which consist of several opcodes bracketing their nested instruction sequences.
 
 > **Note:** The byte codes chosen to encode instructions are historical and do not follow a consistent pattern. In this section, instructions are hence not presented in opcode order, but instead grouped consistently with other sections in this document. An instruction index ordered by opcode can be found in the Appendix.
 >
@@ -202,8 +199,7 @@ instr ::=
 
 ### Numeric Instructions
 
-All variants of numeric instructions are represented by separate byte codes.
-The `const` instructions are followed by the respective literal.
+All variants of numeric instructions are represented by separate byte codes. The `const` instructions are followed by the respective literal.
 
 ```text
 instr ::=

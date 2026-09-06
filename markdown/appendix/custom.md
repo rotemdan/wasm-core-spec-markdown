@@ -18,8 +18,7 @@ The purpose of this section is to attach printable names to definitions in a mod
 
 #### Subsections
 
-The [data](binary-customsec) of a name section consists of a sequence of *subsections*.
-Each subsection consists of a
+The [data](binary-customsec) of a name section consists of a sequence of *subsections*. Each subsection consists of a
 
 * a one-byte subsection *id*,
 * the U32 *size* of the contents, in bytes,
@@ -42,11 +41,11 @@ name subsection ::= N:byte  size:u32  B   (if size = |B|)
 The following subsection ids are used:
 
 | Id | Subsection |
-|----|------------|
-| 0  | [module name](binary-modulenamesec) |
-| 1  | [function names](binary-funcnamesec) |
-| 2  | [local names](binary-localnamesec) |
-| 4  | [type names](binary-typenamesec) |
+| - | - |
+| 0 | [module name](binary-modulenamesec) |
+| 1 | [function names](binary-funcnamesec) |
+| 2 | [local names](binary-localnamesec) |
+| 4 | [type names](binary-typenamesec) |
 | 10 | [field names](binary-fieldnamesec) |
 | 11 | [tag names](binary-tagnamesec) |
 
@@ -226,8 +225,7 @@ tag name annotation ::= nameannot
 
 ### Custom Annotations
 
-*Custom annotations* are a generic textual representation for any [custom section](binary-customsec).
-Their id is `@custom`.
+*Custom annotations* are a generic textual representation for any [custom section](binary-customsec). Their id is `@custom`.
 
 By generating custom annotations, tools converting between [binary format](binary) and [text format](text) can maintain and round-trip the content of custom sections even when they do not recognize them.
 

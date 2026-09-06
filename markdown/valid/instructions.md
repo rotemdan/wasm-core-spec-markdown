@@ -68,11 +68,11 @@ The instruction `(select valtype?)` is valid with the instruction type `t t i32 
 
 * The value type `t` is valid.
 * Either:
-   * The value type sequence `valtype?` is of the form `t`.
+  * The value type sequence `valtype?` is of the form `t`.
 * Or:
-   * The value type sequence `valtype?` is absent.
-   * The value type `t` matches the value type `t'`.
-   * The value type `t'` is of the form `numtype` or `t'` is of the form `vectype`.
+  * The value type sequence `valtype?` is absent.
+  * The value type `t` matches the value type `t'`.
+  * The value type `t'` is of the form `numtype` or `t'` is of the form `vectype`.
 
 ```text
 C |- t : OK
@@ -105,8 +105,7 @@ C |- bt : t1* -> t2*
 C |- block bt instr* : t1* -> t2*
 ```
 
-> **Note:** The notation `{ LABELS (t*) } ⊕ C` inserts the new label type at index `0`, shifting all others.
-> The same applies to all other block instructions.
+> **Note:** The notation `{ LABELS (t*) } ⊕ C` inserts the new label type at index `0`, shifting all others. The same applies to all other block instructions.
 
 #### LOOP bt instr\*
 
@@ -177,8 +176,8 @@ C |- br_if l : t* i32 -> t*
 The instruction `(br_table l* l')` is valid with the instruction type `t1* t* i32 -> t2*` if:
 
 * For all `l` in `l*`:
-   * The label `C.LABELS[l]` exists.
-   * The result type `t*` matches the label `C.LABELS[l]`.
+  * The label `C.LABELS[l]` exists.
+  * The result type `t*` matches the label `C.LABELS[l]`.
 * The label `C.LABELS[l']` exists.
 * The result type `t*` matches the label `C.LABELS[l']`.
 * The instruction type `t1* t* i32 -> t2*` is valid.
@@ -435,7 +434,7 @@ The instruction `(try_table bt catch* instr*)` is valid with the instruction typ
 * Let `C'` be the same context as `C`, but with the result type sequence `t2*` prepended to the field `LABELS`.
 * Under the context `C'`, the instruction sequence `instr*` is valid with the instruction type `t1* ->_{x*} t2*`.
 * For all `catch` in `catch*`:
-   * The catch clause `catch` is valid.
+  * The catch clause `catch` is valid.
 
 ```text
 C |- bt : t1* -> t2*
@@ -1079,7 +1078,7 @@ The instruction `(struct.new_default x)` is valid with the instruction type `ε 
 * The type `C.TYPES[x]` exists.
 * The expansion of `C.TYPES[x]` is `(struct (mut? zt)*)`.
 * For all `zt` in `zt*`:
-   * A default value for `unpack(zt)` is defined.
+  * A default value for `unpack(zt)` is defined.
 
 ```text
 C.TYPES[x] ≈ struct (mut? zt)*
@@ -1529,7 +1528,7 @@ C |- sh.vswizzle : v128 v128 -> v128
 The instruction `(sh.shuffle i*)` is valid with the instruction type `v128 v128 -> v128` if:
 
 * For all `i` in `i*`:
-   * The lane index `i` is less than `2 · shdim(sh)`.
+  * The lane index `i` is less than `2 · shdim(sh)`.
 
 ```text
 (i < 2 · shdim(sh))*
@@ -1626,28 +1625,28 @@ Typing of instruction sequences is defined recursively.
 The instruction sequence `instr*` is valid with the instruction type `it` if:
 
 * Either:
-   * The instruction sequence `instr*` is empty.
-   * The instruction type `it` is of the form `ε -> ε`.
+  * The instruction sequence `instr*` is empty.
+  * The instruction type `it` is of the form `ε -> ε`.
 * Or:
-   * The instruction sequence `instr*` is of the form `instr'`.
-   * The instruction type `it` is of the form `t1* ->_{x*} t2*`.
-   * The instruction `instr'` is valid with the instruction type `t1* ->_{x*} t2*`.
+  * The instruction sequence `instr*` is of the form `instr'`.
+  * The instruction type `it` is of the form `t1* ->_{x*} t2*`.
+  * The instruction `instr'` is valid with the instruction type `t1* ->_{x*} t2*`.
 * Or:
-   * The instruction sequence `instr*` is of the form `instr1* instr2*`.
-   * The instruction type `it` is of the form `t1* ->_{x1* x2*} t3*`.
-   * The instruction sequence `instr1*` is valid with the instruction type `t1* ->_{x1*} t2*`.
-   * For all `x1` in `x1*`:
-      * The local `C.LOCALS[x1]` exists.
-      * The local `C.LOCALS[x1]` is of the form `(init t)`.
-   * Under the context `C` with the local types of `x1*` updated to `(set t)*`, the instruction sequence `instr2*` is valid with the instruction type `t2* ->_{x2*} t3*`.
+  * The instruction sequence `instr*` is of the form `instr1* instr2*`.
+  * The instruction type `it` is of the form `t1* ->_{x1* x2*} t3*`.
+  * The instruction sequence `instr1*` is valid with the instruction type `t1* ->_{x1*} t2*`.
+  * For all `x1` in `x1*`:
+    * The local `C.LOCALS[x1]` exists.
+    * The local `C.LOCALS[x1]` is of the form `(init t)`.
+  * Under the context `C` with the local types of `x1*` updated to `(set t)*`, the instruction sequence `instr2*` is valid with the instruction type `t2* ->_{x2*} t3*`.
 * Or:
-   * The instruction sequence `instr*` is valid with the instruction type `it''`.
-   * The instruction type `it''` matches the instruction type `it`.
-   * The instruction type `it` is valid.
+  * The instruction sequence `instr*` is valid with the instruction type `it''`.
+  * The instruction type `it''` matches the instruction type `it`.
+  * The instruction type `it` is valid.
 * Or:
-   * The instruction type `it` is of the form `t* t1* ->_{x*} t* t2*`.
-   * The instruction sequence `instr*` is valid with the instruction type `t1* ->_{x*} t2*`.
-   * The result type `t*` is valid.
+  * The instruction type `it` is of the form `t* t1* ->_{x*} t* t2*`.
+  * The instruction sequence `instr*` is valid with the instruction type `t1* ->_{x*} t2*`.
+  * The result type `t*` is valid.
 
 ```text
 ────────────────
@@ -1714,42 +1713,42 @@ In a *constant* expression, all instructions must be constant.
 `instr*` is constant if:
 
 * For all `instr` in `instr*`:
-   * `instr` is constant.
+  * `instr` is constant.
 
 `instr` is constant if:
 
 * Either:
-   * The instruction `instr` is of the form `(nt.CONST c_nt)`.
+  * The instruction `instr` is of the form `(nt.CONST c_nt)`.
 * Or:
-   * The instruction `instr` is of the form `(vt.CONST c_vt)`.
+  * The instruction `instr` is of the form `(vt.CONST c_vt)`.
 * Or:
-   * The instruction `instr` is of the form `(ref.null ht)`.
+  * The instruction `instr` is of the form `(ref.null ht)`.
 * Or:
-   * The instruction `instr` is of the form `ref.i31`.
+  * The instruction `instr` is of the form `ref.i31`.
 * Or:
-   * The instruction `instr` is of the form `(ref.func x)`.
+  * The instruction `instr` is of the form `(ref.func x)`.
 * Or:
-   * The instruction `instr` is of the form `(struct.new x)`.
+  * The instruction `instr` is of the form `(struct.new x)`.
 * Or:
-   * The instruction `instr` is of the form `(struct.new_default x)`.
+  * The instruction `instr` is of the form `(struct.new_default x)`.
 * Or:
-   * The instruction `instr` is of the form `(array.new x)`.
+  * The instruction `instr` is of the form `(array.new x)`.
 * Or:
-   * The instruction `instr` is of the form `(array.new_default x)`.
+  * The instruction `instr` is of the form `(array.new_default x)`.
 * Or:
-   * The instruction `instr` is of the form `(array.new_fixed x n)`.
+  * The instruction `instr` is of the form `(array.new_fixed x n)`.
 * Or:
-   * The instruction `instr` is of the form `any.convert_extern`.
+  * The instruction `instr` is of the form `any.convert_extern`.
 * Or:
-   * The instruction `instr` is of the form `extern.convert_any`.
+  * The instruction `instr` is of the form `extern.convert_any`.
 * Or:
-   * The instruction `instr` is of the form `(global.get x)`.
-      * The global `C.GLOBALS[x]` exists.
-      * The global `C.GLOBALS[x]` is of the form `(ε t)`.
+  * The instruction `instr` is of the form `(global.get x)`.
+    * The global `C.GLOBALS[x]` exists.
+    * The global `C.GLOBALS[x]` is of the form `(ε t)`.
 * Or:
-   * The instruction `instr` is of the form `(ntI ntN.binop)`.
-      * `ntI ntN` is contained in `[i32; i64]`.
-      * `binop` is contained in `[add; sub; mul]`.
+  * The instruction `instr` is of the form `(ntI ntN.binop)`.
+    * `ntI ntN` is contained in `[i32; i64]`.
+    * `binop` is contained in `[add; sub; mul]`.
 
 ```text
 (C |- instrconst instr const)*

@@ -143,8 +143,7 @@ An embedder may assign identity to exported store objects corresponding to their
 
 ### External Addresses
 
-An *external address* is the runtime address of an entity that can be imported or exported.
-It is an address denoting either a function instance, global instance, table instance, memory instance, or tag instance in the shared store.
+An *external address* is the runtime address of an entity that can be imported or exported. It is an address denoting either a function instance, global instance, table instance, memory instance, or tag instance in the shared store.
 
 ```text
 externaddr ::= tag tagaddr | global globaladdr | mem memaddr | table tableaddr | func funcaddr
@@ -175,8 +174,7 @@ Function instances, table instances, memory instances, global instances, and tag
 
 It is an invariant of the semantics that all export instances in a given module instance have different names.
 
-> **Note:** All record fields except `exports` are to be considered *private* components of a module instance.
-> They are not accessible to other modules, only to function instances originating from the same module.
+> **Note:** All record fields except `exports` are to be considered *private* components of a module instance. They are not accessible to other modules, only to function instances originating from the same module.
 
 ### Function Instances
 
@@ -199,13 +197,11 @@ The definition and behavior of host functions are outside the scope of this spec
 
 For the purpose of this specification, it is assumed that when invoked, a host function behaves non-deterministically, but within certain constraints that ensure the integrity of the runtime.
 
-> **Note:** Function instances are immutable, and their identity is not observable by WebAssembly code.
-> However, an embedder might provide implicit or explicit means for distinguishing their addresses.
+> **Note:** Function instances are immutable, and their identity is not observable by WebAssembly code. However, an embedder might provide implicit or explicit means for distinguishing their addresses.
 
 ### Table Instances
 
-A *table instance* is the runtime representation of a table.
-It records its type and holds a sequence of reference values.
+A *table instance* is the runtime representation of a table. It records its type and holds a sequence of reference values.
 
 ```text
 tableinst ::=
@@ -220,8 +216,7 @@ It also is an invariant that the length of the element sequence never exceeds th
 
 ### Memory Instances
 
-A *memory instance* is the runtime representation of a linear memory.
-It records its type and holds a sequence of bytes.
+A *memory instance* is the runtime representation of a linear memory. It records its type and holds a sequence of bytes.
 
 ```text
 meminst ::=
@@ -236,8 +231,7 @@ It is an invariant of the semantics that the length of the byte sequence, divide
 
 ### Global Instances
 
-A *global instance* is the runtime representation of a global variable.
-It records its type and holds an individual value.
+A *global instance* is the runtime representation of a global variable. It records its type and holds an individual value.
 
 ```text
 globalinst ::=
@@ -250,8 +244,7 @@ It is an invariant of the semantics that the value has a type matching the value
 
 ### Tag Instances
 
-A *tag instance* is the runtime representation of a tag definition.
-It records the defined type of the tag.
+A *tag instance* is the runtime representation of a tag definition. It records the defined type of the tag.
 
 ```text
 taginst ::=
@@ -260,8 +253,7 @@ taginst ::=
 
 ### Element Instances
 
-An *element instance* is the runtime representation of an element segment.
-It holds a list of references and its type.
+An *element instance* is the runtime representation of an element segment. It holds a list of references and its type.
 
 ```text
 eleminst ::=
@@ -342,8 +334,7 @@ packval ::= packtype.pack iN N
 
 ### Exception Instances
 
-An *exception instance* is the runtime representation of an exception produced by a `throw` instruction.
-It holds the address of the respective tag and the argument values.
+An *exception instance* is the runtime representation of an exception produced by a `throw` instruction. It holds the address of the respective tag and the argument values.
 
 ```text
 exninst ::=
@@ -352,8 +343,7 @@ exninst ::=
 
 ### Stack
 
-Besides the store, most instructions interact with an implicit *stack*.
-The stack contains the two kinds of entries:
+Besides the store, most instructions interact with an implicit *stack*. The stack contains the two kinds of entries:
 
 * *Values*: the *operands* of instructions.
 * *Control Frames*: currently active control flow structures.
@@ -366,8 +356,7 @@ The latter can in turn be one of the following:
 
 > **Note:** Where clear from context, *call frame* is abbreviated to just *frame*.
 
-All these entries can occur on the stack in any order during the execution of a program.
-Stack entries are described by abstract syntax as follows.
+All these entries can occur on the stack in any order during the execution of a program. Stack entries are described by abstract syntax as follows.
 
 > **Note:** It is possible to model the WebAssembly semantics using separate stacks for operands, control constructs, and calls.
 >

@@ -109,8 +109,7 @@ module_validate(m) = ERROR   (otherwise)
 
 1. Try [instantiating](exec-instantiation) `module` in `store` with [external addresses](syntax-externaddr) `externaddr*` as imports:
 
-  a. If it succeeds with a [module instance](syntax-moduleinst) `moduleinst`, then let `result` be `moduleinst`.
-  b. Else, let `result` be `ERROR`.
+a. If it succeeds with a [module instance](syntax-moduleinst) `moduleinst`, then let `result` be `moduleinst`. b. Else, let `result` be `ERROR`.
 
 2. Return the new store paired with `result`.
 
@@ -128,8 +127,7 @@ module_instantiate(S, m, ev*) = (S', ERROR)        (otherwise, if instantiate(S,
 3. Assert: the length of `import*` equals the length of `externtype*`.
 4. For each `import_i` in `import*` and corresponding `externtype_i` in `externtype*`, do:
 
-  a. Let `IMPORT nm_{i1} nm_{i2} xt_i` be the deconstruction of `import_i`.
-  b. Let `result_i` be the triple `(nm_{i1}, nm_{i2}, externtype_i)`.
+a. Let `IMPORT nm_{i1} nm_{i2} xt_i` be the deconstruction of `import_i`. b. Let `result_i` be the triple `(nm_{i1}, nm_{i2}, externtype_i)`.
 
 5. Return the concatenation of all `result_i`, in index order.
 6. Post-condition: each `externtype_i` is [valid](valid-externtype) under the empty [context](context).
@@ -146,8 +144,7 @@ module_imports(m) = (nm1, nm2, externtype)*
 3. Assert: the length of `export*` equals the length of `externtype'*`.
 4. For each `export_i` in `export*` and corresponding `externtype'_i` in `externtype'*`, do:
 
-  a. Let `EXPORT nm_i externidx_i` be the deconstruction of `export_i`.
-  b. Let `result_i` be the pair `(nm_i, externtype'_i)`.
+a. Let `EXPORT nm_i externidx_i` be the deconstruction of `export_i`. b. Let `result_i` be the pair `(nm_i, externtype'_i)`.
 
 5. Return the concatenation of all `result_i`, in index order.
 6. Post-condition: each `externtype'_i` is [valid](valid-externtype) under the empty [context](context).
@@ -164,7 +161,7 @@ module_exports(m) = (nm, externtype')*
 1. Assert: due to [validity](valid-moduleinst) of the [module instance](syntax-moduleinst) `moduleinst`, all its [export names](syntax-exportinst) are different.
 2. If there exists an `exportinst_i` in `moduleinst.MIEXPORTS` such that [name](syntax-name) `exportinst_i.NAME` equals `name`, then:
 
-  a. Return the [external address](syntax-externaddr) `exportinst_i.ADDR`.
+a. Return the [external address](syntax-externaddr) `exportinst_i.ADDR`.
 
 3. Else, return `ERROR`.
 
@@ -203,9 +200,7 @@ func_type(S, a) = S.SFUNCS[a].FITYPE
 
 1. Try [invoking](exec-invocation) the function `funcaddr` in `store` with [values](syntax-val) `val*` as arguments:
 
-  a. If it succeeds with [values](syntax-val) `v'*` as results, then let `result` be `v'*`.
-  b. Else if the outcome is an exception with a thrown [exception](exec-throw_ref) `refexnaddr exnaddr` as the result, then let `result` be `exception exnaddr`.
-  c. Else it has trapped, hence let `result` be `ERROR`.
+a. If it succeeds with [values](syntax-val) `v'*` as results, then let `result` be `v'*`. b. Else if the outcome is an exception with a thrown [exception](exec-throw_ref) `refexnaddr exnaddr` as the result, then let `result` be `exception exnaddr`. c. Else it has trapped, hence let `result` be `ERROR`.
 
 2. Return the new store paired with `result`.
 
@@ -273,8 +268,7 @@ table_size(S, a) = n   (if |S.TABLES[a].TIREFS| = n)
 
 1. Try [growing](grow-table) the [table instance](syntax-tableinst) `store.TABLES[tableaddr]` by `n` elements with initialization value `reff`:
 
-  a. If it succeeds, return the updated store.
-  b. Else, return `ERROR`.
+a. If it succeeds, return the updated store. b. Else, return `ERROR`.
 
 ```text
 table_grow(S, a, n, r) = S'   (if S' = S with TABLES[a] = growtable(S.TABLES[a], n, r))
@@ -337,8 +331,7 @@ mem_size(S, a) = n   (if |S.MEMS[a].MIBYTES| = n * 64 Ki)
 
 1. Try [growing](grow-mem) the [memory instance](syntax-meminst) `store.MEMS[memaddr]` by `n` [pages](page-size):
 
-  a. If it succeeds, return the updated store.
-  b. Else, return `ERROR`.
+a. If it succeeds, return the updated store. b. Else, return `ERROR`.
 
 ```text
 mem_grow(S, a, n) = S'   (if S' = S with MEMS[a] = growmem(S.MEMS[a], n))

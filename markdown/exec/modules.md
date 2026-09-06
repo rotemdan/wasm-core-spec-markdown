@@ -323,9 +323,7 @@ allocexport(moduleinst, EXPORT name (func x)) = { NAME name, ADDR (func modulein
 
 Given a store `s`, a `module` is instantiated with a list of external addresses `externaddr*` supplying the required imports as follows.
 
-Instantiation checks that the module is valid and the provided imports match the declared types, and may fail with an error otherwise.
-Instantiation can also result in an exception or trap when initializing a table or memory from an active segment or when executing the start function.
-It is up to the embedder to define how such conditions are reported.
+Instantiation checks that the module is valid and the provided imports match the declared types, and may fail with an error otherwise. Instantiation can also result in an exception or trap when initializing a table or memory from an active segment or when executing the start function. It is up to the embedder to define how such conditions are reported.
 
 #### instantiate(s, module, externaddr*)
 
@@ -481,8 +479,7 @@ runelem_x(ELEM rt e^n (eactive y instr*)) = instr* (i32.const 0) (i32.const n) (
 >
 > This is possible because validation ensures that initialization expressions cannot actually call a function, only take their reference.
 >
-> All failure conditions are checked before any observable mutation of the store takes place.
-> Store mutation is not atomic; it happens in individual steps that may be interleaved with other threads.
+> All failure conditions are checked before any observable mutation of the store takes place. Store mutation is not atomic; it happens in individual steps that may be interleaved with other threads.
 >
 > Evaluation of constant expressions does not affect the store.
 

@@ -15,15 +15,13 @@ As with validation, all rules are given in two *equivalent* forms:
 1. In *prose*, describing the execution in intuitive form.
 2. In *formal notation*, describing the rule in mathematical form. [^cite-pldi2017]
 
-> **Note:** As with validation, the prose and formal rules are equivalent,
-> so that understanding of the formal notation is *not* required to read this specification.
+> **Note:** As with validation, the prose and formal rules are equivalent, so that understanding of the formal notation is *not* required to read this specification.
 >
 > The formalism offers a more concise description in notation that is used widely in programming languages semantics and is readily amenable to mathematical proof.
 
 ### Prose Notation
 
-Execution is specified by stylised, step-wise rules for each instruction of the abstract syntax.
-The following conventions are adopted in stating these rules.
+Execution is specified by stylised, step-wise rules for each instruction of the abstract syntax. The following conventions are adopted in stating these rules.
 
 * The execution rules implicitly assume a given store `s`.
 * The execution rules also assume the presence of an implicit stack that is modified by *pushing* or *popping* values, labels, and frames.
@@ -37,8 +35,7 @@ The following conventions are adopted in stating these rules.
 
 ### Formal Notation
 
-> **Note:** This section gives a brief explanation of the notation for specifying execution formally.
-> For the interested reader, a more thorough introduction can be found in respective text books. [^cite-tapl]
+> **Note:** This section gives a brief explanation of the notation for specifying execution formally. For the interested reader, a more thorough introduction can be found in respective text books. [^cite-tapl]
 
 The formal execution rules use a standard approach for specifying operational semantics, rendering them into *reduction rules*.
 
@@ -104,7 +101,6 @@ Reduction *terminates* when no more reduction rules are applicable. Soundness of
 >
 > where `q4 = -q2` and `q5 = -q2 + q3` and `q6 = q1 * (-q2 + q3)`.
 
-[^cite-pldi2017]: The semantics is derived from the following article:
-   Andreas Haas, Andreas Rossberg, Derek Schuff, Ben Titzer, Dan Gohman, Luke Wagner, Alon Zakai, JF Bastien, Michael Holman. PLDI2017. Proceedings of the 38th ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI 2017). ACM 2017.
+[^cite-pldi2017]: The semantics is derived from the following article: Andreas Haas, Andreas Rossberg, Derek Schuff, Ben Titzer, Dan Gohman, Luke Wagner, Alon Zakai, JF Bastien, Michael Holman. PLDI2017. Proceedings of the 38th ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI 2017). ACM 2017.
 
 [^cite-tapl]: For example: Benjamin Pierce. TAPL. The MIT Press 2002

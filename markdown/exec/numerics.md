@@ -170,7 +170,7 @@ tobool(C) = 1  (iff C)
 tobool(C) = 0  (otherwise)
 ```
 
-#### iadd_N(i1, i2)
+#### `iadd_N(i1, i2)`
 
 * Return the result of adding `i1` and `i2` modulo `2^N`.
 
@@ -1396,7 +1396,7 @@ ivmul_N(i1^m, i2^m) = (imul_N(i1, i2))^m
 ivdot_N(i1^{2m}, i2^{2m}) = (iadd_N(j1, j2))^m   (iff (imul_N(i1, i2))^{2m} = (j1 j2)^m)
 ```
 
-#### ivdotsat_N(i1^{2m}, i2^{2m})
+#### `ivdotsat_N(i1^{2m}, i2^{2m})`
 
 1. For each `i1_k` in `i1^{2m}` and corresponding `i2_k` in `i2^{2m}`, let `j_k` be `imul_N(i1_k, i2_k)`.
 2. Let `j^{2m}` be the concatenation of all `j_k`.
@@ -1411,7 +1411,7 @@ ivdotsat_N(i1^{2m}, i2^{2m}) = (iaddsat_N(j1, j2))^m   (iff (imul_N(i1, i2))^{2m
 
 The previous operators are lifted to operators on arguments of vector type by wrapping them in corresponding lane projections and injections and intermediate extension operations:
 
-#### vextunop_{sh1, sh2}(c)
+#### `vextunop_{sh1, sh2}(c)`
 
 ```text
 vextunop_{iN1 x M1, iN2 x M2}(c) = lanes_{iN2 x M2}^{-1}(j*)
@@ -1420,7 +1420,7 @@ vextunop_{iN1 x M1, iN2 x M2}(c) = lanes_{iN2 x M2}^{-1}(j*)
    ∧ j*      = ivaddpairwise_{N2}(i'*))
 ```
 
-#### vextbinop_{sh1, sh2}(c1, c2)
+#### `vextbinop_{sh1, sh2}(c1, c2)`
 
 ```text
 vextbinop_{iN1 x M1, iN2 x M2}(c1, c2) = lanes_{iN2 x M2}^{-1}(j*)
@@ -1444,7 +1444,7 @@ vrelaxeddot_s    ivdotsat S     relaxed(R_idot)[ S, U ]  0   M1
 
 > **Note:** Relaxed operations and the paramater `R_idot` are introduced [below](relaxed-ops).
 
-#### vextternop_{sh1, sh2}(c1, c2, c3)
+#### `vextternop_{sh1, sh2}(c1, c2, c3)`
 
 ```text
 vrelaxeddotadd_S_{iN1 x M1, iN2 x M2}(c1, c2, c3) = c
@@ -1455,7 +1455,7 @@ vrelaxeddotadd_S_{iN1 x M1, iN2 x M2}(c1, c2, c3) = c
    ∧ c ∈ vadd_{iN2 x M2}(c'', c3))
 ```
 
-#### vnarrow_{sx, sh1, sh2}(c1, c2)
+#### `vnarrow_{sx, sh1, sh2}(c1, c2)`
 
 ```text
 vnarrow_sx_{iN1 x M1, iN2 x M2}(c1, c2) = lanes_{iN2 x M2}^{-1}(j*)
@@ -1466,7 +1466,7 @@ vnarrow_sx_{iN1 x M1, iN2 x M2}(c1, c2) = lanes_{iN2 x M2}^{-1}(j*)
    ∧ j*       = i1'* ⊕ i1'*)
 ```
 
-#### vcvtop_half?_zero?_{sh1, sh2}(i)
+#### `vcvtop_half?_zero?_{sh1, sh2}(i)`
 
 ```text
 vcvtop_half?_zero?_{t1 x M1, t2 x M2}(i) = j

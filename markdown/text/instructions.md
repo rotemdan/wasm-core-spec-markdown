@@ -142,9 +142,7 @@ plaininstr_I ::=
 
 ### Memory Instructions
 
-The offset and alignment immediates to memory instructions are optional.
-The offset defaults to `0`, the alignment to the storage size of the respective memory access, which is its *natural alignment*.
-Lexically, an `offset` or `align` phrase is considered a single keyword token, so no white space is allowed around the `=`.
+The offset and alignment immediates to memory instructions are optional. The offset defaults to `0`, the alignment to the storage size of the respective memory access, which is its *natural alignment*. Lexically, an `offset` or `align` phrase is considered a single keyword token, so no white space is allowed around the `=`.
 
 ```text
 memarg_N ::=

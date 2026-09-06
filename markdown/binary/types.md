@@ -112,8 +112,7 @@ packtype ::=
 
 ### Recursive Types
 
-Recursive types are encoded by the byte `0x4E` followed by a list of sub types.
-Additional shorthands are recognized for unary recursions and sub types without super types.
+Recursive types are encoded by the byte `0x4E` followed by a list of sub types. Additional shorthands are recognized for unary recursions and sub types without super types.
 
 ```text
 rectype ::=

@@ -1312,6 +1312,7 @@ reff1 reff2 ref.eq -> (i32.const 0)   (otherwise)
 ```text
 s ; f ; reff (ref.test rt) -> (i32.const 1)   (if s |- reff : insttype_{f.MODULE}(rt))
 s ; f ; reff (ref.test rt) -> (i32.const 0)   (otherwise)
+```
 
 #### ref.cast rt
 
@@ -1603,6 +1604,7 @@ z ; (ref.array a) (i32.const i) val (array.set x) -> z[.ARRAYS[a].fields[i] = pa
 ```text
 z ; ref.null array.len -> trap
 z ; (ref.array a) array.len -> (i32.const |z.ARRAYS[a].ifields|)
+```
 
 #### array.fill x
 
@@ -1850,8 +1852,7 @@ reff extern.convert_any -> (ref.extern reff)   (otherwise)
 
 ### Numeric Instructions
 
-Numeric instructions are defined in terms of the generic [numeric operators](exec-numeric).
-The mapping of numeric instructions to their underlying operators is expressed by the following definition:
+Numeric instructions are defined in terms of the generic [numeric operators](exec-numeric). The mapping of numeric instructions to their underlying operators is expressed by the following definition:
 
 ```text
 op_{iN}(i_1,...,i_k) = i op_N(i_1,...,i_k)
@@ -1864,8 +1865,7 @@ And for [conversion operators](exec-cvtop):
 cvtop^{sx?}_{t1,t2}(c) = cvtop^{sx?}_{|t1|,|t2|}(c)
 ```
 
-Where the underlying operators are partial, the corresponding instruction will [trap](trap) when the result is not defined.
-Where the underlying operators are non-deterministic, because they may return one of multiple possible [NaN](syntax-nan) values, so are the corresponding instructions.
+Where the underlying operators are partial, the corresponding instruction will [trap](trap) when the result is not defined. Where the underlying operators are non-deterministic, because they may return one of multiple possible [NaN](syntax-nan) values, so are the corresponding instructions.
 
 > **Note:** For example, the result of instruction `i32.add` applied to operands `i_1, i_2` invokes `add_{i32}(i_1, i_2)`, which maps to the generic `iadd_{32}(i_1, i_2)` via the above definition. Similarly, `i64.trunc_f32_s` applied to `z` invokes `trunc^{s}_{f32,i64}(z)`, which maps to the generic `truncs_{32,64}(z)`.
 
@@ -1956,6 +1956,7 @@ Most other vector instructions are defined in terms of [numeric operators](exec-
 ```text
 op_{t x N}(n_1,...,n_k) = lanes^{-1}_{t x N}(op_t(i_1,...,i_k)^*)
    (iff i_1^* = lanes_{t x N}(n_1) ∧ ... ∧ i_k^* = lanes_{t x N}(n_k))
+```
 
 For non-deterministic operators this definition is generalized to sets:
 
@@ -2285,4 +2286,3 @@ z ; instr* ->* z' ; val*   (if z ; instr* ->* z' ; val*)
 ```
 
 > **Note:** Evaluation iterates this reduction rule until reaching a value. Expressions constituting [function](syntax-func) bodies are executed during function [invocation](exec-invoke).
-

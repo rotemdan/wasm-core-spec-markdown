@@ -24,7 +24,7 @@ WebAssembly provides only four basic *number types*.
 The computational model of WebAssembly is based on a *stack machine*.
 
 * Code consists of sequences of *instructions* that are executed in order.
-* Instructions manipulate values on an implicit *operand stack* [^stackmachine] and fall into two main categories.
+* Instructions manipulate values on an implicit *operand stack*[^stackmachine] and fall into two main categories.
 * *Simple* instructions perform basic operations on data.
 * They pop arguments from the operand stack and push results back to it.
 * *Control* instructions alter control flow.

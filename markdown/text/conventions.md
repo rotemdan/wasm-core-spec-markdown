@@ -24,15 +24,12 @@ They mirror the conventions used for abstract syntax and for the binary format.
 
 In order to distinguish symbols of the textual syntax from symbols of the abstract syntax, `typewriter` font is adopted for the former.
 
-* Terminal symbols are either literal strings of characters enclosed in quotes
-  or expressed as Unicode scalar values: `'module'`, `U+0A`.
-  (All characters written literally are unambiguously drawn from the 7-bit ASCII subset of Unicode.)
+* Terminal symbols are either literal strings of characters enclosed in quotes or expressed as Unicode scalar values: `'module'`, `U+0A`. (All characters written literally are unambiguously drawn from the 7-bit ASCII subset of Unicode.)
 * Nonterminal symbols are written in typewriter font: `valtype`, `instr`.
 * `T^n` is a sequence of `n >= 0` iterations of `T`.
 * `T*` is a possibly empty sequence of iterations of `T` (This is a shorthand for `T^n` used where `n` is not relevant.)
 * `T+` is a non-empty sequence of iterations of `T` (This is a shorthand for `T^n` where `n >= 1`.)
-* `T?` is an optional occurrence of `T`.
-  (This is a shorthand for `T^n` where `n <= 1`.)
+* `T?` is an optional occurrence of `T`. (This is a shorthand for `T^n` where `n <= 1`.)
 * `x : T` denotes the same language as the nonterminal `T`, but also binds the variable `x` to the attribute synthesized for `T`. A pattern may also be used instead of a variable, e.g., `7 : T`.
 * Productions are written `sym ::= T_1 => A_1 | ... | T_n => A_n`, where each `A_i` is the attribute that is synthesized for `sym` in the given case, usually from attribute variables bound in `T_i`.
 * Large productions may be split into multiple definitions, indicated by ending the first one with explicit ellipses, `sym ::= B_1`, and starting continuations with ellipses, `sym ::= ... | B_2`.
@@ -99,8 +96,7 @@ I ::=
     TYPEDEFS (deftype?)* }
 ```
 
-For each index space, such a context contains the list of names assigned to the defined indices,
-which were denoted by the corresponding identifiers.
+For each index space, such a context contains the list of names assigned to the defined indices, which were denoted by the corresponding identifiers.
 
 Unnamed indices are associated with empty (`ε`) entries in these lists.
 
@@ -114,8 +110,7 @@ An identifier context is *well-formed* if no index space contains duplicate iden
 
 #### Conventions
 
-To avoid unnecessary clutter, empty components are omitted when writing out identifier contexts.
-For example, the record `{}` is shorthand for an identifier context whose components are all empty.
+To avoid unnecessary clutter, empty components are omitted when writing out identifier contexts. For example, the record `{}` is shorthand for an identifier context whose components are all empty.
 
 ### Lists
 

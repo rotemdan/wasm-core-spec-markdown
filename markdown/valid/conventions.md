@@ -131,8 +131,7 @@ init ::= set | unset
 
 ### Contexts
 
-Validity of an individual definition is specified relative to a *context*,
-which collects relevant information about the surrounding module and the definitions in scope:
+Validity of an individual definition is specified relative to a *context*, which collects relevant information about the surrounding module and the definitions in scope:
 
 * *Types*: the list of types defined in the current module.
 * *Functions*: the list of functions declared in the current module, represented by a defined type that expands to their function type.
@@ -184,16 +183,14 @@ clostype^*(dt* dt_n) = dt'^* dt_n[ assignsubst dt'^* ]   (if dt'^* = clostype^*(
 
 ### Prose Notation
 
-Validation is specified by stylised rules for each relevant part of the abstract syntax. The rules not only state constraints defining when a phrase is valid, they also classify it with a type.
-The following conventions are adopted in stating these rules.
+Validation is specified by stylised rules for each relevant part of the abstract syntax. The rules not only state constraints defining when a phrase is valid, they also classify it with a type. The following conventions are adopted in stating these rules.
 
 * A phrase `A` is said to be "valid with type `T`" if and only if all constraints expressed by the respective rules are met. The form of `T` depends on the syntactic class of `A`.
 
   > **Note:** For example, if `A` is a function, then `T` is a defined function type; for an `A` that is a global, `T` is a global type; and so on.
 
 * The rules implicitly assume a given context `C`.
-* In some places, this context is locally extended to a context `C'` with additional entries.
-  The formulation "Under context `C'`, ... *statement* ..." is adopted to express that the following statement must apply under the assumptions embodied in the extended context.
+* In some places, this context is locally extended to a context `C'` with additional entries. The formulation "Under context `C'`, ... *statement* ..." is adopted to express that the following statement must apply under the assumptions embodied in the extended context.
 
 ### Formal Notation
 
@@ -255,7 +252,6 @@ The conclusion always is a judgment `C |- A : T`, and there usually is one respe
 >
 > A `block` instruction is only valid when the instruction sequence in its body is. Moreover, the result type must match the block's annotation `blocktype`. If so, then the `block` instruction has the same type as the body. Inside the body an additional label of the corresponding result type is available, which is expressed by extending the context `C` with the additional label information for the premise.
 
-[^cite-pldi2017]: The semantics is derived from the following article:
-Andreas Haas, Andreas Rossberg, Derek Schuff, Ben Titzer, Dan Gohman, Luke Wagner, Alon Zakai, JF Bastien, Michael Holman. PLDI2017. Proceedings of the 38th ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI 2017). ACM 2017.
+[^cite-pldi2017]: The semantics is derived from the following article: Andreas Haas, Andreas Rossberg, Derek Schuff, Ben Titzer, Dan Gohman, Luke Wagner, Alon Zakai, JF Bastien, Michael Holman. PLDI2017. Proceedings of the 38th ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI 2017). ACM 2017.
 
 [^cite-tapl]: For example: Benjamin Pierce. TAPL. The MIT Press 2002

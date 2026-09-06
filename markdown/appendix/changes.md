@@ -93,7 +93,7 @@ Added the ability to use multiple tables per module. [^proposal-reftype]
 
 #### Bulk Memory and Table Instructions
 
-Added instructions that modify ranges of memory or table entries. [^proposal-reftype] [^proposal-bulk]
+Added instructions that modify ranges of memory or table entries. [^proposal-reftype][^proposal-bulk]
 
 * New [memory instructions](syntax-instr-memory):
   * MEMORYFILL

@@ -24,7 +24,7 @@ Well-formedness for [extended type forms](type-ext) is defined as follows.
 
 The [type use](syntax-typeuse) `(rec . i)` is [valid](valid-typeuse) if:
 
-   * The [recursive type](syntax-subtype) `C.RECS[i]` exists.
+* The [recursive type](syntax-subtype) `C.RECS[i]` exists.
 
 ```text
 C.RECS[i] = st
@@ -48,12 +48,12 @@ C |- bot : OK
 
 The [recursive type](syntax-rectype) `(rec subtype*)` is [valid](valid-rectype) for `i` if:
 
-   * Either:
-      * The sub type sequence `subtype*` is empty.
-   * Or:
-      * The sub type sequence `subtype*` is of the form `subtype1 subtype'*`.
-      * The [sub type](syntax-subtype) `subtype1` is [valid](valid-subtype) for `i`.
-      * The [recursive type](syntax-rectype) `(rec subtype*)` is [valid](valid-rectype) for `i + 1`.
+* Either:
+  * The sub type sequence `subtype*` is empty.
+* Or:
+  * The sub type sequence `subtype*` is of the form `subtype1 subtype'*`.
+  * The [sub type](syntax-subtype) `subtype1` is [valid](valid-subtype) for `i`.
+  * The [recursive type](syntax-rectype) `(rec subtype*)` is [valid](valid-rectype) for `i + 1`.
 
 ```text
 ─────────────────────────────
@@ -69,15 +69,15 @@ C |- rec (subtype1 subtype*) : OK(i)
 
 The [sub type](syntax-subtype) `(sub final? typeuse* comptype)` is [valid](valid-subtype) for `i` if:
 
-   * The length of `typeuse*` is less than or equal to `1`.
-   * For all `typeuse` in `typeuse*`:
-      * The [type use](syntax-typeuse) `typeuse` is [valid](valid-typeuse).
-      * `typeuse <: i` is true.
-      * The [sub type](syntax-subtype) `unrollht_C(typeuse)` is of the form `(sub typeuse'* comptype')`.
-   * `comptype'*` is the concatenation of all such `comptype'`.
-   * The [composite type](syntax-comptype) `comptype` is [valid](valid-comptype).
-   * For all `comptype'` in `comptype'*`:
-      * The [composite type](syntax-comptype) `comptype` [matches](match-comptype) the [composite type](syntax-comptype) `comptype'`.
+* The length of `typeuse*` is less than or equal to `1`.
+* For all `typeuse` in `typeuse*`:
+  * The [type use](syntax-typeuse) `typeuse` is [valid](valid-typeuse).
+  * `typeuse <: i` is true.
+  * The [sub type](syntax-subtype) `unrollht_C(typeuse)` is of the form `(sub typeuse'* comptype')`.
+* `comptype'*` is the concatenation of all such `comptype'`.
+* The [composite type](syntax-comptype) `comptype` is [valid](valid-comptype).
+* For all `comptype'` in `comptype'*`:
+  * The [composite type](syntax-comptype) `comptype` [matches](match-comptype) the [composite type](syntax-comptype) `comptype'`.
 
 ```text
 |typeuse*| <= 1
@@ -105,10 +105,10 @@ typeuse <: i = true    (otherwise)
 
 The [defined type](syntax-deftype) `(rectype . i)` is [valid](valid-deftype) if:
 
-   * Let `C'` be the same context as `C`, but with the sub type sequence `subtype^n` prepended to the field `RECS`.
-   * Under the context `C'`, the [recursive type](syntax-rectype) `rectype` is [valid](valid-rectype) for `0`.
-   * The [recursive type](syntax-rectype) `rectype` is of the form `(rec subtype^n)`.
-   * `i` is less than `n`.
+* Let `C'` be the same context as `C`, but with the sub type sequence `subtype^n` prepended to the field `RECS`.
+* Under the context `C'`, the [recursive type](syntax-rectype) `rectype` is [valid](valid-rectype) for `0`.
+* The [recursive type](syntax-rectype) `rectype` is of the form `(rec subtype^n)`.
+* `i` is less than `n`.
 
 ```text
 C, RECS subtype^n |- rectype : OK(0)
@@ -800,7 +800,7 @@ mut = mut ∨ fieldval1* = fieldval2*
 
 ### Theorems
 
-Given the definition of [valid configurations](valid-config), the standard soundness theorems hold. [^cite-cpp2018] [^cite-fm2021]
+Given the definition of [valid configurations](valid-config), the standard soundness theorems hold. [^cite-cpp2018][^cite-fm2021]
 
 **Theorem (Preservation).** If a [configuration](syntax-config) `S;T` is [valid](valid-config) with [result type](syntax-resulttype) `[t*]` (i.e., `|- config S;T : [t*]`), and steps to `S';T'` (i.e., `S;T stepto S';T'`), then `S';T'` is a valid configuration with the same result type (i.e., `|- config S';T' : [t*]`). Furthermore, `S'` is an [extension](extend-store) of `S` (i.e., `|- storeextends S extends S'`).
 

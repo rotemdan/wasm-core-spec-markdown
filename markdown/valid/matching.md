@@ -23,86 +23,86 @@ C |- vectype <: vectype
 The heap type `heaptype1` matches the heap type `heaptype2` if:
 
 * Either:
-   * The heap type `heaptype2` is of the form `heaptype1`.
+  * The heap type `heaptype2` is of the form `heaptype1`.
 * Or:
-   * The heap type `heaptype'` is valid.
-   * The heap type `heaptype1` matches the heap type `heaptype'`.
-   * The heap type `heaptype'` matches the heap type `heaptype2`.
+  * The heap type `heaptype'` is valid.
+  * The heap type `heaptype1` matches the heap type `heaptype'`.
+  * The heap type `heaptype'` matches the heap type `heaptype2`.
 * Or:
-   * The heap type `heaptype1` is of the form `eq`.
-   * The heap type `heaptype2` is of the form `any`.
+  * The heap type `heaptype1` is of the form `eq`.
+  * The heap type `heaptype2` is of the form `any`.
 * Or:
-   * The heap type `heaptype1` is of the form `i31`.
-   * The heap type `heaptype2` is of the form `eq`.
+  * The heap type `heaptype1` is of the form `i31`.
+  * The heap type `heaptype2` is of the form `eq`.
 * Or:
-   * The heap type `heaptype1` is of the form `struct`.
-   * The heap type `heaptype2` is of the form `eq`.
+  * The heap type `heaptype1` is of the form `struct`.
+  * The heap type `heaptype2` is of the form `eq`.
 * Or:
-   * The heap type `heaptype1` is of the form `array`.
-   * The heap type `heaptype2` is of the form `eq`.
+  * The heap type `heaptype1` is of the form `array`.
+  * The heap type `heaptype2` is of the form `eq`.
 * Or:
-   * The heap type `heaptype1` is of the form `deftype`.
-   * The heap type `heaptype2` is of the form `struct`.
-   * The expansion of `deftype` is `(struct fieldtype*)`.
+  * The heap type `heaptype1` is of the form `deftype`.
+  * The heap type `heaptype2` is of the form `struct`.
+  * The expansion of `deftype` is `(struct fieldtype*)`.
 * Or:
-   * The heap type `heaptype1` is of the form `deftype`.
-   * The heap type `heaptype2` is of the form `array`.
-   * The expansion of `deftype` is `(array fieldtype)`.
+  * The heap type `heaptype1` is of the form `deftype`.
+  * The heap type `heaptype2` is of the form `array`.
+  * The expansion of `deftype` is `(array fieldtype)`.
 * Or:
-   * The heap type `heaptype1` is of the form `deftype`.
-   * The heap type `heaptype2` is of the form `func`.
-   * The expansion of `deftype` is `(func t1* -> t2*)`.
+  * The heap type `heaptype1` is of the form `deftype`.
+  * The heap type `heaptype2` is of the form `func`.
+  * The expansion of `deftype` is `(func t1* -> t2*)`.
 * Or:
-   * The heap type `heaptype1` is of the form `deftype1`.
-   * The heap type `heaptype2` is of the form `deftype2`.
-   * The defined type `deftype1` matches the defined type `deftype2`.
+  * The heap type `heaptype1` is of the form `deftype1`.
+  * The heap type `heaptype2` is of the form `deftype2`.
+  * The defined type `deftype1` matches the defined type `deftype2`.
 * Or:
-   * The heap type `heaptype1` is of the form `typeidx`.
-   * The type `C.TYPES[typeidx]` exists.
-   * The type `C.TYPES[typeidx]` matches the heap type `heaptype2`.
+  * The heap type `heaptype1` is of the form `typeidx`.
+  * The type `C.TYPES[typeidx]` exists.
+  * The type `C.TYPES[typeidx]` matches the heap type `heaptype2`.
 * Or:
-   * The heap type `heaptype2` is of the form `typeidx`.
-   * The type `C.TYPES[typeidx]` exists.
-   * The heap type `heaptype1` matches the type `C.TYPES[typeidx]`.
+  * The heap type `heaptype2` is of the form `typeidx`.
+  * The type `C.TYPES[typeidx]` exists.
+  * The heap type `heaptype1` matches the type `C.TYPES[typeidx]`.
 * Or:
-   * The heap type `heaptype1` is of the form `(rec . i)`.
-   * The heap type `heaptype2` is of the form `struct`.
-   * The recursive type `C.RECS[i]` exists.
-   * The recursive type `C.RECS[i]` is of the form `(sub final? (struct fieldtype*))`.
+  * The heap type `heaptype1` is of the form `(rec . i)`.
+  * The heap type `heaptype2` is of the form `struct`.
+  * The recursive type `C.RECS[i]` exists.
+  * The recursive type `C.RECS[i]` is of the form `(sub final? (struct fieldtype*))`.
 * Or:
-   * The heap type `heaptype1` is of the form `(rec . i)`.
-   * The heap type `heaptype2` is of the form `array`.
-   * The recursive type `C.RECS[i]` exists.
-   * The recursive type `C.RECS[i]` is of the form `(sub final? (array fieldtype))`.
+  * The heap type `heaptype1` is of the form `(rec . i)`.
+  * The heap type `heaptype2` is of the form `array`.
+  * The recursive type `C.RECS[i]` exists.
+  * The recursive type `C.RECS[i]` is of the form `(sub final? (array fieldtype))`.
 * Or:
-   * The heap type `heaptype1` is of the form `(rec . i)`.
-   * The heap type `heaptype2` is of the form `func`.
-   * The recursive type `C.RECS[i]` exists.
-   * The recursive type `C.RECS[i]` is of the form `(sub final? (func t1* -> t2*))`.
+  * The heap type `heaptype1` is of the form `(rec . i)`.
+  * The heap type `heaptype2` is of the form `func`.
+  * The recursive type `C.RECS[i]` exists.
+  * The recursive type `C.RECS[i]` is of the form `(sub final? (func t1* -> t2*))`.
 * Or:
-   * The heap type `heaptype1` is of the form `(rec . i)`.
-   * The length of `typeuse*` is greater than `j`.
-   * The heap type `heaptype2` is of the form `typeuse*[j]`.
-   * The recursive type `C.RECS[i]` exists.
-   * The recursive type `C.RECS[i]` is of the form `(sub final? typeuse* ct)`.
+  * The heap type `heaptype1` is of the form `(rec . i)`.
+  * The length of `typeuse*` is greater than `j`.
+  * The heap type `heaptype2` is of the form `typeuse*[j]`.
+  * The recursive type `C.RECS[i]` exists.
+  * The recursive type `C.RECS[i]` is of the form `(sub final? typeuse* ct)`.
 * Or:
-   * The heap type `heaptype1` is of the form `none`.
-   * The heap type `heaptype2` matches the heap type `any`.
-   * The heap type `heaptype2` is not of the form `bot`.
+  * The heap type `heaptype1` is of the form `none`.
+  * The heap type `heaptype2` matches the heap type `any`.
+  * The heap type `heaptype2` is not of the form `bot`.
 * Or:
-   * The heap type `heaptype1` is of the form `nofunc`.
-   * The heap type `heaptype2` matches the heap type `func`.
-   * The heap type `heaptype2` is not of the form `bot`.
+  * The heap type `heaptype1` is of the form `nofunc`.
+  * The heap type `heaptype2` matches the heap type `func`.
+  * The heap type `heaptype2` is not of the form `bot`.
 * Or:
-   * The heap type `heaptype1` is of the form `noexn`.
-   * The heap type `heaptype2` matches the heap type `exn`.
-   * The heap type `heaptype2` is not of the form `bot`.
+  * The heap type `heaptype1` is of the form `noexn`.
+  * The heap type `heaptype2` matches the heap type `exn`.
+  * The heap type `heaptype2` is not of the form `bot`.
 * Or:
-   * The heap type `heaptype1` is of the form `noextern`.
-   * The heap type `heaptype2` matches the heap type `extern`.
-   * The heap type `heaptype2` is not of the form `bot`.
+  * The heap type `heaptype1` is of the form `noextern`.
+  * The heap type `heaptype2` matches the heap type `extern`.
+  * The heap type `heaptype2` is not of the form `bot`.
 * Or:
-   * The heap type `heaptype1` is of the form `bot`.
+  * The heap type `heaptype1` is of the form `bot`.
 
 ```text
 C |- heaptype <: heaptype
@@ -200,11 +200,11 @@ The reference type `(ref null? ht1)` matches the reference type `(ref null? ht2)
 
 * The heap type `ht1` matches the heap type `ht2`.
 * Either:
-   * The optional nullability of the first reference type is absent.
-   * The optional nullability of the second reference type is absent.
+  * The optional nullability of the first reference type is absent.
+  * The optional nullability of the second reference type is absent.
 * Or:
-   * The optional nullability of the first reference type is of the form `null?`.
-   * The optional nullability of the second reference type is of the form `null`.
+  * The optional nullability of the first reference type is of the form `null?`.
+  * The optional nullability of the second reference type is of the form `null`.
 
 ```text
 C |- ht1 <: ht2
@@ -223,19 +223,19 @@ C |- ref null? ht1 <: ref null ht2
 The value type `valtype1` matches the value type `valtype2` if:
 
 * Either:
-   * The value type `valtype1` is of the form `numtype1`.
-   * The value type `valtype2` is of the form `numtype2`.
-   * The number type `numtype1` matches the number type `numtype2`.
+  * The value type `valtype1` is of the form `numtype1`.
+  * The value type `valtype2` is of the form `numtype2`.
+  * The number type `numtype1` matches the number type `numtype2`.
 * Or:
-   * The value type `valtype1` is of the form `vectype1`.
-   * The value type `valtype2` is of the form `vectype2`.
-   * The vector type `vectype1` matches the vector type `vectype2`.
+  * The value type `valtype1` is of the form `vectype1`.
+  * The value type `valtype2` is of the form `vectype2`.
+  * The vector type `vectype1` matches the vector type `vectype2`.
 * Or:
-   * The value type `valtype1` is of the form `reftype1`.
-   * The value type `valtype2` is of the form `reftype2`.
-   * The reference type `reftype1` matches the reference type `reftype2`.
+  * The value type `valtype1` is of the form `reftype1`.
+  * The value type `valtype2` is of the form `reftype2`.
+  * The reference type `reftype1` matches the reference type `reftype2`.
 * Or:
-   * The value type `valtype1` is of the form `bot`.
+  * The value type `valtype1` is of the form `bot`.
 
 ```text
 C |- bot <: valtype
@@ -248,7 +248,7 @@ Subtyping is lifted to result types in a pointwise manner.
 The result type `t1*` matches the result type `t2*` if:
 
 * For all `t1` in `t1*`, and corresponding `t2` in `t2*`:
-   * The value type `t1` matches the value type `t2`.
+  * The value type `t1` matches the value type `t2`.
 
 ```text
 (C |- t1 <: t2)*
@@ -266,8 +266,8 @@ The instruction type `t11* ->_{x1*} t12*` matches the instruction type `t21* ->_
 * The result type `t12*` matches the result type `t22*`.
 * The local index sequence `x*` is of the form `x2* ∖ x1*`.
 * For all `x` in `x*`:
-   * The local `C.LOCALS[x]` exists.
-   * The local `C.LOCALS[x]` is of the form `(set t)`.
+  * The local `C.LOCALS[x]` exists.
+  * The local `C.LOCALS[x]` is of the form `(set t)`.
 
 ```text
 C |- t21* <: t11*
@@ -285,19 +285,19 @@ C |- t11* ->_{x1*} t12* <: t21* ->_{x2*} t22*
 The composite type `comptype1` matches the composite type `comptype2` if:
 
 * Either:
-   * The composite type `comptype1` is of the form `(struct ft1* ft'1*)`.
-   * The composite type `comptype2` is of the form `(struct ft2*)`.
-   * For all `ft1` in `ft1*`, and corresponding `ft2` in `ft2*`:
-      * The field type `ft1` matches the field type `ft2`.
+  * The composite type `comptype1` is of the form `(struct ft1* ft'1*)`.
+  * The composite type `comptype2` is of the form `(struct ft2*)`.
+  * For all `ft1` in `ft1*`, and corresponding `ft2` in `ft2*`:
+    * The field type `ft1` matches the field type `ft2`.
 * Or:
-   * The composite type `comptype1` is of the form `(array ft1)`.
-   * The composite type `comptype2` is of the form `(array ft2)`.
-   * The field type `ft1` matches the field type `ft2`.
+  * The composite type `comptype1` is of the form `(array ft1)`.
+  * The composite type `comptype2` is of the form `(array ft2)`.
+  * The field type `ft1` matches the field type `ft2`.
 * Or:
-   * The composite type `comptype1` is of the form `(func t11* -> t12*)`.
-   * The composite type `comptype2` is of the form `(func t21* -> t22*)`.
-   * The result type `t21*` matches the result type `t11*`.
-   * The result type `t12*` matches the result type `t22*`.
+  * The composite type `comptype1` is of the form `(func t11* -> t12*)`.
+  * The composite type `comptype2` is of the form `(func t21* -> t22*)`.
+  * The result type `t21*` matches the result type `t11*`.
+  * The result type `t12*` matches the result type `t22*`.
 
 ```text
 (C |- ft1 <: ft2)*
@@ -324,12 +324,12 @@ The field type `(mut? zt1)` matches the field type `(mut? zt2)` if:
 
 * The storage type `zt1` matches the storage type `zt2`.
 * Either:
-   * The optional mutability of the first field type is absent.
-   * The optional mutability of the second field type is absent.
+  * The optional mutability of the first field type is absent.
+  * The optional mutability of the second field type is absent.
 * Or:
-   * The optional mutability of the first field type is of the form `mut`.
-   * The optional mutability of the second field type is of the form `mut`.
-   * The storage type `zt2` matches the storage type `zt1`.
+  * The optional mutability of the first field type is of the form `mut`.
+  * The optional mutability of the second field type is of the form `mut`.
+  * The storage type `zt2` matches the storage type `zt1`.
 
 ```text
 C |- zt1 <: zt2
@@ -345,13 +345,13 @@ C |- mut zt1 <: mut zt2
 The storage type `storagetype1` matches the storage type `storagetype2` if:
 
 * Either:
-   * The storage type `storagetype1` is of the form `valtype1`.
-   * The storage type `storagetype2` is of the form `valtype2`.
-   * The value type `valtype1` matches the value type `valtype2`.
+  * The storage type `storagetype1` is of the form `valtype1`.
+  * The storage type `storagetype2` is of the form `valtype2`.
+  * The value type `valtype1` matches the value type `valtype2`.
 * Or:
-   * The storage type `storagetype1` is of the form `packtype1`.
-   * The storage type `storagetype2` is of the form `packtype2`.
-   * The packed type `packtype1` matches the packed type `packtype2`.
+  * The storage type `storagetype1` is of the form `packtype1`.
+  * The storage type `storagetype2` is of the form `packtype2`.
+  * The packed type `packtype1` matches the packed type `packtype2`.
 
 The packed type `packtype` matches only itself.
 
@@ -364,11 +364,11 @@ C |- packtype <: packtype
 The defined type `deftype1` matches the defined type `deftype2` if:
 
 * Either:
-   * The defined type `clostype_C(deftype1)` is of the form `clostype_C(deftype2)`.
+  * The defined type `clostype_C(deftype1)` is of the form `clostype_C(deftype2)`.
 * Or:
-   * The sub type `unrolldt(deftype1)` is of the form `(sub final? typeuse* ct)`.
-   * The length of `typeuse*` is greater than `i`.
-   * The type use `typeuse*[i]` matches the heap type `deftype2`.
+  * The sub type `unrolldt(deftype1)` is of the form `(sub final? typeuse* ct)`.
+  * The length of `typeuse*` is greater than `i`.
+  * The type use `typeuse*[i]` matches the heap type `deftype2`.
 
 ```text
 clostype_C(deftype1) = clostype_C(deftype2)
@@ -391,12 +391,12 @@ The limits range `[ n1 .. u64_1? ]` matches the limits range `[ n2 .. u64_2? ]` 
 
 * `n1` is greater than or equal to `n2`.
 * Either:
-   * `u64_1?` is of the form `m1`.
-   * If `u64_2` is defined, then:
-      * `m1` is less than or equal to `u64_2`.
+  * `u64_1?` is of the form `m1`.
+  * If `u64_2` is defined, then:
+    * `m1` is less than or equal to `u64_2`.
 * Or:
-   * `u64_1?` is absent.
-   * `u64_2?` is absent.
+  * `u64_1?` is absent.
+  * `u64_2?` is absent.
 
 ```text
 n1 >= n2
@@ -433,12 +433,12 @@ The global type `(mut? valtype1)` matches the global type `(mut? valtype2)` if:
 
 * The value type `valtype1` matches the value type `valtype2`.
 * Either:
-   * The optional mutability of the first global type is absent.
-   * The optional mutability of the second global type is absent.
+  * The optional mutability of the first global type is absent.
+  * The optional mutability of the second global type is absent.
 * Or:
-   * The optional mutability of the first global type is of the form `mut`.
-   * The optional mutability of the second global type is of the form `mut`.
-   * The value type `valtype2` matches the value type `valtype1`.
+  * The optional mutability of the first global type is of the form `mut`.
+  * The optional mutability of the second global type is of the form `mut`.
+  * The value type `valtype2` matches the value type `valtype1`.
 
 ```text
 C |- valtype1 <: valtype2

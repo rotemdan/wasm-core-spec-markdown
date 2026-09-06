@@ -8,8 +8,7 @@ This section sketches the skeleton of a sound and complete *algorithm* for effec
 
 (Other aspects of validation are straightforward to implement.)
 
-In fact, the algorithm is expressed over the flat sequence of opcodes as occurring in the [binary format](binary), and performs only a single pass over it.
-Consequently, it can be integrated directly into a decoder.
+In fact, the algorithm is expressed over the flat sequence of opcodes as occurring in the [binary format](binary), and performs only a single pass over it. Consequently, it can be integrated directly into a decoder.
 
 The algorithm is expressed in typed pseudo code whose semantics is intended to be self-explanatory.
 
@@ -108,8 +107,7 @@ func top_heap_type(t : heap_type) : heap_type =
 
 #### Context
 
-Validation requires a [context](context) for checking uses of [indices](syntax-index).
-For the purpose of presenting the algorithm, it is maintained in a set of global variables:
+Validation requires a [context](context) for checking uses of [indices](syntax-index). For the purpose of presenting the algorithm, it is maintained in a set of global variables:
 
 ```pseudo
 var return_type : list(val_type)
@@ -197,14 +195,9 @@ func pop_vals(types : list(val_type)) : list(val_type) =
 
 Pushing an operand value simply pushes the respective type to the value stack.
 
-Popping an operand value checks that the value stack does not underflow the current block and then removes one type.
-But first, a special case is handled where the block contains no known values, but has been marked as unreachable.
-That can occur after an unconditional branch, when the stack is typed [polymorphically](polymorphism).
-In that case, the `Bot` type is returned, because that is a *principal* choice trivially satisfying all use constraints.
+Popping an operand value checks that the value stack does not underflow the current block and then removes one type. But first, a special case is handled where the block contains no known values, but has been marked as unreachable. That can occur after an unconditional branch, when the stack is typed [polymorphically](polymorphism). In that case, the `Bot` type is returned, because that is a *principal* choice trivially satisfying all use constraints.
 
-A second function for popping an operand value takes an expected type, which the actual operand type is checked against.
-The types may differ by subtyping, including the case where the actual type is `Bot`, and thereby matches unconditionally.
-The function returns the actual type popped from the stack.
+A second function for popping an operand value takes an expected type, which the actual operand type is checked against. The types may differ by subtyping, including the case where the actual type is `Bot`, and thereby matches unconditionally. The function returns the actual type popped from the stack.
 
 Finally, there are accumulative functions for pushing or popping multiple operand types.
 
@@ -283,8 +276,7 @@ Because every function has an implicit outermost label that corresponds to an im
 
 ### Validation of Opcode Sequences
 
-The following function shows the validation of a number of representative instructions that manipulate the stack.
-Other instructions are checked in a similar manner.
+The following function shows the validation of a number of representative instructions that manipulate the stack. Other instructions are checked in a similar manner.
 
 ```pseudo
 func validate(opcode) =

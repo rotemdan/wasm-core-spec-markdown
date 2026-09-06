@@ -70,14 +70,14 @@ Sequences of globals are handled incrementally, such that each definition has ac
 The global sequence `global*` is valid with the global type sequence `gt*` if:
 
 * Either:
-   * The global sequence `global*` is empty.
-   * The global type sequence `gt*` is empty.
+  * The global sequence `global*` is empty.
+  * The global type sequence `gt*` is empty.
 * Or:
-   * The global sequence `global*` is of the form `global1 global'*`.
-   * The global type sequence `gt*` is of the form `gt1 gt*`.
-   * The global `global1` is valid with the global type `gt1`.
-   * Let `C'` be the same context as `C`, but with the global type sequence `gt1` appended to the field `GLOBALS`.
-   * Under the context `C'`, the global sequence `global'*` is valid with the global type sequence `gt*`.
+  * The global sequence `global*` is of the form `global1 global'*`.
+  * The global type sequence `gt*` is of the form `gt1 gt*`.
+  * The global `global1` is valid with the global type `gt1`.
+  * Let `C'` be the same context as `C`, but with the global type sequence `gt1` appended to the field `GLOBALS`.
+  * Under the context `C'`, the global sequence `global'*` is valid with the global type sequence `gt*`.
 
 ```text
 ────────────────
@@ -131,7 +131,7 @@ The function `(func x local* expr)` is valid with the type `C.TYPES[x]` if:
 * The type `C.TYPES[x]` exists.
 * The expansion of `C.TYPES[x]` is `(func t1* -> t2*)`.
 * For all `local` in `local*`:
-   * The local `local` is valid with the local type `lt`.
+  * The local `local` is valid with the local type `lt`.
 * `lt*` is the concatenation of all such `lt`.
 * Under the context `C` with the field `LOCALS` appended by `(set t1)* lt*` and the field `LABELS` appended by `t2*` and the field `RETURN` appended by `t2*`, the expression `expr` is valid with the result type `t2*`.
 
@@ -151,11 +151,11 @@ The local `(local t)` is valid with the local type `(init t)` if:
 
 * The value type `t` is valid.
 * Either:
-   * The initialization status `init` is of the form `set`.
-   * A default value for `t` is defined.
+  * The initialization status `init` is of the form `set`.
+  * A default value for `t` is defined.
 * Or:
-   * The initialization status `init` is of the form `unset`.
-   * A default value for `t` is not defined.
+  * The initialization status `init` is of the form `unset`.
+  * A default value for `t` is not defined.
 
 ```text
 C |- t : OK
@@ -190,13 +190,13 @@ C |- data DATA b* datamode : OK
 The data mode `datamode` is valid if:
 
 * Either:
-   * The data mode `datamode` is of the form `passive`.
+  * The data mode `datamode` is of the form `passive`.
 * Or:
-   * The data mode `datamode` is of the form `(active x expr)`.
-   * The memory `C.MEMS[x]` exists.
-   * The memory `C.MEMS[x]` is of the form `(at lim page)`.
-   * The expression `expr` is valid with the value type `at`.
-   * `expr` is constant.
+  * The data mode `datamode` is of the form `(active x expr)`.
+  * The memory `C.MEMS[x]` exists.
+  * The memory `C.MEMS[x]` is of the form `(at lim page)`.
+  * The expression `expr` is valid with the value type `at`.
+  * `expr` is constant.
 
 ```text
 ────────────────
@@ -216,8 +216,8 @@ The table segment `(ELEM elemtype expr* elemmode)` is valid with the element typ
 
 * The reference type `elemtype` is valid.
 * For all `expr` in `expr*`:
-   * The expression `expr` is valid with the value type `elemtype`.
-   * `expr` is constant.
+  * The expression `expr` is valid with the value type `elemtype`.
+  * `expr` is constant.
 * The element mode `elemmode` is valid with the element type `elemtype`.
 
 ```text
@@ -233,16 +233,16 @@ C |- elem ELEM elemtype expr* elemmode : elemtype
 The element mode `elemmode` is valid with the element type `rt` if:
 
 * Either:
-   * The element mode `elemmode` is of the form `passive`.
+  * The element mode `elemmode` is of the form `passive`.
 * Or:
-   * The element mode `elemmode` is of the form `declare`.
+  * The element mode `elemmode` is of the form `declare`.
 * Or:
-   * The element mode `elemmode` is of the form `(active x expr)`.
-   * The table `C.TABLES[x]` exists.
-   * The table `C.TABLES[x]` is of the form `(at lim rt')`.
-   * The reference type `rt` matches the reference type `rt'`.
-   * The expression `expr` is valid with the value type `at`.
-   * `expr` is constant.
+  * The element mode `elemmode` is of the form `(active x expr)`.
+  * The table `C.TABLES[x]` exists.
+  * The table `C.TABLES[x]` is of the form `(at lim rt')`.
+  * The reference type `rt` matches the reference type `rt'`.
+  * The expression `expr` is valid with the value type `at`.
+  * `expr` is constant.
 
 ```text
 ────────────────
@@ -375,31 +375,31 @@ The module `(module type* import* tag* global* mem* table* func* data* elem* sta
 
 * Under the context `{ RETURN ε }`, the type definition sequence `type*` is valid with the defined type sequence `dt'*`.
 * For all `import` in `import*`:
-   * Under the context `{ TYPES dt'*, RETURN ε }`, the import `import` is valid with the external type `xt_i`.
+  * Under the context `{ TYPES dt'*, RETURN ε }`, the import `import` is valid with the external type `xt_i`.
 * `xt_i*` is the concatenation of all such `xt_i`.
 * For all `tag` in `tag*`:
-   * Under the context `C'`, the tag `tag` is valid with the tag type `jt`.
+  * Under the context `C'`, the tag `tag` is valid with the tag type `jt`.
 * `jt*` is the concatenation of all such `jt`.
 * Under the context `C'`, the global sequence `global*` is valid with the global type sequence `gt*`.
 * For all `mem` in `mem*`:
-   * Under the context `C'`, the memory `mem` is valid with the memory type `mt`.
+  * Under the context `C'`, the memory `mem` is valid with the memory type `mt`.
 * `mt*` is the concatenation of all such `mt`.
 * For all `table` in `table*`:
-   * Under the context `C'`, the table `table` is valid with the table type `tt`.
+  * Under the context `C'`, the table `table` is valid with the table type `tt`.
 * `tt*` is the concatenation of all such `tt`.
 * For all `func` in `func*`:
-   * The function `func` is valid with the defined type `dt`.
+  * The function `func` is valid with the defined type `dt`.
 * `dt*` is the concatenation of all such `dt`.
 * For all `data` in `data*`:
-   * The memory segment `data` is valid.
+  * The memory segment `data` is valid.
 * `ok*` is the concatenation of all such `ok`.
 * For all `elem` in `elem*`:
-   * The table segment `elem` is valid with the element type `rt`.
+  * The table segment `elem` is valid with the element type `rt`.
 * `rt*` is the concatenation of all such `rt`.
 * If `start` is defined, then:
-   * The start function `start` is valid.
+  * The start function `start` is valid.
 * For all `export` in `export*`:
-   * The export `export` is valid with the name `nm` and the external type `xt_e`.
+  * The export `export` is valid with the name `nm` and the external type `xt_e`.
 * `nm*` is the concatenation of all such `nm`.
 * `xt_e*` is the concatenation of all such `xt_e`.
 * `nm* disjoint` is true.

@@ -63,25 +63,24 @@ section_N(X) ::=
   | ε                               => ε
 ```
 
-For most sections, the contents `X` encodes a list.
-In these cases, the empty result `ε` is interpreted as the empty list.
+For most sections, the contents `X` encodes a list. In these cases, the empty result `ε` is interpreted as the empty list.
 
 > **Note:** Other than for unknown custom sections, the `size` is not required for decoding, but can be used to skip sections when navigating through a binary. The module is malformed if the size does not match the length of the binary contents `X`.
 
 The following section ids are used:
 
 | Id | Section |
-|----|---------|
-| 0  | custom section |
-| 1  | type section |
-| 2  | import section |
-| 3  | function section |
-| 4  | table section |
-| 5  | memory section |
-| 6  | global section |
-| 7  | export section |
-| 8  | start section |
-| 9  | element section |
+| - | - |
+| 0 | custom section |
+| 1 | type section |
+| 2 | import section |
+| 3 | function section |
+| 4 | table section |
+| 5 | memory section |
+| 6 | global section |
+| 7 | export section |
+| 8 | start section |
+| 9 | element section |
 | 10 | code section |
 | 11 | data section |
 | 12 | data count section |

@@ -16,7 +16,7 @@ Converting the WebAssembly Core Specification (generated `_spectec/*.rst` bundle
 ## 1. RST → what is rendered (the LLM must NOT guess)
 
 | RST construct | Rendered? | Action |
-|---|---|---|
+| - | - | - |
 | `Title` + `=====` | yes (heading) | → `# Title` |
 | `Heading` + `-----` | yes | → `## Heading` |
 | `Sub` + `~~~~~` | yes | → `### Sub` |
@@ -53,6 +53,7 @@ Rules of thumb for the LLM:
 Never keep LaTeX. Convert each `.. math::` into a `text` block.
 
 **(a) Grammar** (contains `::=`): write compact productions.
+
 * Drop: `\begin{array}…`, column specs, `&`, `\\`, `\quad\Rightarrow\quad`, `\mathtt{}`.
 * `::=` stays.
 * `|` stays as alternative.
@@ -65,7 +66,7 @@ Never keep LaTeX. Convert each `.. math::` into a `text` block.
 * `\epsilon` → `ε`
 * Apply the Notation table (§4) to all `\MACRO` tokens.
 * The `=>` arrows within a production block: Ensure exactly four spaces before `=>`, so the arrow does not visually appear as if it is attached to a member
-* **Blank line between productions.** When several productions are emitted into the *same* `text` code block, separate each production from the next with a blank line: before every production header line `NAME ::=` that follows a non-blank line (a body line, or another production), insert one blank line. This matches the official rendered HTML, which shows visible spacing between successive productions. Do **not** add a blank line before the first production (immediately after the ```` ```text ```` fence) or anywhere one already exists. (Automated fix: insert a blank line before any column-0 `::=` line that is preceded by a non-blank, non-fence line, applied only inside fenced code blocks — see the global-correction script.)
+* **Blank line between productions.** When several productions are emitted into the *same* `text` code block, separate each production from the next with a blank line: before every production header line `NAME ::=` that follows a non-blank line (a body line, or another production), insert one blank line. This matches the official rendered HTML, which shows visible spacing between successive productions. Do **not** add a blank line before the first production (immediately after the ` ```text ` fence) or anywhere one already exists. (Automated fix: insert a blank line before any column-0 `::=` line that is preceded by a non-blank, non-fence line, applied only inside fenced code blocks — see the global-correction script.)
 
 **(b) Inference rule** (a `.. math::` containing `\frac`, `\vdash`, `~>`, or a fractional premise/conclusion — see §6 for the full rendering algorithm): write the rule name (if present, from the nearest `:math:`/`:ref:` heading), then premises (one per line), a `────` divider, then the conclusion, preserving every `if …` side condition.
 
@@ -75,21 +76,22 @@ Every alternative, byte, constructor, and condition MUST be preserved.
 
 * Identifier/symbol only (e.g. `\BOT`, `\mathtt{0x4E}`) → inline code: `` `bot` ``, `` `0x4E` ``.
 * Connectors render in ASCII: `->`, `>=`, `*`.
-* Only if a fragment is a genuine subscript/relation formula AND you want
-  MathJax: wrap in `$…$`. Otherwise prefer inline code (most portable).
+* Only if a fragment is a genuine subscript/relation formula AND you want MathJax: wrap in `$…$`. Otherwise prefer inline code (most portable).
 
 ## 4. Notation cheat-sheet (macro → Markdown)
 
 ### 4.1 General macro rule
+
 Every TeX macro `\NAME` denotes a single token. The converted markdown shows the **plain** nonterminal name with **no organizational category prefix** — strip the leading `B`, `T`, `S`, `H`, `C`, `M`, `XI`, `XA`, or `X`/`XX` from every macro and keep the remainder. (The human-visible specification renders these without the prefixes.)
+
 * `B` (binary) and `T` (text syntax) → strip the prefix; keep the rest. E.g. `\Bnumtype`→`numtype`, `\Tsource`→`source`.
 * `S` / `H` / `C` / `M` / `XI` / `XA` (store / heap / context / module-instance / export / address **field labels**) → strip the prefix; keep the remainder. E.g. `\STAGS`→`TAGS`, `\CTYPES`→`TYPES`, `\HITYPE`→`TYPE`, `\XINAME`→`NAME`.
-* `X` or `XX` followed by a kind → the kind name lowercased (`func`, `table`, `mem`, `global`, `tag`). E.g. `\XXFUNC`→`func`, `\XTFUNC`→`func`.
-Everything else (value/heap constructors, opcodes, instance nonterminals, judgments) → lowercase word, e.g. `\F64`→`f64`, `\NOP`→`nop`, `\CONST`→`const`, `\moduleinst`→`moduleinst`, `\EXPORT`→`export`.
+* `X` or `XX` followed by a kind → the kind name lowercased (`func`, `table`, `mem`, `global`, `tag`). E.g. `\XXFUNC`→`func`, `\XTFUNC`→`func`. Everything else (value/heap constructors, opcodes, instance nonterminals, judgments) → lowercase word, e.g. `\F64`→`f64`, `\NOP`→`nop`, `\CONST`→`const`, `\moduleinst`→`moduleinst`, `\EXPORT`→`export`.
 
 ### 4.2 Category-prefixed nonterminals (strip the prefix)
+
 * **Binary nonterminals** (strip `B`): `\Babsheaptype`→`absheaptype`, `\Bheaptype`→`heaptype`, `\Bnumtype`→`numtype`, `\Bvectype`→`vectype`, `\Breftype`→`reftype`, `\Bvaltype`→`valtype`, `\Bresulttype`→`resulttype`, `\Bcomptype`→`comptype`, `\Bfieldtype`→`fieldtype`, `\Bstoragetype`→`storagetype`, `\Bpacktype`→`packtype`, `\Brectype`→`rectype`, `\Bsubtype`→`subtype`, `\Blimits`→`limits`, `\Btagtype`→`tagtype`, `\Bglobaltype`→`globaltype`, `\Bmemtype`→`memtype`, `\Btabletype`→`tabletype`, `\Bexterntype`→`externtype`, `\Bsection`→`section`, `\Bbyte`→`byte`, `\Bblocktype`→`blocktype`, `\Bcatch`→`catch`, `\Bcustom`→`custom`, `\Bname`→`name`, `\Btype`→`type`, `\Bimport`→`import`, `\Bfuncsec`→`funcsec`. (The bottom type `\BOT`renders as `bot` per §4.6.)
-* **Index / integer / list *sorts*** (also strip `B`): `\Btypeidx`→`typeidx`, `\Bfuncidx`→`funcidx`, `\Btableidx`→`tableidx`, `\Bmemidx`→`memidx`, `\Bglobalidx`→`globalidx`, `\Btagidx`→`tagidx`, `\Belemidx`→`elemidx`, `\Bdataidx`→`dataidx`, `\Bfieldidx`→`fieldidx`, `\Bexternidx`→`externidx`, `\Blocalidx`→`localidx`, `\Blabelidx`→`labelidx`, `\BuN`/`\BsN`→`uN`/`sN` (e.g. `u32`, `s33`), `\Blist(X)`→`list(X)` (or `X*`).
+* __Index / integer / list *sorts*__ (also strip `B`): `\Btypeidx`→`typeidx`, `\Bfuncidx`→`funcidx`, `\Btableidx`→`tableidx`, `\Bmemidx`→`memidx`, `\Bglobalidx`→`globalidx`, `\Btagidx`→`tagidx`, `\Belemidx`→`elemidx`, `\Bdataidx`→`dataidx`, `\Bfieldidx`→`fieldidx`, `\Bexternidx`→`externidx`, `\Blocalidx`→`localidx`, `\Blabelidx`→`labelidx`, `\BuN`/`\BsN`→`uN`/`sN` (e.g. `u32`, `s33`), `\Blist(X)`→`list(X)` (or `X*`).
 * **Text syntax nonterminals** (strip `T`):
   * lexical: `\Tsource`→`source`, `\Tchar`→`char`, `\Ttoken`→`token`, `\Tkeyword`→`keyword`, `\Tstring`→`string`, `\Tid`→`id`, `\Tidchar`→`idchar`, `\Treserved`→`reserved`
   * numeric: `\TuNX`→`uN`, `\TsNX`→`sN`, `\TfNX`→`fN`
@@ -99,7 +101,9 @@ Everything else (value/heap constructors, opcodes, instance nonterminals, judgme
 * `\PAGE`→`page` (full list with the value/heap constructors in §4.3)
 
 ### 4.3 Value / heap / reference constructors (lowercase WAT)
+
 Value/heap constructors use WAT-style lowercase. Keep them consistent:
+
 * **Numeric / vector value types**: `\F64`→`f64`, `\F32`→`f32`, `\I64`→`i64`, `\I32`→`i32`, `\V128`→`v128`
 * **Heap type constructors**: `\EXN`→`exn`, `\ARRAY`→`array`, `\STRUCT`→`struct`, `\I31`→`i31`, `\EQT`→`eq`, `\ANY`→`any`, `\EXTERN`→`extern`, `\FUNCT`→`func`
 * **Bottom / none / no- forms**: `\NONE`→`none`, `\NOEXTERN`→`noextern`, `\NOFUNC`→`nofunc`, `\NOEXN`→`noexn`
@@ -107,7 +111,9 @@ Value/heap constructors use WAT-style lowercase. Keep them consistent:
 * **External kind & page**: `\PAGE`→`page`, `\XTFUNC`/`\XTTABLE`/`\XTMEM`/`\XTGLOBAL`/`\XTTAG`→`func`/`table`/`mem`/`global`/`tag`
 
 ### 4.4 Instruction / opcode macros (lowercase WAT, dots where standard)
+
 Opcode macros render as their WAT mnemonic in lowercase, inserting `.` where the standard mnemonic is dotted:
+
 * **Control / parametric**: `\NOP`→`nop`, `\UNREACHABLE`→`unreachable`, `\SELECT`→`select`, `\DROP`→`drop`, `\BLOCK`→`block`, `\LOOP`→`loop`
 * **Branches**: `\BR`→`br`, `\BRIF`→`br_if`, `\BRTABLE`→`br_table`, `\BRONNULL`→`br_on_null`, `\BRONNONNULL`→`br_on_non_null`, `\BRONCAST`→`br_on_cast`, `\BRONCASTFAIL`→`br_on_cast_fail`
 * **Calls / exceptions**: `\CALL`→`call`, `\CALLINDIRECT`→`call_indirect`, `\RETURNCALL`→`return_call`, `\RETURNCALLINDIRECT`→`return_call_indirect`, `\THROW`→`throw`, `\CATCH`→`catch`, `\Rethrow`→`rethrow`
@@ -115,12 +121,15 @@ Opcode macros render as their WAT mnemonic in lowercase, inserting `.` where the
 * **Reference / value address forms**: `\REF`→`ref`, `\NULL`→`null`, `\REFNULLADDR`→`ref.null`, `\REFI31NUM`→`ref.i31`, `\REFSTRUCTADDR`→`ref.struct`, `\REFARRAYADDR`→`ref.array`, `\REFFUNCADDR`→`ref.func`, `\REFEXNADDR`→`ref.exn`, `\REFHOSTADDR`→`ref.host`, `\REFEXTERN`→`ref.extern`
 
 ### 4.5 Instance & abstract-syntax nonterminals (mixed-case → lowercase word)
+
 Mixed-case / lowercase single-word macros are nonterminals or meta-variables. Render as the word itself:
+
 * **Instance nonterminals**: `\moduleinst`→`moduleinst`, `\funcinst`→`funcinst`, `\meminst`→`meminst`, `\tableinst`→`tableinst`, `\globalinst`→`globalinst`, `\taginst`→`taginst`, `\datainst`→`datainst`, `\eleminst`→`eleminst`, `\structinst`→`structinst`, `\arrayinst`→`arrayinst`, `\exninst`→`exninst`
 * **Runtime / abstract syntax**: `\store`→`store`, `\frame`→`frame`, `\config`→`config`, `\admininstr`→`admininstr`
 * **Misc. identifiers**: `\name`→`name`, `\externidx`→`externidx`, `\EXPORT`→`export`, `\NAME`→`name`
 
 ### 4.6 Judgment & relation symbols
+
 * `\vdash` and all `\vdash⟨X⟩` (e.g. `\vdashinstr`, `\vdashinstrtype`, `\vdashcomptype`, `\vdashheaptype`, `\vdashtype`) → `|-` (drop the ⟨X⟩ qualifier word. It is recoverable from the section heading).
 * Matching / subtyping infix `\sub⟨X⟩match` (e.g. `\subheaptymatch`, `\subnumtypematch`) → `<:`
 * `|-` (already in source as text in some rules) → `|-`
@@ -137,6 +146,7 @@ Mixed-case / lowercase single-word macros are nonterminals or meta-variables. Re
 * `\sNX` / `\sN` → signed-N representation (e.g. `s33`). Inline form reads as "N-bit signed"
 
 ### 4.7 LaTeX text & formatting (strip)
+
 * `\mathrm{…}` → upright text as-is
 * `\mathrm{U{+ }XX}` → `U+XX` (Unicode code point — drop the `{}`/`+` braces)
 * `\mathsf{…}` → the word in lowercase (e.g. `\mathsf{select}`→`select`, `\mathsf{i{\scriptstyle 32}}`→`i32`)
@@ -146,6 +156,7 @@ Mixed-case / lowercase single-word macros are nonterminals or meta-variables. Re
 * Spacing/formatting commands are dropped: `\quad`, `\qquad`, `\kern`, `\allowbreak`, `\displaystyle`, `\begin{array}`/`\end{array}`, `@{…}`, `[0.8ex]`, `[3ex]`, `\multicolumn{…}{…}{…}` (render its content as a side-condition line, see §2 / §6)
 
 ### 4.8 Sub-/superscripts, primes & record access
+
 * `^\ast` → `*`, `^?` → `?` (sequence / optional)
 * Other superscripts `^{…}` → keep as a `(…)` qualifier or `^{…}`
 * `x^{i<n}` → `x^(i<n)`
@@ -162,6 +173,7 @@ Mixed-case / lowercase single-word macros are nonterminals or meta-variables. Re
 Beyond §1–§4 the tree uses the following. Inference rules get their own section (§6).
 
 ### 5.1 Headings — 5th level and reference headings
+
 The spec uses a 5th section level underlined with dots, and headings that *are themselves* `:ref:` / `:math:` wrappers:
 
 ```rst
@@ -178,6 +190,7 @@ The spec uses a 5th section level underlined with dots, and headings that *are t
   * `:math:`\NOP`` → `#### NOP`
 
 ### 5.2 Lists
+
 * Bullet lists: `*` at line start → `* item`. Nest by indentation (2 spaces per level). Never use `-` or `+` for bullets — always `*`.
 * **No blank lines between list items.** Keep lists *tight*: consecutive items (and their nested children) must be on adjacent lines with no blank line between them. Blank lines between items make each item render as a separate paragraph and break visual nesting; a blank line after a parent item, before its nested child list, is likewise removed. (Blank lines that separate a list from surrounding prose, or that separate two genuinely separate lists, are preserved.)
 * Ordered lists: always write explicit `1.`, `2.`, `3.` (`1. item`). Never use `#.` — the output is a static reference consumed by AI, so numbering must be literal and stable (GitHub auto-renumbering of `#.` does not apply to a plain `.md` reference)
@@ -185,6 +198,7 @@ The spec uses a 5th section level underlined with dots, and headings that *are t
 * The exec chapter's numbered steps (source `1.`, then `#.`, then `a.` sub-steps) always render as explicit `1.`, `2.`, `3.` nested ordered lists
 
 ### 5.3 Code blocks
+
 * `.. code-block:: <lang>` (e.g. `pseudo`) → a fenced code block tagged with that language.
 * A paragraph followed by `::` and an indented block → also a fenced code block (use `text` if no language is implied).
 * Keep the code content verbatim — do **not** “fix” pseudo-code.
@@ -196,7 +210,9 @@ For example, `.. code-block:: pseudo` becomes the fence:
 ```
 
 ### 5.4 Footnotes
+
 Footnotes appear as `[#name]_` inline and `.. [#name]` definition blocks (usually at the end of a file).
+
 * Inline: `[#cite-pldi2017]_` → `[^cite-pldi2017]` (GFM footnote reference)
 * Group all footnote definitions at the bottom of the converted file
 
@@ -214,11 +230,14 @@ becomes
 ```
 
 ### 5.5 Substitution references
+
 `|Unicode|_` and `|ASCII|_` (and `|FUNCREF|` in the changes appendix) are *substitution references*. Their definitions live outside this tree (in the Sphinx project), so the LLM cannot resolve the target URL
+
 * Render `|Name|` and `|Name|_` simply as the name text: `Unicode`, `ASCII`, `FUNCREF`
 * Do **not** invent URLs. (If a definition is present in the same file, link it.)
 
 ### 5.6 Paragraphs and line breaks (no one-sentence-per-line)
+
 * **Never break a paragraph with a single newline.** In Markdown, a single newline inside a paragraph is a *soft break* and renders as an ordinary space — it has no semantic meaning and does **not** match what is actually rendered. A paragraph must be a single block of text.
 * When the RST source splits one prose paragraph across several physical lines (the common “one sentence per line” style), either rejoin those lines into a single paragraph, or split them to multiple paragraphs during conversion. Use personal judgment to decide which approach to take.
 * If the text is genuinely two paragraphs, separate them with a **blank line** (a hard break / new paragraph). Do not use a bare newline to imply a paragraph break.
@@ -226,6 +245,7 @@ becomes
 * (Rationale: source that relies on single newlines for “visual” line breaks looks broken in any Markdown editor/preview and misleads readers about where paragraphs actually start and end.)
 
 ### 5.7 Blank lines — never double
+
 * **Collapse any run of two or more consecutive blank lines into a single blank line.** More than one blank line has no effect on rendering — Markdown only uses a blank line as a block separator, and any number ≥ 1 behaves identically — so multiple blank lines add nothing but inconsistent gaps in the source.
 * This applies everywhere: between headings, paragraphs, lists, code fences, footnote blocks, and at the start/end of the file. The only invariant to preserve is that a *single* blank line separates two distinct blocks.
 * Do not *introduce* double blank lines either. Converted output should have at most one blank line between any two blocks.
@@ -261,8 +281,7 @@ Rules are wrapped in `\frac{numerator}{denominator}` (premises over conclusion).
    * `\vdash⟨X⟩` → `|-`
    * the matching/relation infix `\sub⟨X⟩match` → `<:`
    * reduction `\to`/`\rightarrow` → `->`
-   * validity result `\OK⟨X⟩` → `OK`
-   (The ⟨X⟩ qualifier word — `heaptype`, `instr`, … — is dropped. It is recoverable from the section heading.)
+   * validity result `\OK⟨X⟩` → `OK` (The ⟨X⟩ qualifier word — `heaptype`, `instr`, … — is dropped. It is recoverable from the section heading.)
 6. **Side conditions**:
    * written as `\quad \mbox{if}…` after a premise/conclusion → append `(if …)` to that line
    * a `\multicolumn` side condition → its own `(if …)` line
@@ -457,4 +476,3 @@ C |- ht1 <: ht2
 * [ ] No double (or more) blank lines anywhere — collapse runs of blank lines to a single one (§5.7).
 * [ ] Substitution refs rendered as plain name text. No invented URLs.
 * [ ] No information dropped: every alternative, byte, constructor, premise, and side condition preserved.
-

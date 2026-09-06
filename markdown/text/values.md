@@ -168,5 +168,4 @@ idchar ::=
 
 #### Conventions
 
-The expansion rules of some abbreviations require insertion of a *fresh* identifier.
-That may be any syntactically valid identifier that does not already occur in the given source text.
+The expansion rules of some abbreviations require insertion of a *fresh* identifier. That may be any syntactically valid identifier that does not already occur in the given source text.

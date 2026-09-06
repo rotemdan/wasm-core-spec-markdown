@@ -59,16 +59,16 @@ C |- ref null? heaptype : OK
 The value type `valtype` is valid if:
 
 * Either:
-   * The value type `valtype` is of the form `numtype`.
-   * The number type `numtype` is valid.
+  * The value type `valtype` is of the form `numtype`.
+  * The number type `numtype` is valid.
 * Or:
-   * The value type `valtype` is of the form `vectype`.
-   * The vector type `vectype` is valid.
+  * The value type `valtype` is of the form `vectype`.
+  * The vector type `vectype` is valid.
 * Or:
-   * The value type `valtype` is of the form `reftype`.
-   * The reference type `reftype` is valid.
+  * The value type `valtype` is of the form `reftype`.
+  * The reference type `reftype` is valid.
 * Or:
-   * The value type `valtype` is of the form `bot`.
+  * The value type `valtype` is of the form `bot`.
 
 ```text
 C |- bot : OK
@@ -79,7 +79,7 @@ C |- bot : OK
 The result type `t*` is valid if:
 
 * For all `t` in `t*`:
-   * The value type `t` is valid.
+  * The value type `t` is valid.
 
 ```text
 (C |- t : OK)*
@@ -105,7 +105,7 @@ C |- typeidx : t1* -> t2*
 The block type `valtype?` is valid as the instruction type `ε -> valtype?` if:
 
 * If `valtype` is defined, then:
-   * The value type `valtype` is valid.
+  * The value type `valtype` is valid.
 
 ```text
 (C |- valtype : OK)?
@@ -120,7 +120,7 @@ The instruction type `t1* ->_{x*} t2*` is valid if:
 * The result type `t1*` is valid.
 * The result type `t2*` is valid.
 * For all `x` in `x*`:
-   * The local `C.LOCALS[x]` exists.
+  * The local `C.LOCALS[x]` exists.
 
 ```text
 C |- t1* : OK
@@ -135,7 +135,7 @@ C |- t1* ->_{x*} t2* : OK
 The composite type `(struct fieldtype*)` is valid if:
 
 * For all `fieldtype` in `fieldtype*`:
-   * The field type `fieldtype` is valid.
+  * The field type `fieldtype` is valid.
 
 ```text
 (C |- fieldtype : OK)*
@@ -188,11 +188,11 @@ Recursive types are validated with respect to the first type index defined by th
 The recursive type `(rec subtype*)` is valid for the type index `x` if:
 
 * Either:
-   * The sub type sequence `subtype*` is empty.
+  * The sub type sequence `subtype*` is empty.
 * Or:
-   * The sub type sequence `subtype*` is of the form `subtype1 subtype'*`.
-   * The sub type `subtype1` is valid for the type index `x`.
-   * The recursive type `(rec subtype'*)` is valid for the type index `x + 1`.
+  * The sub type sequence `subtype*` is of the form `subtype1 subtype'*`.
+  * The sub type `subtype1` is valid for the type index `x`.
+  * The recursive type `(rec subtype'*)` is valid for the type index `x + 1`.
 
 ```text
 ────────────────────
@@ -208,13 +208,13 @@ The sub type `(sub final? x* comptype)` is valid for the type index `x0` if:
 
 * The length of `x*` is less than or equal to `1`.
 * For all `x` in `x*`:
-   * The index `x` is less than `x0`.
-   * The type `C.TYPES[x]` exists.
-   * The sub type `unrolldt(C.TYPES[x])` is of the form `(sub y* comptype')`.
+  * The index `x` is less than `x0`.
+  * The type `C.TYPES[x]` exists.
+  * The sub type `unrolldt(C.TYPES[x])` is of the form `(sub y* comptype')`.
 * `comptype'*` is the concatenation of all such `comptype'`.
 * The composite type `comptype` is valid.
 * For all `comptype'` in `comptype'*`:
-   * The composite type `comptype` matches the composite type `comptype'`.
+  * The composite type `comptype` matches the composite type `comptype'`.
 
 ```text
 |x*| <= 1
@@ -238,8 +238,8 @@ The limits range `[ n .. m? ]` is valid within `k` if:
 
 * `n` is less than or equal to `k`.
 * If `m` is defined, then:
-   * `n` is less than or equal to `m`.
-   * `m` is less than or equal to `k`.
+  * `n` is less than or equal to `m`.
+  * `m` is less than or equal to `k`.
 
 ```text
 n <= k

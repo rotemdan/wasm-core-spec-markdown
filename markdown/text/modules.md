@@ -242,8 +242,7 @@ export_I ::=
 
 ### Data Segments
 
-Data segments allow for an optional memory index to identify the memory to initialize.
-The data is written as a string, which may be split up into a possibly empty sequence of individual string literals.
+Data segments allow for an optional memory index to identify the memory to initialize. The data is written as a string, which may be split up into a possibly empty sequence of individual string literals.
 
 ```text
 data_I ::=
@@ -356,13 +355,7 @@ import_I ::=
 
 #### Abbreviations
 
-As an abbreviation, imports may also be specified inline with
-tag,
-global,
-memory,
-table, or
-function
-definitions; see the respective sections.
+As an abbreviation, imports may also be specified inline with tag, global, memory, table, or function definitions; see the respective sections.
 
 ### Exports
 
@@ -382,13 +375,7 @@ externidx_I ::=
 
 #### Abbreviations
 
-As an abbreviation, exports may also be specified inline with
-tag,
-global,
-memory,
-table, or
-function
-definitions; see the respective sections.
+As an abbreviation, exports may also be specified inline with tag, global, memory, table, or function definitions; see the respective sections.
 
 ### Modules
 
