@@ -8,7 +8,7 @@ New instances of tags, globals, memories, tables, functions, data segments, and 
 
 #### Tags
 
-#### alloc_tag(s, tagtype)
+#### `alloc_tag(s, tagtype)`
 
 1. Let `taginst` be the tag instance `{ ITYPE tagtype }`.
 2. Let `a` be the length of `s.TAGS`.
@@ -22,7 +22,7 @@ alloctag(s, tagtype) = (s ⊕ { TAGS taginst }, |s.TAGS|)
 
 #### Globals
 
-#### alloc_global(s, globaltype, val)
+#### `alloc_global(s, globaltype, val)`
 
 1. Let `globalinst` be the global instance `{ ITYPE globaltype, IVALUE val }`.
 2. Let `a` be the length of `s.GLOBALS`.
@@ -36,7 +36,7 @@ allocglobal(s, globaltype, val) = (s ⊕ { GLOBALS globalinst }, |s.GLOBALS|)
 
 #### Memories
 
-#### alloc_mem(s, at [ i .. j? ] page)
+#### `alloc_mem(s, at [ i .. j? ] page)`
 
 1. Let `meminst` be the memory instance `{ ITYPE (at [ i .. j? ] page), IBYTES (0x00)^(i * 64 Ki) }`.
 2. Let `a` be the length of `s.MEMS`.
@@ -50,7 +50,7 @@ allocmem(s, at [ i .. j? ] page) = (s ⊕ { MEMS meminst }, |s.MEMS|)
 
 #### Tables
 
-#### alloc_table(s, at [ i .. j? ] rt, reff)
+#### `alloc_table(s, at [ i .. j? ] rt, reff)`
 
 1. Let `tableinst` be the table instance `{ ITYPE (at [ i .. j? ] rt), IREFS reff^i }`.
 2. Let `a` be the length of `s.TABLES`.
@@ -64,7 +64,7 @@ alloctable(s, at [ i .. j? ] rt, reff) = (s ⊕ { TABLES tableinst }, |s.TABLES|
 
 #### Functions
 
-#### alloc_func(s, deftype, funccode, moduleinst)
+#### `alloc_func(s, deftype, funccode, moduleinst)`
 
 1. Let `funcinst` be the function instance `{ ITYPE deftype, IMODULE moduleinst, ICODE funccode }`.
 2. Let `a` be the length of `s.FUNCS`.
@@ -78,7 +78,7 @@ allocfunc(s, deftype, funccode, moduleinst) = (s ⊕ { FUNCS funcinst }, |s.FUNC
 
 #### Data segments
 
-#### alloc_data(s, ok, byte*)
+#### `alloc_data(s, ok, byte*)`
 
 1. Let `datainst` be the data instance `{ IBYTES byte* }`.
 2. Let `a` be the length of `s.DATAS`.
@@ -92,7 +92,7 @@ allocdata(s, ok, byte*) = (s ⊕ { DATAS datainst }, |s.DATAS|)
 
 #### Element segments
 
-#### alloc_elem(s, elemtype, reff*)
+#### `alloc_elem(s, elemtype, reff*)`
 
 1. Let `eleminst` be the element instance `{ ITYPE elemtype, IREFS reff* }`.
 2. Let `a` be the length of `s.ELEMS`.
@@ -106,7 +106,7 @@ allocelem(s, elemtype, reff*) = (s ⊕ { ELEMS eleminst }, |s.ELEMS|)
 
 #### Growing memories
 
-#### grow_mem(meminst, n)
+#### `grow_mem(meminst, n)`
 
 1. Let `{ ITYPE (at [ i .. j? ] page), IBYTES b* }` be the destructuring of `meminst`.
 2. Let `i'` be `|b*| / (64 Ki) + n`.
@@ -128,7 +128,7 @@ growmem(meminst, n) = meminst'
 
 #### Growing tables
 
-#### grow_table(tableinst, n, r)
+#### `grow_table(tableinst, n, r)`
 
 1. Let `{ ITYPE (at [ i .. j? ] rt), IREFS r'* }` be the destructuring of `tableinst`.
 2. Let `i'` be `|r'*| + n`.
@@ -150,7 +150,7 @@ growtable(tableinst, n, r) = tableinst'
 
 #### Modules
 
-#### alloc_module(s, module, externaddr*, val_g*, reff_t*, (reff_e*)*)
+#### `alloc_module(s, module, externaddr*, val_g*, reff_t*, (reff_e*)*)`
 
 1. Let `(MODULE type* import* tag* global* mem* table* func* data* elem* start? export*)` be the destructuring of `module`.
 2. Let `aa_i*` be `tagsxa(externaddr*)`.
@@ -267,7 +267,7 @@ allocX*(s, X X'*, Y Y'*) = (s_2, a a'*)
 
 For types, however, allocation is defined in terms of rolling and substitution of all preceding types to produce a list of closed defined types:
 
-#### alloc_type*(type''*)
+#### `alloc_type*(type''*)`
 
 1. If `type''* = ε`, then:
    1. Return `ε`.
@@ -289,7 +289,7 @@ alloc_type*(type'* type) = deftype'* deftype*
 
 Finally, export instances are produced with the help of the following definition:
 
-#### alloc_export(moduleinst, EXPORT name externidx)
+#### `alloc_export(moduleinst, EXPORT name externidx)`
 
 1. If `externidx` is some `tag tagidx`, then:
    1. Let `(tag x)` be the destructuring of `externidx`.
@@ -325,7 +325,7 @@ Given a store `s`, a `module` is instantiated with a list of external addresses 
 
 Instantiation checks that the module is valid and the provided imports match the declared types, and may fail with an error otherwise. Instantiation can also result in an exception or trap when initializing a table or memory from an active segment or when executing the start function. It is up to the embedder to define how such conditions are reported.
 
-#### instantiate(s, module, externaddr*)
+#### `instantiate(s, module, externaddr*)`
 
 1. If `module` is not valid, then:
    1. Fail.
@@ -397,7 +397,7 @@ instantiate(s, module, externaddr*) = s'''' ; { AMODULE moduleinst } ; instr_e* 
 
 where:
 
-#### evalexpr*(z, expr''*)
+#### `evalexpr*(z, expr''*)`
 
 1. If `expr''* = ε`, then:
    1. Return `ε`.
@@ -413,7 +413,7 @@ evalexpr*(z, expr expr'*) = (z'', reff reff'*)
    ∧ (z'', reff'*) = evalexpr*(z', expr'*))
 ```
 
-#### evalglobal*(z, globaltype*, expr''*)
+#### `evalglobal*(z, globaltype*, expr''*)`
 
 1. If `expr''* = ε`, then:
    1. Assert: Due to validation, `globaltype* = ε`.
@@ -438,7 +438,7 @@ evalglobal*(z, gt gt'*, expr expr'*) = (z'', val val'*)
    ∧ (z'', val'*) = evalglobal*((s' ; f[.AMODULE.IGLOBALS =⊕ a]), gt'*, expr'*))
 ```
 
-#### rundata_x(DATA b^n datamode)
+#### `rundata_x(DATA b^n datamode)`
 
 1. If `datamode = dpassive`, then:
    1. Return `ε`.
@@ -446,7 +446,7 @@ evalglobal*(z, gt gt'*, expr expr'*) = (z'', val val'*)
 3. Let `(dactive y instr*)` be the destructuring of `datamode`.
 4. Return `instr* (i32.const 0) (i32.const n) (memory.init y x) (data.drop x)`.
 
-#### runelem_x(ELEM rt e^n elemmode)
+#### `runelem_x(ELEM rt e^n elemmode)`
 
 1. If `elemmode = epassive`, then:
    1. Return `ε`.
@@ -491,7 +491,7 @@ Invocation may fail with an error if the arguments do not fit the function type.
 
 > **Note:** If the embedder API performs type checks itself, either statically or dynamically, before performing an invocation, then no failure other than traps or exceptions can occur.
 
-#### invoke(s, funcaddr, val*)
+#### `invoke(s, funcaddr, val*)`
 
 1. Assert: Due to validation, the expansion of `s.FUNCS[funcaddr].FITYPE` is some `func t1* -> t2*`.
 2. Let `(func t1* -> t2*)` be the destructuring of the expansion of `s.FUNCS[funcaddr].FITYPE`.

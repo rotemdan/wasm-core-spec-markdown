@@ -13,7 +13,7 @@ For some instructions, the typing rules do not fully constrain the type, and the
 Two degrees of polymorphism can be distinguished:
 
 * *value-polymorphic*: the value type `t` of one or several individual operands is unconstrained. That is the case for all parametric instructions like `drop` and `select`.
-* *stack-polymorphic*: the entire (or most of the) instruction type `t1* -> t2*` of the instruction is unconstrained. That is the case for all control instructions that perform an unconditional control transfer, such as `br`, or `return`.
+* *stack-polymorphic*: the entire (or most of the) instruction type `t1* -> t2*` of the instruction is unconstrained. That is the case for all control instructions that perform an unconditional control transfer, such as `unreachable`, `br`, or `return`.
 
 In both cases, the unconstrained types or type sequences can be chosen arbitrarily, as long as they are valid in the current context and meet the constraints imposed for the surrounding parts of the program.
 
@@ -48,7 +48,7 @@ C |- unreachable : t1* -> t2*
 
 > **Note:** The `unreachable` instruction is stack-polymorphic.
 
-#### DROP
+#### `DROP`
 
 The instruction `drop` is valid with the instruction type `t -> ε` if:
 
@@ -62,7 +62,7 @@ C |- drop : t -> ε
 
 > **Note:** Both `drop` and `select` without annotation are value-polymorphic instructions.
 
-#### SELECT (t\*)^?
+#### `SELECT (t*)^?`
 
 The instruction `(select valtype?)` is valid with the instruction type `t t i32 -> t` if:
 
@@ -90,7 +90,7 @@ C |- select : t t i32 -> t
 
 ### Control Instructions
 
-#### BLOCK bt instr\*
+#### `BLOCK bt instr*`
 
 The instruction `(block bt instr*)` is valid with the instruction type `t1* -> t2*` if:
 
@@ -107,7 +107,7 @@ C |- block bt instr* : t1* -> t2*
 
 > **Note:** The notation `{ LABELS (t*) } ⊕ C` inserts the new label type at index `0`, shifting all others. The same applies to all other block instructions.
 
-#### LOOP bt instr\*
+#### `LOOP bt instr*`
 
 The instruction `(loop bt instr*)` is valid with the instruction type `t1* -> t2*` if:
 
@@ -122,7 +122,7 @@ C |- bt : t1* -> t2*
 C |- loop bt instr* : t1* -> t2*
 ```
 
-#### IF bt instr1\* ELSE instr2\*
+#### `IF bt instr1* ELSE instr2*`
 
 The instruction `(if bt instr1* else instr2*)` is valid with the instruction type `t1* i32 -> t2*` if:
 
@@ -139,7 +139,7 @@ C |- bt : t1* -> t2*
 C |- if bt instr1* else instr2* : t1* i32 -> t2*
 ```
 
-#### BR l
+#### `BR l`
 
 The instruction `(br l)` is valid with the instruction type `t1* t* -> t2*` if:
 
@@ -158,7 +158,7 @@ C |- br l : t1* t* -> t2*
 >
 > The `br` instruction is stack-polymorphic.
 
-#### BRIF l
+#### `BRIF l`
 
 The instruction `(br_if l)` is valid with the instruction type `t* i32 -> t*` if:
 
@@ -171,7 +171,7 @@ C.LABELS[l] = t*
 C |- br_if l : t* i32 -> t*
 ```
 
-#### BRTABLE l\* lN
+#### `BRTABLE l* lN`
 
 The instruction `(br_table l* l')` is valid with the instruction type `t1* t* i32 -> t2*` if:
 
@@ -194,7 +194,7 @@ C |- br_table l* l' : t1* t* i32 -> t2*
 >
 > Furthermore, the result type `t*` is also chosen non-deterministically in this rule. Although it may seem necessary to compute `t*` as the greatest lower bound of all label types in practice, a simple sequential algorithm does not require this.
 
-#### BRONNULL l
+#### `BRONNULL l`
 
 The instruction `(br_on_null l)` is valid with the instruction type `t* (ref null ht) -> t* (ref ht)` if:
 
@@ -209,7 +209,7 @@ C |- ht : OK
 C |- br_on_null l : t* (ref null ht) -> t* (ref ht)
 ```
 
-#### BRONNONNULL l
+#### `BRONNONNULL l`
 
 The instruction `(br_on_non_null l)` is valid with the instruction type `t* (ref null ht) -> t*` if:
 
@@ -222,7 +222,7 @@ C.LABELS[l] = t* (ref null^? ht)
 C |- br_on_non_null l : t* (ref null ht) -> t*
 ```
 
-#### BRONCAST l rt1 rt2
+#### `BRONCAST l rt1 rt2`
 
 The instruction `(br_on_cast l rt1 rt2)` is valid with the instruction type `t* rt1 -> t* reftype` if:
 
@@ -244,7 +244,7 @@ C |- rt2 <: rt
 C |- br_on_cast l rt1 rt2 : t* rt1 -> t* (rt1 reftypediff rt2)
 ```
 
-#### BRONCASTFAIL l rt1 rt2
+#### `BRONCASTFAIL l rt1 rt2`
 
 The instruction `(br_on_cast_fail l rt1 rt2)` is valid with the instruction type `t* rt1 -> t* rt2` if:
 
@@ -265,7 +265,7 @@ C |- rt1 reftypediff rt2 <: rt
 C |- br_on_cast_fail l rt1 rt2 : t* rt1 -> t* rt2
 ```
 
-#### CALL x
+#### `CALL x`
 
 The instruction `(call x)` is valid with the instruction type `t1* -> t2*` if:
 
@@ -278,7 +278,7 @@ C.FUNCS[x] ≈ func t1* -> t2*
 C |- call x : t1* -> t2*
 ```
 
-#### CALLREF x
+#### `CALLREF x`
 
 The instruction `(call_ref x)` is valid with the instruction type `t1* (ref null x) -> t2*` if:
 
@@ -291,7 +291,7 @@ C.TYPES[x] ≈ func t1* -> t2*
 C |- call_ref x : t1* (ref null x) -> t2*
 ```
 
-#### CALLINDIRECT x y
+#### `CALLINDIRECT x y`
 
 The instruction `(call_indirect x y)` is valid with the instruction type `t1* at -> t2*` if:
 
@@ -309,7 +309,7 @@ C.TYPES[y] ≈ func t1* -> t2*
 C |- call_indirect x y : t1* at -> t2*
 ```
 
-#### RETURN
+#### `RETURN`
 
 The instruction `return` is valid with the instruction type `t1* t* -> t2*` if:
 
@@ -327,7 +327,7 @@ C |- return : t1* t* -> t2*
 >
 > `C.RETURN` is absent (set to `ε`) when validating an expression that is not a function body. This differs from it being set to the empty result type `[ε]`, which is the case for functions not returning anything.
 
-#### RETURNCALL x
+#### `RETURNCALL x`
 
 The instruction `(return_call x)` is valid with the instruction type `t3* t1* -> t4*` if:
 
@@ -348,7 +348,7 @@ C |- return_call x : t3* t1* -> t4*
 
 > **Note:** The `return_call` instruction is stack-polymorphic.
 
-#### RETURNCALLREF x
+#### `RETURNCALLREF x`
 
 The instruction `(return_call_ref x)` is valid with the instruction type `t3* t1* (ref null x) -> t4*` if:
 
@@ -369,7 +369,7 @@ C |- return_call_ref x : t3* t1* (ref null x) -> t4*
 
 > **Note:** The `return_call_ref` instruction is stack-polymorphic.
 
-#### RETURNCALLINDIRECT x y
+#### `RETURNCALLINDIRECT x y`
 
 The instruction `(return_call_indirect x y)` is valid with the instruction type `t3* t1* at -> t4*` if:
 
@@ -395,7 +395,7 @@ C |- return_call_indirect x y : t3* t1* at -> t4*
 
 > **Note:** The `return_call_indirect` instruction is stack-polymorphic.
 
-#### THROW x
+#### `THROW x`
 
 The instruction `(throw x)` is valid with the instruction type `t1* t* -> t2*` if:
 
@@ -412,7 +412,7 @@ C |- throw x : t1* t* -> t2*
 
 > **Note:** The `throw` instruction is stack-polymorphic.
 
-#### THROWREF
+#### `THROWREF`
 
 The instruction `throw_ref` is valid with the instruction type `t1* (ref null exn) -> t2*` if:
 
@@ -426,7 +426,7 @@ C |- throw_ref : t1* (ref null exn) -> t2*
 
 > **Note:** The `throw_ref` instruction is stack-polymorphic.
 
-#### TRYTABLE bt catch\* instr\*
+#### `TRYTABLE bt catch* instr*`
 
 The instruction `(try_table bt catch* instr*)` is valid with the instruction type `t1* -> t2*` if:
 
@@ -444,7 +444,7 @@ C |- bt : t1* -> t2*
 C |- try_table bt catch* instr* : t1* -> t2*
 ```
 
-#### CATCH x l
+#### `CATCH x l`
 
 The catch clause `(catch x l)` is valid if:
 
@@ -460,7 +460,7 @@ C |- t* <: C.LABELS[l]
 C |- catch x l : OK
 ```
 
-#### CATCHREF x l
+#### `CATCHREF x l`
 
 The catch clause `(catch_ref x l)` is valid if:
 
@@ -476,7 +476,7 @@ C |- t* (ref exn) <: C.LABELS[l]
 C |- catch_ref x l : OK
 ```
 
-#### CATCHALL l
+#### `CATCHALL l`
 
 The catch clause `(catch_all l)` is valid if:
 
@@ -489,7 +489,7 @@ C |- ε <: C.LABELS[l]
 C |- catch_all l : OK
 ```
 
-#### CATCHALLREF l
+#### `CATCHALLREF l`
 
 The catch clause `(catch_all_ref l)` is valid if:
 
@@ -504,7 +504,7 @@ C |- catch_all_ref l : OK
 
 ### Variable Instructions
 
-#### LOCALGET x
+#### `LOCALGET x`
 
 The instruction `(local.get x)` is valid with the instruction type `ε -> t` if:
 
@@ -517,7 +517,7 @@ C.LOCALS[x] = set t
 C |- local.get x : ε -> t
 ```
 
-#### LOCALSET x
+#### `LOCALSET x`
 
 The instruction `(local.set x)` is valid with the instruction type `t ->_{x} ε` if:
 
@@ -530,7 +530,7 @@ C.LOCALS[x] = init t
 C |- local.set x : t ->_{x} ε
 ```
 
-#### LOCALTEE x
+#### `LOCALTEE x`
 
 The instruction `(local.tee x)` is valid with the instruction type `t ->_{x} t` if:
 
@@ -543,7 +543,7 @@ C.LOCALS[x] = init t
 C |- local.tee x : t ->_{x} t
 ```
 
-#### GLOBALGET x
+#### `GLOBALGET x`
 
 The instruction `(global.get x)` is valid with the instruction type `ε -> t` if:
 
@@ -556,7 +556,7 @@ C.GLOBALS[x] = mut? t
 C |- global.get x : ε -> t
 ```
 
-#### GLOBALSET x
+#### `GLOBALSET x`
 
 The instruction `(global.set x)` is valid with the instruction type `t -> ε` if:
 
@@ -571,7 +571,7 @@ C |- global.set x : t -> ε
 
 ### Table Instructions
 
-#### TABLEGET x
+#### `TABLEGET x`
 
 The instruction `(table.get x)` is valid with the instruction type `at -> rt` if:
 
@@ -584,7 +584,7 @@ C.TABLES[x] = at lim rt
 C |- table.get x : at -> rt
 ```
 
-#### TABLESET x
+#### `TABLESET x`
 
 The instruction `(table.set x)` is valid with the instruction type `at rt -> ε` if:
 
@@ -597,7 +597,7 @@ C.TABLES[x] = at lim rt
 C |- table.set x : at rt -> ε
 ```
 
-#### TABLESIZE x
+#### `TABLESIZE x`
 
 The instruction `(table.size x)` is valid with the instruction type `ε -> at` if:
 
@@ -610,7 +610,7 @@ C.TABLES[x] = at lim rt
 C |- table.size x : ε -> at
 ```
 
-#### TABLEGROW x
+#### `TABLEGROW x`
 
 The instruction `(table.grow x)` is valid with the instruction type `rt at -> at` if:
 
@@ -623,7 +623,7 @@ C.TABLES[x] = at lim rt
 C |- table.grow x : rt at -> at
 ```
 
-#### TABLEFILL x
+#### `TABLEFILL x`
 
 The instruction `(table.fill x)` is valid with the instruction type `at rt at -> ε` if:
 
@@ -636,7 +636,7 @@ C.TABLES[x] = at lim rt
 C |- table.fill x : at rt at -> ε
 ```
 
-#### TABLECOPY x y
+#### `TABLECOPY x y`
 
 The instruction `(table.copy x1 x2)` is valid with the instruction type `at1 at2 addrtype -> ε` if:
 
@@ -655,7 +655,7 @@ C |- rt2 <: rt1
 C |- table.copy x1 x2 : at1 at2 addrtypemin(at1, at2) -> ε
 ```
 
-#### TABLEINIT x y
+#### `TABLEINIT x y`
 
 The instruction `(table.init x y)` is valid with the instruction type `at i32 i32 -> ε` if:
 
@@ -673,7 +673,7 @@ C |- rt2 <: rt1
 C |- table.init x y : at i32 i32 -> ε
 ```
 
-#### ELEMDROP x
+#### `ELEMDROP x`
 
 The instruction `(elem.drop x)` is valid with the instruction type `ε -> ε` if:
 
@@ -689,7 +689,7 @@ C |- elem.drop x : ε -> ε
 
 Memory instructions use memory arguments, which are classified by the address type and the bit width of the access they are suitable for.
 
-#### memarg
+#### `memarg`
 
 `{ align n, offset m }` is valid for `at` and `N` if:
 
@@ -703,7 +703,7 @@ m < 2^|at|
 |- { align n, offset m } : at -> N
 ```
 
-#### t.LOAD x memarg
+#### `t.LOAD x memarg`
 
 The instruction `(nt.LOAD x memarg)` is valid with the instruction type `at -> nt` if:
 
@@ -718,7 +718,7 @@ C.MEMS[x] = at lim page
 C |- nt.LOAD x memarg : at -> nt
 ```
 
-#### t.LOAD{N}\_sx x memarg
+#### `t.LOAD{N}_sx x memarg`
 
 The instruction `(ntN.LOAD K_sx x memarg)` is valid with the instruction type `at -> ntN` if:
 
@@ -733,7 +733,7 @@ C.MEMS[x] = at lim page
 C |- ntN.LOAD K_sx x memarg : at -> ntN
 ```
 
-#### t.STORE x memarg
+#### `t.STORE x memarg`
 
 The instruction `(nt.STORE x memarg)` is valid with the instruction type `at nt -> ε` if:
 
@@ -748,7 +748,7 @@ C.MEMS[x] = at lim page
 C |- nt.STORE x memarg : at nt -> ε
 ```
 
-#### t.STORE{N} x memarg
+#### `t.STORE{N} x memarg`
 
 The instruction `(ntN.STORE K x memarg)` is valid with the instruction type `at ntN -> ε` if:
 
@@ -763,7 +763,7 @@ C.MEMS[x] = at lim page
 C |- ntN.STORE K x memarg : at ntN -> ε
 ```
 
-#### v128.LOAD x memarg
+#### `v128.LOAD x memarg`
 
 The instruction `(v128.LOAD x memarg)` is valid with the instruction type `at -> v128` if:
 
@@ -778,7 +778,7 @@ C.MEMS[x] = at lim page
 C |- v128.LOAD x memarg : at -> v128
 ```
 
-#### v128.LOAD{N}xM\_sx x memarg
+#### `v128.LOAD{N}xM_sx x memarg`
 
 The instruction `(v128.LOAD NshapeM_sx x memarg)` is valid with the instruction type `at -> v128` if:
 
@@ -793,7 +793,7 @@ C.MEMS[x] = at lim page
 C |- v128.LOAD NshapeM_sx x memarg : at -> v128
 ```
 
-#### v128.LOAD{N}\_splat x memarg
+#### `v128.LOAD{N}_splat x memarg`
 
 The instruction `(v128.LOAD N_splat x memarg)` is valid with the instruction type `at -> v128` if:
 
@@ -808,7 +808,7 @@ C.MEMS[x] = at lim page
 C |- v128.LOAD N_splat x memarg : at -> v128
 ```
 
-#### v128.LOAD{N}\_zero x memarg
+#### `v128.LOAD{N}_zero x memarg`
 
 The instruction `(v128.LOAD N_zero x memarg)` is valid with the instruction type `at -> v128` if:
 
@@ -823,7 +823,7 @@ C.MEMS[x] = at lim page
 C |- v128.LOAD N_zero x memarg : at -> v128
 ```
 
-#### v128.LOAD{N}\_lane x memarg laneidx
+#### `v128.LOAD{N}_lane x memarg laneidx`
 
 The instruction `(v128.LOAD N_lane x memarg i)` is valid with the instruction type `at v128 -> v128` if:
 
@@ -840,7 +840,7 @@ i < 128 / N
 C |- v128.LOAD N_lane x memarg i : at v128 -> v128
 ```
 
-#### v128.STORE x memarg
+#### `v128.STORE x memarg`
 
 The instruction `(v128.STORE x memarg)` is valid with the instruction type `at v128 -> ε` if:
 
@@ -855,7 +855,7 @@ C.MEMS[x] = at lim page
 C |- v128.STORE x memarg : at v128 -> ε
 ```
 
-#### v128.STORE{N}\_lane x memarg laneidx
+#### `v128.STORE{N}_lane x memarg laneidx`
 
 The instruction `(v128.STORE N_lane x memarg i)` is valid with the instruction type `at v128 -> ε` if:
 
@@ -872,7 +872,7 @@ i < 128 / N
 C |- v128.STORE N_lane x memarg i : at v128 -> ε
 ```
 
-#### MEMORYSIZE x
+#### `MEMORYSIZE x`
 
 The instruction `(memory.size x)` is valid with the instruction type `ε -> at` if:
 
@@ -885,7 +885,7 @@ C.MEMS[x] = at lim page
 C |- memory.size x : ε -> at
 ```
 
-#### MEMORYGROW x
+#### `MEMORYGROW x`
 
 The instruction `(memory.grow x)` is valid with the instruction type `at -> at` if:
 
@@ -898,7 +898,7 @@ C.MEMS[x] = at lim page
 C |- memory.grow x : at -> at
 ```
 
-#### MEMORYFILL x
+#### `MEMORYFILL x`
 
 The instruction `(memory.fill x)` is valid with the instruction type `at i32 at -> ε` if:
 
@@ -911,7 +911,7 @@ C.MEMS[x] = at lim page
 C |- memory.fill x : at i32 at -> ε
 ```
 
-#### MEMORYCOPY x y
+#### `MEMORYCOPY x y`
 
 The instruction `(memory.copy x1 x2)` is valid with the instruction type `at1 at2 addrtype -> ε` if:
 
@@ -928,7 +928,7 @@ C.MEMS[x2] = at2 lim2 page
 C |- memory.copy x1 x2 : at1 at2 addrtypemin(at1, at2) -> ε
 ```
 
-#### MEMORYINIT x y
+#### `MEMORYINIT x y`
 
 The instruction `(memory.init x y)` is valid with the instruction type `at i32 i32 -> ε` if:
 
@@ -944,7 +944,7 @@ C.DATAS[y] = OK
 C |- memory.init x y : at i32 i32 -> ε
 ```
 
-#### DATADROP x
+#### `DATADROP x`
 
 The instruction `(data.drop x)` is valid with the instruction type `ε -> ε` if:
 
@@ -959,7 +959,7 @@ C |- data.drop x : ε -> ε
 
 ### Reference Instructions
 
-#### REFNULL ht
+#### `REFNULL ht`
 
 The instruction `(ref.null ht)` is valid with the instruction type `ε -> (ref null ht)` if:
 
@@ -971,7 +971,7 @@ C |- ht : OK
 C |- ref.null ht : ε -> (ref null ht)
 ```
 
-#### REFFUNC x
+#### `REFFUNC x`
 
 The instruction `(ref.func x)` is valid with the instruction type `ε -> (ref dt)` if:
 
@@ -986,7 +986,7 @@ x ∈ C.REFS
 C |- ref.func x : ε -> (ref dt)
 ```
 
-#### REFISNULL
+#### `REFISNULL`
 
 The instruction `ref.is_null` is valid with the instruction type `(ref null ht) -> i32` if:
 
@@ -998,7 +998,7 @@ C |- ht : OK
 C |- ref.is_null : (ref null ht) -> i32
 ```
 
-#### REFASNONNULL
+#### `REFASNONNULL`
 
 The instruction `ref.as_non_null` is valid with the instruction type `(ref null ht) -> (ref ht)` if:
 
@@ -1010,7 +1010,7 @@ C |- ht : OK
 C |- ref.as_non_null : (ref null ht) -> (ref ht)
 ```
 
-#### REFEQ
+#### `REFEQ`
 
 The instruction `ref.eq` is valid with the instruction type `(ref null eq) (ref null eq) -> i32`.
 
@@ -1019,7 +1019,7 @@ The instruction `ref.eq` is valid with the instruction type `(ref null eq) (ref 
 C |- ref.eq : (ref null eq) (ref null eq) -> i32
 ```
 
-#### REFTEST rt
+#### `REFTEST rt`
 
 The instruction `(ref.test rt)` is valid with the instruction type `rt' -> i32` if:
 
@@ -1037,7 +1037,7 @@ C |- ref.test rt : rt' -> i32
 
 > **Note:** The liberty to pick a supertype `rt'` allows typing the instruction with the least precise super type of `rt` as input, that is, the top type in the corresponding heap subtyping hierarchy.
 
-#### REFCAST rt
+#### `REFCAST rt`
 
 The instruction `(ref.cast rt)` is valid with the instruction type `rt' -> rt` if:
 
@@ -1057,7 +1057,7 @@ C |- ref.cast rt : rt' -> rt
 
 ### Aggregate Reference Instructions
 
-#### STRUCTNEW x
+#### `STRUCTNEW x`
 
 The instruction `(struct.new x)` is valid with the instruction type `t* -> (ref x)` if:
 
@@ -1071,7 +1071,7 @@ C.TYPES[x] ≈ struct (mut? zt)*
 C |- struct.new x : unpack(zt)* -> (ref x)
 ```
 
-#### STRUCTNEWDEFAULT x
+#### `STRUCTNEWDEFAULT x`
 
 The instruction `(struct.new_default x)` is valid with the instruction type `ε -> (ref x)` if:
 
@@ -1087,7 +1087,7 @@ C.TYPES[x] ≈ struct (mut? zt)*
 C |- struct.new_default x : ε -> (ref x)
 ```
 
-#### STRUCTGET \_sx^? x y
+#### `STRUCTGET _sx^? x y`
 
 The instruction `(struct.get_sx^? x i)` is valid with the instruction type `(ref null x) -> t` if:
 
@@ -1106,7 +1106,7 @@ sx^? ≠ ε ⇔ zt ≠ unpack(zt)
 C |- struct.get_sx^? x i : (ref null x) -> unpack(zt)
 ```
 
-#### STRUCTSET x y
+#### `STRUCTSET x y`
 
 The instruction `(struct.set x i)` is valid with the instruction type `(ref null x) t -> ε` if:
 
@@ -1123,7 +1123,7 @@ ft*[i] = mut zt
 C |- struct.set x i : (ref null x) unpack(zt) -> ε
 ```
 
-#### ARRAYNEW x
+#### `ARRAYNEW x`
 
 The instruction `(array.new x)` is valid with the instruction type `t i32 -> (ref x)` if:
 
@@ -1137,7 +1137,7 @@ C.TYPES[x] ≈ array (mut? zt)
 C |- array.new x : unpack(zt) i32 -> (ref x)
 ```
 
-#### ARRAYNEWDEFAULT x
+#### `ARRAYNEWDEFAULT x`
 
 The instruction `(array.new_default x)` is valid with the instruction type `i32 -> (ref x)` if:
 
@@ -1152,7 +1152,7 @@ default_unpack(zt) ≠ ε
 C |- array.new_default x : i32 -> (ref x)
 ```
 
-#### ARRAYNEWFIXED x n
+#### `ARRAYNEWFIXED x n`
 
 The instruction `(array.new_fixed x n)` is valid with the instruction type `t^n -> (ref x)` if:
 
@@ -1166,7 +1166,7 @@ C.TYPES[x] ≈ array (mut? zt)
 C |- array.new_fixed x n : unpack(zt)^n -> (ref x)
 ```
 
-#### ARRAYNEWELEM x y
+#### `ARRAYNEWELEM x y`
 
 The instruction `(array.new_elem x y)` is valid with the instruction type `i32 i32 -> (ref x)` if:
 
@@ -1182,7 +1182,7 @@ C |- C.ELEMS[y] <: rt
 C |- array.new_elem x y : i32 i32 -> (ref x)
 ```
 
-#### ARRAYNEWDATA x y
+#### `ARRAYNEWDATA x y`
 
 The instruction `(array.new_data x y)` is valid with the instruction type `i32 i32 -> (ref x)` if:
 
@@ -1200,7 +1200,7 @@ C.DATAS[y] = OK
 C |- array.new_data x y : i32 i32 -> (ref x)
 ```
 
-#### ARRAYGET \_sx^? x
+#### `ARRAYGET _sx^? x`
 
 The instruction `(array.get_sx^? x)` is valid with the instruction type `(ref null x) i32 -> t` if:
 
@@ -1216,7 +1216,7 @@ sx^? ≠ ε ⇔ zt ≠ unpack(zt)
 C |- array.get_sx^? x : (ref null x) i32 -> unpack(zt)
 ```
 
-#### ARRAYSET x
+#### `ARRAYSET x`
 
 The instruction `(array.set x)` is valid with the instruction type `(ref null x) i32 t -> ε` if:
 
@@ -1230,7 +1230,7 @@ C.TYPES[x] ≈ array (mut zt)
 C |- array.set x : (ref null x) i32 unpack(zt) -> ε
 ```
 
-#### ARRAYLEN
+#### `ARRAYLEN`
 
 The instruction `array.len` is valid with the instruction type `(ref null array) -> i32`.
 
@@ -1239,7 +1239,7 @@ The instruction `array.len` is valid with the instruction type `(ref null array)
 C |- array.len : (ref null array) -> i32
 ```
 
-#### ARRAYFILL x
+#### `ARRAYFILL x`
 
 The instruction `(array.fill x)` is valid with the instruction type `(ref null x) i32 t i32 -> ε` if:
 
@@ -1253,7 +1253,7 @@ C.TYPES[x] ≈ array (mut zt)
 C |- array.fill x : (ref null x) i32 unpack(zt) i32 -> ε
 ```
 
-#### ARRAYCOPY x y
+#### `ARRAYCOPY x y`
 
 The instruction `(array.copy x1 x2)` is valid with the instruction type `(ref null x1) i32 (ref null x2) i32 i32 -> ε` if:
 
@@ -1271,7 +1271,7 @@ C |- zt2 <: zt1
 C |- array.copy x1 x2 : (ref null x1) i32 (ref null x2) i32 i32 -> ε
 ```
 
-#### ARRAYINITELEM x y
+#### `ARRAYINITELEM x y`
 
 The instruction `(array.init_elem x y)` is valid with the instruction type `(ref null x) i32 i32 i32 -> ε` if:
 
@@ -1287,7 +1287,7 @@ C |- C.ELEMS[y] <: zt
 C |- array.init_elem x y : (ref null x) i32 i32 i32 -> ε
 ```
 
-#### ARRAYINITDATA x y
+#### `ARRAYINITDATA x y`
 
 The instruction `(array.init_data x y)` is valid with the instruction type `(ref null x) i32 i32 i32 -> ε` if:
 
@@ -1307,7 +1307,7 @@ C |- array.init_data x y : (ref null x) i32 i32 i32 -> ε
 
 ### Scalar Reference Instructions
 
-#### REFI31
+#### `REFI31`
 
 The instruction `ref.i31` is valid with the instruction type `i32 -> (ref i31)`.
 
@@ -1316,7 +1316,7 @@ The instruction `ref.i31` is valid with the instruction type `i32 -> (ref i31)`.
 C |- ref.i31 : i32 -> (ref i31)
 ```
 
-#### I31GET \_sx
+#### `I31GET _sx`
 
 The instruction `(i31.get_sx)` is valid with the instruction type `(ref null i31) -> i32`.
 
@@ -1327,7 +1327,7 @@ C |- i31.get_sx : (ref null i31) -> i32
 
 ### External Reference Instructions
 
-#### ANYCONVERTEXTERN
+#### `ANYCONVERTEXTERN`
 
 The instruction `any.convert_extern` is valid with the instruction type `(ref null?1 extern) -> (ref null?2 any)` if:
 
@@ -1339,7 +1339,7 @@ null?1 = null?2
 C |- any.convert_extern : (ref null?1 extern) -> (ref null?2 any)
 ```
 
-#### EXTERNCONVERTANY
+#### `EXTERNCONVERTANY`
 
 The instruction `extern.convert_any` is valid with the instruction type `(ref null?1 any) -> (ref null?2 extern)` if:
 
@@ -1353,7 +1353,7 @@ C |- extern.convert_any : (ref null?1 any) -> (ref null?2 extern)
 
 ### Numeric Instructions
 
-#### t.CONST c
+#### `t.CONST c`
 
 The instruction `(nt.CONST c_nt)` is valid with the instruction type `ε -> nt`.
 
@@ -1362,7 +1362,7 @@ The instruction `(nt.CONST c_nt)` is valid with the instruction type `ε -> nt`.
 C |- nt.CONST c_nt : ε -> nt
 ```
 
-#### t.unop
+#### `t.unop`
 
 The instruction `(nt.unop_nt)` is valid with the instruction type `nt -> nt`.
 
@@ -1371,7 +1371,7 @@ The instruction `(nt.unop_nt)` is valid with the instruction type `nt -> nt`.
 C |- nt.unop_nt : nt -> nt
 ```
 
-#### t.binop
+#### `t.binop`
 
 The instruction `(nt.binop_nt)` is valid with the instruction type `nt nt -> nt`.
 
@@ -1380,7 +1380,7 @@ The instruction `(nt.binop_nt)` is valid with the instruction type `nt nt -> nt`
 C |- nt.binop_nt : nt nt -> nt
 ```
 
-#### t.testop
+#### `t.testop`
 
 The instruction `(nt.testop_nt)` is valid with the instruction type `nt -> i32`.
 
@@ -1389,7 +1389,7 @@ The instruction `(nt.testop_nt)` is valid with the instruction type `nt -> i32`.
 C |- nt.testop_nt : nt -> i32
 ```
 
-#### t.relop
+#### `t.relop`
 
 The instruction `(nt.relop_nt)` is valid with the instruction type `nt nt -> i32`.
 
@@ -1398,7 +1398,7 @@ The instruction `(nt.relop_nt)` is valid with the instruction type `nt nt -> i32
 C |- nt.relop_nt : nt nt -> i32
 ```
 
-#### t1.cvtop\_t2\_sx^?
+#### `t1.cvtop_t2_sx^?`
 
 The instruction `(nt1.cvtop_nt2)` is valid with the instruction type `nt2 -> nt1`.
 
@@ -1415,7 +1415,7 @@ Vector instructions can have a prefix to describe the shape of the operand. Pack
 unpack(ntN shape M) = unpack(ntN)
 ```
 
-#### V128.VCONST c
+#### `V128.VCONST c`
 
 The instruction `(v128.const c)` is valid with the instruction type `ε -> v128`.
 
@@ -1424,7 +1424,7 @@ The instruction `(v128.const c)` is valid with the instruction type `ε -> v128`
 C |- v128.const c : ε -> v128
 ```
 
-#### V128.vvunop
+#### `V128.vvunop`
 
 The instruction `(v128.vvunop)` is valid with the instruction type `v128 -> v128`.
 
@@ -1433,7 +1433,7 @@ The instruction `(v128.vvunop)` is valid with the instruction type `v128 -> v128
 C |- v128.vvunop : v128 -> v128
 ```
 
-#### V128.vvbinop
+#### `V128.vvbinop`
 
 The instruction `(v128.vvbinop)` is valid with the instruction type `v128 v128 -> v128`.
 
@@ -1442,7 +1442,7 @@ The instruction `(v128.vvbinop)` is valid with the instruction type `v128 v128 -
 C |- v128.vvbinop : v128 v128 -> v128
 ```
 
-#### V128.vvternop
+#### `V128.vvternop`
 
 The instruction `(v128.vvternop)` is valid with the instruction type `v128 v128 v128 -> v128`.
 
@@ -1451,7 +1451,7 @@ The instruction `(v128.vvternop)` is valid with the instruction type `v128 v128 
 C |- v128.vvternop : v128 v128 v128 -> v128
 ```
 
-#### V128.vvtestop
+#### `V128.vvtestop`
 
 The instruction `(v128.vvtestop)` is valid with the instruction type `v128 -> i32`.
 
@@ -1460,7 +1460,7 @@ The instruction `(v128.vvtestop)` is valid with the instruction type `v128 -> i3
 C |- v128.vvtestop : v128 -> i32
 ```
 
-#### shape.vunop
+#### `shape.vunop`
 
 The instruction `(sh.vunop)` is valid with the instruction type `v128 -> v128`.
 
@@ -1469,7 +1469,7 @@ The instruction `(sh.vunop)` is valid with the instruction type `v128 -> v128`.
 C |- sh.vunop : v128 -> v128
 ```
 
-#### shape.vbinop
+#### `shape.vbinop`
 
 The instruction `(sh.vbinop)` is valid with the instruction type `v128 v128 -> v128`.
 
@@ -1478,7 +1478,7 @@ The instruction `(sh.vbinop)` is valid with the instruction type `v128 v128 -> v
 C |- sh.vbinop : v128 v128 -> v128
 ```
 
-#### shape.vternop
+#### `shape.vternop`
 
 The instruction `(sh.vternop)` is valid with the instruction type `v128 v128 v128 -> v128`.
 
@@ -1487,7 +1487,7 @@ The instruction `(sh.vternop)` is valid with the instruction type `v128 v128 v12
 C |- sh.vternop : v128 v128 v128 -> v128
 ```
 
-#### shape.vtestop
+#### `shape.vtestop`
 
 The instruction `(sh.vtestop)` is valid with the instruction type `v128 -> i32`.
 
@@ -1496,7 +1496,7 @@ The instruction `(sh.vtestop)` is valid with the instruction type `v128 -> i32`.
 C |- sh.vtestop : v128 -> i32
 ```
 
-#### ishape.vishiftop
+#### `ishape.vishiftop`
 
 The instruction `(sh.vishiftop)` is valid with the instruction type `v128 i32 -> v128`.
 
@@ -1505,7 +1505,7 @@ The instruction `(sh.vishiftop)` is valid with the instruction type `v128 i32 ->
 C |- sh.vishiftop : v128 i32 -> v128
 ```
 
-#### ishape.VBITMASK
+#### `ishape.VBITMASK`
 
 The instruction `(sh.bitmask)` is valid with the instruction type `v128 -> i32`.
 
@@ -1514,16 +1514,16 @@ The instruction `(sh.bitmask)` is valid with the instruction type `v128 -> i32`.
 C |- sh.bitmask : v128 -> i32
 ```
 
-#### i8x16.vswizzlop
+#### `i8x16.vswizzlop`
 
-The instruction `(sh.vswizzle)` is valid with the instruction type `v128 v128 -> v128`.
+The instruction `(sh.vswizzlop)` is valid with the instruction type `v128 v128 -> v128`.
 
 ```text
 ──────────────────────────────
-C |- sh.vswizzle : v128 v128 -> v128
+C |- sh.vswizzlop : v128 v128 -> v128
 ```
 
-#### i8x16.VSHUFFLE laneidx^16
+#### `i8x16.VSHUFFLE laneidx^16`
 
 The instruction `(sh.shuffle i*)` is valid with the instruction type `v128 v128 -> v128` if:
 
@@ -1536,7 +1536,7 @@ The instruction `(sh.shuffle i*)` is valid with the instruction type `v128 v128 
 C |- sh.shuffle i* : v128 v128 -> v128
 ```
 
-#### shape.VSPLAT
+#### `shape.VSPLAT`
 
 The instruction `(sh.splat)` is valid with the instruction type `numtype -> v128` if:
 
@@ -1547,7 +1547,7 @@ The instruction `(sh.splat)` is valid with the instruction type `numtype -> v128
 C |- sh.splat : unpack(sh) -> v128
 ```
 
-#### shape.VEXTRACTLANE \_sx^? laneidx
+#### `shape.VEXTRACTLANE _sx^? laneidx`
 
 The instruction `(sh.extract_lane_sx^? i)` is valid with the instruction type `v128 -> numtype` if:
 
@@ -1560,7 +1560,7 @@ i < shdim(sh)
 C |- sh.extract_lane_sx^? i : v128 -> unpack(sh)
 ```
 
-#### shape.VREPLACELANE laneidx
+#### `shape.VREPLACELANE laneidx`
 
 The instruction `(sh.replace_lane i)` is valid with the instruction type `v128 numtype -> v128` if:
 
@@ -1573,7 +1573,7 @@ i < shdim(sh)
 C |- sh.replace_lane i : v128 unpack(sh) -> v128
 ```
 
-#### ishape1.vextunop\_ishape2
+#### `ishape1.vextunop_ishape2`
 
 The instruction `(sh1.vextunop_sh2)` is valid with the instruction type `v128 -> v128`.
 
@@ -1582,7 +1582,7 @@ The instruction `(sh1.vextunop_sh2)` is valid with the instruction type `v128 ->
 C |- sh1.vextunop_sh2 : v128 -> v128
 ```
 
-#### ishape1.vextbinop\_ishape2
+#### `ishape1.vextbinop_ishape2`
 
 The instruction `(sh1.vextbinop_sh2)` is valid with the instruction type `v128 v128 -> v128`.
 
@@ -1591,7 +1591,7 @@ The instruction `(sh1.vextbinop_sh2)` is valid with the instruction type `v128 v
 C |- sh1.vextbinop_sh2 : v128 v128 -> v128
 ```
 
-#### ishape1.vextternop\_ishape2
+#### `ishape1.vextternop_ishape2`
 
 The instruction `(sh1.vextternop_sh2)` is valid with the instruction type `v128 v128 v128 -> v128`.
 
@@ -1600,7 +1600,7 @@ The instruction `(sh1.vextternop_sh2)` is valid with the instruction type `v128 
 C |- sh1.vextternop_sh2 : v128 v128 v128 -> v128
 ```
 
-#### ishape1.VNARROW\_ishape2\_sx
+#### `ishape1.VNARROW_ishape2_sx`
 
 The instruction `(sh1.narrow_sh2_sx)` is valid with the instruction type `v128 v128 -> v128`.
 
@@ -1609,7 +1609,7 @@ The instruction `(sh1.narrow_sh2_sx)` is valid with the instruction type `v128 v
 C |- sh1.narrow_sh2_sx : v128 v128 -> v128
 ```
 
-#### shape.vcvtop\_half^?\_shape\_sx^?\_zero^?
+#### `shape.vcvtop_half^?_shape_sx^?_zero^?`
 
 The instruction `(sh1.vcvtop_sh2)` is valid with the instruction type `v128 -> v128`.
 
@@ -1667,8 +1667,6 @@ C[.LOCAL[x1*] = (set t)*] |- instr2* : t2* ->_{x2*} t3*
 C |- instr1* instr2* : t1* ->_{x1* x2*} t3*
 ```
 
-> **Note:** This *subsumption rule* allows to weaken the type of an instruction sequence to a supertype, which includes the ability to drop init variables `x*` from the instruction type in a context where they are not needed, for example, at the end of the body of a block.
-
 ```text
 C |- instr* : it
 C |- it <: it'
@@ -1676,6 +1674,8 @@ C |- it' : OK
 ────────────────────────────────────────────
 C |- instr* : it'
 ```
+
+> **Note:** This *subsumption rule* allows to weaken the type of an instruction sequence to a supertype, which includes the ability to drop init variables `x*` from the instruction type in a context where they are not needed, for example, at the end of the body of a block.
 
 ```text
 C |- instr* : t1* ->_{x*} t2*

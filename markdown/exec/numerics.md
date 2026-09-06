@@ -178,7 +178,7 @@ tobool(C) = 0  (otherwise)
 iadd_N(i1, i2) = (i1 + i2) mod 2^N
 ```
 
-#### isub_N(i1, i2)
+#### `isub_N(i1, i2)`
 
 * Return the result of subtracting `i2` from `i1` modulo `2^N`.
 
@@ -186,7 +186,7 @@ iadd_N(i1, i2) = (i1 + i2) mod 2^N
 isub_N(i1, i2) = (i1 - i2 + 2^N) mod 2^N
 ```
 
-#### imul_N(i1, i2)
+#### `imul_N(i1, i2)`
 
 * Return the result of multiplying `i1` and `i2` modulo `2^N`.
 
@@ -194,7 +194,7 @@ isub_N(i1, i2) = (i1 - i2 + 2^N) mod 2^N
 imul_N(i1, i2) = (i1 · i2) mod 2^N
 ```
 
-#### idivu_N(i1, i2)
+#### `idivu_N(i1, i2)`
 
 * If `i2` is `0`, then the result is undefined.
 * Else, return the result of dividing `i1` by `i2`, truncated toward zero.
@@ -206,7 +206,7 @@ idivu_N(i1, i2) = truncz(i1 / i2)
 
 > **Note:** This operator is [partial](exec-op-partial).
 
-#### idivs_N(i1, i2)
+#### `idivs_N(i1, i2)`
 
 * Let `j1` be the [signed interpretation](aux-signed) of `i1`.
 * Let `j2` be the [signed interpretation](aux-signed) of `i2`.
@@ -222,7 +222,7 @@ idivs_N(i1, i2) = signed_N^{-1}(truncz(signed_N(i1) / signed_N(i2)))
 
 > **Note:** This operator is [partial](exec-op-partial). Besides division by `0`, the result of `(-2^{N-1})/(-1) = +2^{N-1}` is not representable as an `N`-bit signed integer.
 
-#### iremu_N(i1, i2)
+#### `iremu_N(i1, i2)`
 
 * If `i2` is `0`, then the result is undefined.
 * Else, return the remainder of dividing `i1` by `i2`.
@@ -234,7 +234,7 @@ iremu_N(i1, i2) = i1 - i2·truncz(i1 / i2)
 
 > **Note:** This operator is [partial](exec-op-partial). As long as both operators are defined, it holds that `i1 = i2·idivu(i1, i2) + iremu(i1, i2)`.
 
-#### irems_N(i1, i2)
+#### `irems_N(i1, i2)`
 
 * Let `j1` be the [signed interpretation](aux-signed) of `i1`.
 * Let `j2` be the [signed interpretation](aux-signed) of `i2`.
@@ -249,7 +249,7 @@ irems_N(i1, i2) = signed_N^{-1}(j1 - j2·truncz(j1 / j2))
 
 > **Note:** This operator is [partial](exec-op-partial). As long as both operators are defined, it holds that `i1 = i2·idivs(i1, i2) + irems(i1, i2)`.
 
-#### inot_N(i)
+#### `inot_N(i)`
 
 * Return the bitwise negation of `i`.
 
@@ -257,7 +257,7 @@ irems_N(i1, i2) = signed_N^{-1}(j1 - j2·truncz(j1 / j2))
 inot_N(i) = ibits_N^{-1}(ibits_N(i) xor ibits_N(2^N-1))
 ```
 
-#### irev_N(i)
+#### `irev_N(i)`
 
 * Return the bitwise reversal of `i`.
 
@@ -265,7 +265,7 @@ inot_N(i) = ibits_N^{-1}(ibits_N(i) xor ibits_N(2^N-1))
 irev_N(i) = ibits_N^{-1}((d^N[N-i])^{i ≤ N})   (iff d^N = ibits_N(i))
 ```
 
-#### iand_N(i1, i2)
+#### `iand_N(i1, i2)`
 
 * Return the bitwise conjunction of `i1` and `i2`.
 
@@ -273,7 +273,7 @@ irev_N(i) = ibits_N^{-1}((d^N[N-i])^{i ≤ N})   (iff d^N = ibits_N(i))
 iand_N(i1, i2) = ibits_N^{-1}(ibits_N(i1) and ibits_N(i2))
 ```
 
-#### iandnot_N(i1, i2)
+#### `iandnot_N(i1, i2)`
 
 * Return the bitwise conjunction of `i1` and the bitwise negation of `i2`.
 
@@ -281,7 +281,7 @@ iand_N(i1, i2) = ibits_N^{-1}(ibits_N(i1) and ibits_N(i2))
 iandnot_N(i1, i2) = iand_N(i1, inot_N(i2))
 ```
 
-#### ior_N(i1, i2)
+#### `ior_N(i1, i2)`
 
 * Return the bitwise disjunction of `i1` and `i2`.
 
@@ -289,7 +289,7 @@ iandnot_N(i1, i2) = iand_N(i1, inot_N(i2))
 ior_N(i1, i2) = ibits_N^{-1}(ibits_N(i1) or ibits_N(i2))
 ```
 
-#### ixor_N(i1, i2)
+#### `ixor_N(i1, i2)`
 
 * Return the bitwise exclusive disjunction of `i1` and `i2`.
 
@@ -297,7 +297,7 @@ ior_N(i1, i2) = ibits_N^{-1}(ibits_N(i1) or ibits_N(i2))
 ixor_N(i1, i2) = ibits_N^{-1}(ibits_N(i1) xor ibits_N(i2))
 ```
 
-#### ishl_N(i1, i2)
+#### `ishl_N(i1, i2)`
 
 * Let `k` be `i2` modulo `N`.
 * Return the result of shifting `i1` left by `k` bits, modulo `2^N`.
@@ -307,7 +307,7 @@ ishl_N(i1, i2) = ibits_N^{-1}(d2^{N-k} 0^k)
   (iff ibits_N(i1) = d1^k d2^{N-k} ∧ k = i2 mod N)
 ```
 
-#### ishru_N(i1, i2)
+#### `ishru_N(i1, i2)`
 
 * Let `k` be `i2` modulo `N`.
 * Return the result of shifting `i1` right by `k` bits, extended with `0` bits.
@@ -317,7 +317,7 @@ ishru_N(i1, i2) = ibits_N^{-1}(0^k d1^{N-k})
   (iff ibits_N(i1) = d1^{N-k} d2^k ∧ k = i2 mod N)
 ```
 
-#### ishrs_N(i1, i2)
+#### `ishrs_N(i1, i2)`
 
 * Let `k` be `i2` modulo `N`.
 * Return the result of shifting `i1` right by `k` bits, extended with the most significant bit of the original value.
@@ -327,7 +327,7 @@ ishrs_N(i1, i2) = ibits_N^{-1}(d0^{k+1} d1^{N-k-1})
   (iff ibits_N(i1) = d0 d1^{N-k-1} d2^k ∧ k = i2 mod N)
 ```
 
-#### irotl_N(i1, i2)
+#### `irotl_N(i1, i2)`
 
 * Let `k` be `i2` modulo `N`.
 * Return the result of rotating `i1` left by `k` bits.
@@ -337,7 +337,7 @@ irotl_N(i1, i2) = ibits_N^{-1}(d2^{N-k} d1^k)
   (iff ibits_N(i1) = d1^k d2^{N-k} ∧ k = i2 mod N)
 ```
 
-#### irotr_N(i1, i2)
+#### `irotr_N(i1, i2)`
 
 * Let `k` be `i2` modulo `N`.
 * Return the result of rotating `i1` right by `k` bits.
@@ -347,7 +347,7 @@ irotr_N(i1, i2) = ibits_N^{-1}(d2^k d1^{N-k})
   (iff ibits_N(i1) = d1^{N-k} d2^k ∧ k = i2 mod N)
 ```
 
-#### iclz_N(i)
+#### `iclz_N(i)`
 
 * Return the count of leading zero bits in `i`; all bits are considered leading zeros if `i` is `0`.
 
@@ -355,7 +355,7 @@ irotr_N(i1, i2) = ibits_N^{-1}(d2^k d1^{N-k})
 iclz_N(i) = k   (iff ibits_N(i) = 0^k (1 d*)^?)
 ```
 
-#### ictz_N(i)
+#### `ictz_N(i)`
 
 * Return the count of trailing zero bits in `i`; all bits are considered trailing zeros if `i` is `0`.
 
@@ -363,7 +363,7 @@ iclz_N(i) = k   (iff ibits_N(i) = 0^k (1 d*)^?)
 ictz_N(i) = k   (iff ibits_N(i) = (d* 1)^? 0^k)
 ```
 
-#### ipopcnt_N(i)
+#### `ipopcnt_N(i)`
 
 * Return the count of non-zero bits in `i`.
 
@@ -371,7 +371,7 @@ ictz_N(i) = k   (iff ibits_N(i) = (d* 1)^? 0^k)
 ipopcnt_N(i) = k   (iff ibits_N(i) = (0* 1)^k 0*)
 ```
 
-#### ieqz_N(i)
+#### `ieqz_N(i)`
 
 * Return `1` if `i` is zero, `0` otherwise.
 
@@ -379,7 +379,7 @@ ipopcnt_N(i) = k   (iff ibits_N(i) = (0* 1)^k 0*)
 ieqz_N(i) = tobool(i = 0)
 ```
 
-#### inez_N(i)
+#### `inez_N(i)`
 
 * Return `0` if `i` is zero, `1` otherwise.
 
@@ -387,7 +387,7 @@ ieqz_N(i) = tobool(i = 0)
 inez_N(i) = tobool(i ≠ 0)
 ```
 
-#### ieq_N(i1, i2)
+#### `ieq_N(i1, i2)`
 
 * Return `1` if `i1` equals `i2`, `0` otherwise.
 
@@ -395,7 +395,7 @@ inez_N(i) = tobool(i ≠ 0)
 ieq_N(i1, i2) = tobool(i1 = i2)
 ```
 
-#### ine_N(i1, i2)
+#### `ine_N(i1, i2)`
 
 * Return `1` if `i1` does not equal `i2`, `0` otherwise.
 
@@ -403,7 +403,7 @@ ieq_N(i1, i2) = tobool(i1 = i2)
 ine_N(i1, i2) = tobool(i1 ≠ i2)
 ```
 
-#### iltu_N(i1, i2)
+#### `iltu_N(i1, i2)`
 
 * Return `1` if `i1` is less than `i2`, `0` otherwise.
 
@@ -411,7 +411,7 @@ ine_N(i1, i2) = tobool(i1 ≠ i2)
 iltu_N(i1, i2) = tobool(i1 < i2)
 ```
 
-#### ilts_N(i1, i2)
+#### `ilts_N(i1, i2)`
 
 * Let `j1` be the [signed interpretation](aux-signed) of `i1`.
 * Let `j2` be the [signed interpretation](aux-signed) of `i2`.
@@ -421,7 +421,7 @@ iltu_N(i1, i2) = tobool(i1 < i2)
 ilts_N(i1, i2) = tobool(signed_N(i1) < signed_N(i2))
 ```
 
-#### igtu_N(i1, i2)
+#### `igtu_N(i1, i2)`
 
 * Return `1` if `i1` is greater than `i2`, `0` otherwise.
 
@@ -429,7 +429,7 @@ ilts_N(i1, i2) = tobool(signed_N(i1) < signed_N(i2))
 igtu_N(i1, i2) = tobool(i1 > i2)
 ```
 
-#### igts_N(i1, i2)
+#### `igts_N(i1, i2)`
 
 * Let `j1` be the [signed interpretation](aux-signed) of `i1`.
 * Let `j2` be the [signed interpretation](aux-signed) of `i2`.
@@ -439,7 +439,7 @@ igtu_N(i1, i2) = tobool(i1 > i2)
 igts_N(i1, i2) = tobool(signed_N(i1) > signed_N(i2))
 ```
 
-#### ileu_N(i1, i2)
+#### `ileu_N(i1, i2)`
 
 * Return `1` if `i1` is less than or equal to `i2`, `0` otherwise.
 
@@ -447,7 +447,7 @@ igts_N(i1, i2) = tobool(signed_N(i1) > signed_N(i2))
 ileu_N(i1, i2) = tobool(i1 ≤ i2)
 ```
 
-#### iles_N(i1, i2)
+#### `iles_N(i1, i2)`
 
 * Let `j1` be the [signed interpretation](aux-signed) of `i1`.
 * Let `j2` be the [signed interpretation](aux-signed) of `i2`.
@@ -457,7 +457,7 @@ ileu_N(i1, i2) = tobool(i1 ≤ i2)
 iles_N(i1, i2) = tobool(signed_N(i1) ≤ signed_N(i2))
 ```
 
-#### igeu_N(i1, i2)
+#### `igeu_N(i1, i2)`
 
 * Return `1` if `i1` is greater than or equal to `i2`, `0` otherwise.
 
@@ -465,7 +465,7 @@ iles_N(i1, i2) = tobool(signed_N(i1) ≤ signed_N(i2))
 igeu_N(i1, i2) = tobool(i1 ≥ i2)
 ```
 
-#### iges_N(i1, i2)
+#### `iges_N(i1, i2)`
 
 * Let `j1` be the [signed interpretation](aux-signed) of `i1`.
 * Let `j2` be the [signed interpretation](aux-signed) of `i2`.
@@ -475,7 +475,7 @@ igeu_N(i1, i2) = tobool(i1 ≥ i2)
 iges_N(i1, i2) = tobool(signed_N(i1) ≥ signed_N(i2))
 ```
 
-#### iextendMs_N(i)
+#### `iextendMs_N(i)`
 
 * Let `j` be the result of computing `wrap_{N,M}(i)`.
 * Return `extends_{M,N}(j)`.
@@ -484,7 +484,7 @@ iges_N(i1, i2) = tobool(signed_N(i1) ≥ signed_N(i2))
 iextendMs_N(i) = extends_{M,N}(wrap_{N,M}(i))
 ```
 
-#### ibitselect_N(i1, i2, i3)
+#### `ibitselect_N(i1, i2, i3)`
 
 * Let `j1` be the bitwise conjunction of `i1` and `i3`.
 * Let `j3'` be the bitwise negation of `i3`.
@@ -495,7 +495,7 @@ iextendMs_N(i) = extends_{M,N}(wrap_{N,M}(i))
 ibitselect_N(i1, i2, i3) = ior_N(iand_N(i1, i3), iand_N(i2, inot_N(i3)))
 ```
 
-#### iabs_N(i)
+#### `iabs_N(i)`
 
 * Let `j` be the [signed interpretation](aux-signed) of `i`.
 * If `j` is greater than or equal to `0`, then return `i`.
@@ -506,7 +506,7 @@ iabs_N(i) = i            (iff signed_N(i) ≥ 0)
 iabs_N(i) = -signed_N(i) mod 2^N   (otherwise)
 ```
 
-#### ineg_N(i)
+#### `ineg_N(i)`
 
 * Return the result of negating `i`, modulo `2^N`.
 
@@ -514,7 +514,7 @@ iabs_N(i) = -signed_N(i) mod 2^N   (otherwise)
 ineg_N(i) = (2^N - i) mod 2^N
 ```
 
-#### iminu_N(i1, i2)
+#### `iminu_N(i1, i2)`
 
 * Return `i1` if `iltu_N(i1, i2)` is `1`, return `i2` otherwise.
 
@@ -523,7 +523,7 @@ iminu_N(i1, i2) = i1   (iff iltu_N(i1, i2) = 1)
 iminu_N(i1, i2) = i2   (otherwise)
 ```
 
-#### imins_N(i1, i2)
+#### `imins_N(i1, i2)`
 
 * Return `i1` if `ilts_N(i1, i2)` is `1`, return `i2` otherwise.
 
@@ -532,7 +532,7 @@ imins_N(i1, i2) = i1   (iff ilts_N(i1, i2) = 1)
 imins_N(i1, i2) = i2   (otherwise)
 ```
 
-#### imaxu_N(i1, i2)
+#### `imaxu_N(i1, i2)`
 
 * Return `i1` if `igtu_N(i1, i2)` is `1`, return `i2` otherwise.
 
@@ -541,7 +541,7 @@ imaxu_N(i1, i2) = i1   (iff igtu_N(i1, i2) = 1)
 imaxu_N(i1, i2) = i2   (otherwise)
 ```
 
-#### imaxs_N(i1, i2)
+#### `imaxs_N(i1, i2)`
 
 * Return `i1` if `igts_N(i1, i2)` is `1`, return `i2` otherwise.
 
@@ -550,7 +550,7 @@ imaxs_N(i1, i2) = i1   (iff igts_N(i1, i2) = 1)
 imaxs_N(i1, i2) = i2   (otherwise)
 ```
 
-#### iaddsatu_N(i1, i2)
+#### `iaddsatu_N(i1, i2)`
 
 * Let `i` be the result of adding `i1` and `i2`.
 * Return `satu_N(i)`.
@@ -559,7 +559,7 @@ imaxs_N(i1, i2) = i2   (otherwise)
 iaddsatu_N(i1, i2) = satu_N(i1 + i2)
 ```
 
-#### iaddsats_N(i1, i2)
+#### `iaddsats_N(i1, i2)`
 
 * Let `j1` be the signed interpretation of `i1`.
 * Let `j2` be the signed interpretation of `i2`.
@@ -570,7 +570,7 @@ iaddsatu_N(i1, i2) = satu_N(i1 + i2)
 iaddsats_N(i1, i2) = signed_N^{-1}(sats_N(signed_N(i1) + signed_N(i2)))
 ```
 
-#### isubsatu_N(i1, i2)
+#### `isubsatu_N(i1, i2)`
 
 * Let `i` be the result of subtracting `i2` from `i1`.
 * Return `satu_N(i)`.
@@ -579,7 +579,7 @@ iaddsats_N(i1, i2) = signed_N^{-1}(sats_N(signed_N(i1) + signed_N(i2)))
 isubsatu_N(i1, i2) = satu_N(i1 - i2)
 ```
 
-#### isubsats_N(i1, i2)
+#### `isubsats_N(i1, i2)`
 
 * Let `j1` be the signed interpretation of `i1`.
 * Let `j2` be the signed interpretation of `i2`.
@@ -590,7 +590,7 @@ isubsatu_N(i1, i2) = satu_N(i1 - i2)
 isubsats_N(i1, i2) = signed_N^{-1}(sats_N(signed_N(i1) - signed_N(i2)))
 ```
 
-#### iavgru_N(i1, i2)
+#### `iavgru_N(i1, i2)`
 
 * Let `j` be the result of adding `i1`, `i2`, and `1`.
 * Return the result of dividing `j` by `2`, truncated toward zero.
@@ -599,7 +599,7 @@ isubsats_N(i1, i2) = signed_N^{-1}(sats_N(signed_N(i1) - signed_N(i2)))
 iavgru_N(i1, i2) = truncz((i1 + i2 + 1) / 2)
 ```
 
-#### iq15mulrsats_N(i1, i2)
+#### `iq15mulrsats_N(i1, i2)`
 
 * Return the whose signed interpretation is the result of `sats_N(ishrs_N(i1·i2 + 2^{14}, 15))`.
 

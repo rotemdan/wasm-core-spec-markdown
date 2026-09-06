@@ -300,7 +300,7 @@ C |- externidx : xt
 C |- export name externidx : name xt
 ```
 
-#### XXTAG x
+#### `XXTAG x`
 
 The external index `(tag x)` is valid with the external type `(tag jt)` if:
 
@@ -313,7 +313,7 @@ C.TAGS[x] = jt
 C |- tag x : tag jt
 ```
 
-#### XXGLOBAL x
+#### `XXGLOBAL x`
 
 The external index `(global x)` is valid with the external type `(global gt)` if:
 
@@ -326,7 +326,7 @@ C.GLOBALS[x] = gt
 C |- global x : global gt
 ```
 
-#### XXMEM x
+#### `XXMEM x`
 
 The external index `(mem x)` is valid with the external type `(mem mt)` if:
 
@@ -339,7 +339,7 @@ C.MEMS[x] = mt
 C |- mem x : mem mt
 ```
 
-#### XXTABLE x
+#### `XXTABLE x`
 
 The external index `(table x)` is valid with the external type `(table tt)` if:
 
@@ -352,7 +352,7 @@ C.TABLES[x] = tt
 C |- table x : table tt
 ```
 
-#### XXFUNC x
+#### `XXFUNC x`
 
 The external index `(func x)` is valid with the external type `(func dt)` if:
 

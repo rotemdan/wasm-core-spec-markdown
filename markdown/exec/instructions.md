@@ -4,7 +4,7 @@ WebAssembly computation is performed by executing individual [instructions](synt
 
 ### Parametric Instructions
 
-#### nop
+#### `nop`
 
 1. Do nothing.
 
@@ -12,7 +12,7 @@ WebAssembly computation is performed by executing individual [instructions](synt
 nop -> ε
 ```
 
-#### unreachable
+#### `unreachable`
 
 1. Trap.
 
@@ -20,7 +20,7 @@ nop -> ε
 unreachable -> trap
 ```
 
-#### drop
+#### `drop`
 
 1. Assert: Due to [validation](valid-drop), a value is on the top of the stack.
 2. Pop the value `val` from the stack.
@@ -29,7 +29,7 @@ unreachable -> trap
 val drop -> ε
 ```
 
-#### select (t*)^?
+#### `select (t*)^?`
 
 1. Assert: Due to [validation](valid-select), a value of [number type](syntax-numtype) `i32` is on the top of the stack.
 2. Pop the value `(i32.const c)` from the stack.
@@ -51,7 +51,7 @@ val1 val2 (i32.const c) (select (t*)^?) -> val2   (if c = 0)
 
 ### Control Instructions
 
-#### block bt instr*
+#### `block bt instr*`
 
 1. Let `z` be the current state.
 2. Let `t1^m ->_{localidx_0*} t2^n` be the destructuring of `fblocktype_z(bt)`.
@@ -65,7 +65,7 @@ val1 val2 (i32.const c) (select (t*)^?) -> val2   (if c = 0)
 z ; val^m (block bt instr*) -> (label_n { ε } val^m instr*)   (if fblocktype_z(bt) = t1^m -> t2^n)
 ```
 
-#### loop bt instr*
+#### `loop bt instr*`
 
 1. Let `z` be the current state.
 2. Let `t1^m ->_{localidx_0*} t2^n` be the destructuring of `fblocktype_z(bt)`.
@@ -79,7 +79,7 @@ z ; val^m (block bt instr*) -> (label_n { ε } val^m instr*)   (if fblocktype_z(
 z ; val^m (loop bt instr*) -> (label_m { loop bt instr* } val^m instr*)   (if fblocktype_z(bt) = t1^m -> t2^n)
 ```
 
-#### if bt instr1* else instr2*
+#### `if bt instr1* else instr2*`
 
 1. Assert: Due to validation, a value of [number type](syntax-numtype) `i32` is on the top of the stack.
 2. Pop the value `(i32.const c)` from the stack.
@@ -93,7 +93,7 @@ z ; val^m (loop bt instr*) -> (label_m { loop bt instr* } val^m instr*)   (if fb
 (i32.const c) (if bt instr1* else instr2*) -> (block bt instr2*)   (if c = 0)
 ```
 
-#### br l
+#### `br l`
 
 1. If the first non-value entry of the stack is a `label`, then:
    1. Let `L` be the topmost `label`.
@@ -123,7 +123,7 @@ z ; val^m (loop bt instr*) -> (label_m { loop bt instr* } val^m instr*)   (if fb
 (handler_n { catch* } val* (br l) instr*) -> val* (br l)
 ```
 
-#### br_if l
+#### `br_if l`
 
 1. Assert: Due to [validation](valid-br_if), a value of [number type](syntax-numtype) `i32` is on the top of the stack.
 2. Pop the value `(i32.const c)` from the stack.
@@ -137,7 +137,7 @@ z ; val^m (loop bt instr*) -> (label_m { loop bt instr* } val^m instr*)   (if fb
 (i32.const c) (br_if l) -> ε   (if c = 0)
 ```
 
-#### br_table l* l'
+#### `br_table l* l'`
 
 1. Assert: Due to [validation](valid-br_table), a value of [number type](syntax-numtype) `i32` is on the top of the stack.
 2. Pop the value `(i32.const i)` from the stack.
@@ -151,7 +151,7 @@ z ; val^m (loop bt instr*) -> (label_m { loop bt instr* } val^m instr*)   (if fb
 (i32.const i) (br_table l* l') -> (br l')   (if i ≥ |l*|)
 ```
 
-#### br_on_null l
+#### `br_on_null l`
 
 1. Assert: Due to [validation](valid-br_on_null), a value is on the top of the stack.
 2. Pop the value `val` from the stack.
@@ -165,7 +165,7 @@ val (br_on_null l) -> (br l)   (if val = ref.null)
 val (br_on_null l) -> val   (otherwise)
 ```
 
-#### br_on_non_null l
+#### `br_on_non_null l`
 
 1. Assert: Due to [validation](valid-br_on_non_null), a value is on the top of the stack.
 2. Pop the value `val` from the stack.
@@ -180,7 +180,7 @@ val (br_on_non_null l) -> ε   (if val = ref.null)
 val (br_on_non_null l) -> val (br l)   (otherwise)
 ```
 
-#### br_on_cast l rt1 rt2
+#### `br_on_cast l rt1 rt2`
 
 1. Let `f` be the topmost `frame`.
 2. Assert: Due to [validation](valid-br_on_cast), a [reference value](syntax-ref) is on the top of the stack.
@@ -196,7 +196,7 @@ s ; f ; reff (br_on_cast l rt1 rt2) -> reff (br l)   (if s |- reff : insttype_{f
 s ; f ; reff (br_on_cast l rt1 rt2) -> reff   (otherwise)
 ```
 
-#### br_on_cast_fail l rt1 rt2
+#### `br_on_cast_fail l rt1 rt2`
 
 1. Let `f` be the topmost `frame`.
 2. Assert: Due to [validation](valid-br_on_cast_fail), a [reference value](syntax-ref) is on the top of the stack.
@@ -212,7 +212,7 @@ s ; f ; reff (br_on_cast_fail l rt1 rt2) -> reff   (if s |- reff : insttype_{f.M
 s ; f ; reff (br_on_cast_fail l rt1 rt2) -> reff (br l)   (otherwise)
 ```
 
-#### return
+#### `return`
 
 1. If the first non-value entry of the stack is a `frame`, then:
    1. Let `f` be the topmost `frame`.
@@ -240,7 +240,7 @@ s ; f ; reff (br_on_cast_fail l rt1 rt2) -> reff (br l)   (otherwise)
 (handler_n { catch* } val* return instr*) -> val* return
 ```
 
-#### call x
+#### `call x`
 
 1. Let `z` be the current state.
 2. Assert: Due to [validation](valid-call), `x < |z.MODULE.IFUNCS|`.
@@ -253,7 +253,7 @@ s ; f ; reff (br_on_cast_fail l rt1 rt2) -> reff (br l)   (otherwise)
 z ; (call x) -> (ref.func a) (call_ref z.FUNCS[a].ITYPE)   (if z.MODULE.MIFUNCS[x] = a)
 ```
 
-#### call_ref y
+#### `call_ref y`
 
 > **Note:** The formal rule for calling a non-null function reference is described [below](exec-invoke).
 
@@ -269,7 +269,7 @@ z ; (call x) -> (ref.func a) (call_ref z.FUNCS[a].ITYPE)   (if z.MODULE.MIFUNCS[
 z ; (ref.null) (call_ref y) -> z ; trap
 ```
 
-#### call_indirect x y
+#### `call_indirect x y`
 
 1. Execute the instruction `(table.get x)`.
 2. Execute the instruction `(ref.cast (ref null y))`.
@@ -279,7 +279,7 @@ z ; (ref.null) (call_ref y) -> z ; trap
 (call_indirect x y) -> (table.get x) (ref.cast (ref null y)) (call_ref y)
 ```
 
-#### return_call x
+#### `return_call x`
 
 1. Let `z` be the current state.
 2. Assert: Due to [validation](valid-return_call), `x < |z.MODULE.IFUNCS|`.
@@ -292,7 +292,7 @@ z ; (ref.null) (call_ref y) -> z ; trap
 z ; (return_call x) -> (ref.func a) (return_call_ref z.FUNCS[a].ITYPE)   (if z.MODULE.MIFUNCS[x] = a)
 ```
 
-#### return_call_ref y
+#### `return_call_ref y`
 
 1. Let `z` be the current state.
 2. If the first non-value entry of the stack is a `label`, then:
@@ -331,7 +331,7 @@ z ; (frame_k { f } val* (ref.null) (return_call_ref y) instr*) -> trap
 z ; (frame_k { f } val'* val^n (ref.func a) (return_call_ref y) instr*) -> val^n (ref.func a) (call_ref y)   (if z.FUNCS[a].ITYPE ≈ func t1^n -> t2^m)
 ```
 
-#### return_call_indirect x y
+#### `return_call_indirect x y`
 
 1. Execute the instruction `(table.get x)`.
 2. Execute the instruction `(ref.cast (ref null y))`.
@@ -341,7 +341,7 @@ z ; (frame_k { f } val'* val^n (ref.func a) (return_call_ref y) instr*) -> val^n
 (return_call_indirect x y) -> (table.get x) (ref.cast (ref null y)) (return_call_ref y)
 ```
 
-#### throw x
+#### `throw x`
 
 1. Let `z` be the current state.
 2. Assert: Due to [validation](valid-throw), `x < |z.MODULE.TAGS|`.
@@ -363,7 +363,7 @@ z ; val^n (throw x) -> z[.EXNS =⊕ exn] ; (ref.exn a) throw_ref
    ∧ exn = { itag z.MODULE.TAGS[x], ifields val^n })
 ```
 
-#### throw_ref
+#### `throw_ref`
 
 1. Let `z` be the current state.
 2. Assert: Due to [validation](valid-throw_ref), a value is on the top of the stack.
@@ -493,7 +493,7 @@ z ; (handler_n { (catch_all_ref l) catch'* } (ref.exn a) throw_ref) -> (ref.exn 
 z ; (handler_n { catch catch'* } (ref.exn a) throw_ref) -> (handler_n { catch'* } (ref.exn a) throw_ref)   (otherwise)
 ```
 
-#### try_table bt catch* instr*
+#### `try_table bt catch* instr*`
 
 1. Let `z` be the current state.
 2. Let `t1^m ->_{localidx_0*} t2^n` be the destructuring of `fblocktype_z(bt)`.
@@ -514,7 +514,7 @@ z ; val^m (try_table bt catch* instr*) -> (handler_n { catch* } (label_n { ε } 
 
 The following auxiliary rules define the semantics of executing an [instruction sequence](syntax-instrs) that forms a [block](exec-instr-control).
 
-#### Entering instr* with label L and values val*
+#### `Entering instr* with label L and values val*`
 
 1. Push `L` to the stack.
 2. Push the values `val*` to the stack.
@@ -522,7 +522,7 @@ The following auxiliary rules define the semantics of executing an [instruction 
 
 > **Note:** No formal reduction rule is needed for entering an instruction sequence, because the label `L` is embedded in the [administrative instruction](syntax-instr-admin) that structured control instructions reduce to directly.
 
-#### Exiting instr* with label L
+#### `Exiting instr* with label L`
 
 When the end of a block is reached without a jump, [exception](exception), or [trap](trap) aborting it, then the following steps are performed.
 
@@ -542,7 +542,7 @@ When the end of a block is reached without a jump, [exception](exception), or [t
 
 The following auxiliary rules define the semantics of entering and exiting `try_table` blocks.
 
-#### Entering instr* with label L and exception handler H
+#### `Entering instr* with label L and exception handler H`
 
 1. Push `H` to the stack.
 2. Push `L` onto the stack.
@@ -570,7 +570,7 @@ When the end of a `try_table` block is reached without a jump, [exception](excep
 
 The following auxiliary rules define the semantics of invoking a [function instance](syntax-funcinst) through one of the [call instructions](exec-instr-control) and returning from it.
 
-#### Invocation of function reference (ref.func a)
+#### Invocation of function reference (`ref.func a`)
 
 1. Let `z` be the current state.
 2. Assert: due to [validation](valid-call), `z.FUNCS[a]` exists.
@@ -655,7 +655,7 @@ All these notions are made precise in the [Appendix](soundness).
 
 ### Variable Instructions
 
-#### local.get x
+#### `local.get x`
 
 1. Let `z` be the current state.
 2. Assert: Due to validation, `z.LOCALS[x]` is defined.
@@ -666,7 +666,7 @@ All these notions are made precise in the [Appendix](soundness).
 z ; (local.get x) -> val   (if z.LOCALS[x] = val)
 ```
 
-#### local.set x
+#### `local.set x`
 
 1. Let `z` be the current state.
 2. Assert: Due to validation, a value is on the top of the stack.
@@ -677,7 +677,7 @@ z ; (local.get x) -> val   (if z.LOCALS[x] = val)
 z ; val (local.set x) -> z[.LOCALS[x] = val] ; ε
 ```
 
-#### local.tee x
+#### `local.tee x`
 
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value `val` from the stack.
@@ -689,7 +689,7 @@ z ; val (local.set x) -> z[.LOCALS[x] = val] ; ε
 val (local.tee x) -> val val (local.set x)
 ```
 
-#### global.get x
+#### `global.get x`
 
 1. Let `z` be the current state.
 2. Let `val` be the [value](syntax-val) `z.GLOBALS[x].value`.
@@ -699,7 +699,7 @@ val (local.tee x) -> val val (local.set x)
 z ; (global.get x) -> val   (if z.GLOBALS[x].value = val)
 ```
 
-#### global.set x
+#### `global.set x`
 
 1. Let `z` be the current state.
 2. Assert: Due to validation, a value is on the top of the stack.
@@ -712,7 +712,7 @@ z ; val (global.set x) -> z[.GLOBALS[x].value = val] ; ε
 
 ### Table Instructions
 
-#### table.get x
+#### `table.get x`
 
 1. Let `z` be the current state.
 2. Assert: Due to validation, a [number value](syntax-num) is on the top of the stack.
@@ -726,7 +726,7 @@ z ; (at.const i) (table.get x) -> trap   (if i ≥ |z.TABLES[x].irefs|)
 z ; (at.const i) (table.get x) -> z.TABLES[x].irefs[i]   (if i < |z.TABLES[x].irefs|)
 ```
 
-#### table.set x
+#### `table.set x`
 
 1. Let `z` be the current state.
 2. Assert: Due to validation, a [reference value](syntax-ref) is on the top of the stack.
@@ -742,7 +742,7 @@ z ; (at.const i) reff (table.set x) -> z ; trap   (if i ≥ |z.TABLES[x].irefs|)
 z ; (at.const i) reff (table.set x) -> z[.TABLES[x].trefs[i] = reff] ; ε   (if i < |z.TABLES[x].irefs|)
 ```
 
-#### table.size x
+#### `table.size x`
 
 1. Let `z` be the current state.
 2. Let `(at lim rt)` be the destructuring of `z.TABLES[x].itype`.
@@ -755,7 +755,7 @@ z ; (table.size x) -> (at.const n)
    ∧ z.TABLES[x].itype = at lim rt)
 ```
 
-#### table.grow x
+#### `table.grow x`
 
 1. Let `z` be the current state.
 2. Assert: Due to validation, a [number value](syntax-num) is on the top of the stack.
@@ -779,7 +779,7 @@ z ; reff (at.const n) (table.grow x) -> z ; (at.const signed_{|at|}(-1))
 >
 > Failure *must* occur if the referenced table instance has a maximum size defined that would be exceeded. However, failure *can* occur in other cases as well. In practice, the choice depends on the [resources](impl-exec) available to the [embedder](embedder).
 
-#### table.fill x
+#### `table.fill x`
 
 1. Let `z` be the current state.
 2. Assert: Due to validation, a [number value](syntax-num) is on the top of the stack.
@@ -809,7 +809,7 @@ z ; (at.const i) val (at.const n) (table.fill x) ->
     (at.const i + 1) val (at.const n - 1) (table.fill x)   (otherwise)
 ```
 
-#### table.copy x_1 x_2
+#### `table.copy x_1 x_2`
 
 1. Let `z` be the current state.
 2. Assert: Due to validation, a [number value](syntax-num) is on the top of the stack.
@@ -854,7 +854,7 @@ z ; (at1.const i1) (at2.const i2) (at'.const n) (table.copy x y) ->
     (at1.const i1) (at2.const i2) (at'.const n - 1) (table.copy x y)   (otherwise)
 ```
 
-#### table.init x y
+#### `table.init x y`
 
 1. Let `z` be the current state.
 2. Assert: Due to validation, a value of [number type](syntax-numtype) `i32` is on the top of the stack.
@@ -888,7 +888,7 @@ z ; (at.const i) (i32.const j) (i32.const n) (table.init x y) ->
     (at.const i + 1) (i32.const j + 1) (i32.const n - 1) (table.init x y)   (otherwise)
 ```
 
-#### elem.drop x
+#### `elem.drop x`
 
 1. Let `z` be the current state.
 2. Replace `z.ELEMS[x].erefs` with `ε`.
@@ -903,7 +903,7 @@ z ; (elem.drop x) -> z[.ELEMS[x].erefs = ε] ; ε
 >
 > A WebAssembly implementation can use this hint to optimize for the intended use. Unaligned access violating that property is still allowed and must succeed regardless of the annotation. However, it may be substantially slower on some hardware.
 
-#### nt.load loadop? x ao
+#### `nt.load loadop? x ao`
 
 1. Let `z` be the current state.
 2. Assert: Due to validation, a [number value](syntax-num) is on the top of the stack.
@@ -933,7 +933,7 @@ z ; (at.const i) (iN.load n_sx x ao) -> (iN.const extend_{n, |iN|}^{sx}(c))
   (if bytes_{iN n}(c) = z.MEMS[x].ibytes[i + ao.offset : n / 8])
 ```
 
-#### v128.load K shape M_sx x ao
+#### `v128.load K shape M_sx x ao`
 
 1. Let `z` be the current state.
 2. Assert: Due to validation, a [number value](syntax-num) is on the top of the stack.
@@ -953,7 +953,7 @@ z ; (at.const i) (v128.load K shape M_sx x ao) -> (v128.const c)
    ∧ c = lanes^{-1}_{iN N shape M}((extend_{K, N}^{sx}(j))^{M}) ∧ N = K * 2)
 ```
 
-#### v128.load N_splat x ao
+#### `v128.load N_splat x ao`
 
 1. Let `z` be the current state.
 2. Assert: Due to validation, a [number value](syntax-num) is on the top of the stack.
@@ -976,7 +976,7 @@ z ; (at.const i) (v128.load N_splat x ao) -> (v128.const c)
    ∧ c = lanes^{-1}_{iN N shape M}(j^{M}))
 ```
 
-#### v128.load N_zero x ao
+#### `v128.load N_zero x ao`
 
 1. Let `z` be the current state.
 2. Assert: Due to validation, a [number value](syntax-num) is on the top of the stack.
@@ -995,7 +995,7 @@ z ; (at.const i) (v128.load N_zero x ao) -> (v128.const c)
    ∧ c = extend_{N, 128}^{u}(j))
 ```
 
-#### v128.load N_lane x ao j
+#### `v128.load N_lane x ao j`
 
 1. Let `z` be the current state.
 2. Assert: Due to [validation](valid-vload_lane), a value of [vector type](syntax-vectype) `v128` is on the top of the stack.
@@ -1020,7 +1020,7 @@ z ; (at.const i) (v128.const c1) (v128.load N_lane x ao j) -> (v128.const c)
    ∧ c = lanes^{-1}_{iN N shape M}(lanes_{iN N shape M}(c1)[[j] = k]))
 ```
 
-#### nt.store storeop? x ao
+#### `nt.store storeop? x ao`
 
 1. Let `z` be the current state.
 2. Assert: Due to [validation](valid-store), a [number value](syntax-num) is on the top of the stack.
@@ -1056,7 +1056,7 @@ z ; (at.const i) (v128.const c) (v128.store x ao) -> z[.MEMS[x].mbytes[i + ao.of
   (if b* = bytes_{v128}(c))
 ```
 
-#### v128.store N_lane x ao j
+#### `v128.store N_lane x ao j`
 
 1. Let `z` be the current state.
 2. Assert: Due to [validation](valid-vstore_lane), a value of [vector type](syntax-vectype) `v128` is on the top of the stack.
@@ -1080,7 +1080,7 @@ z ; (at.const i) (v128.const c) (v128.store N_lane x ao j) -> z[.MEMS[x].mbytes[
    ∧ b* = bytes_{iN N}(lanes_{iN N shape M}(c)[j]))
 ```
 
-#### memory.size x
+#### `memory.size x`
 
 1. Let `z` be the current state.
 2. Let `(at lim page)` be the destructuring of `z.MEMS[x].itype`.
@@ -1093,7 +1093,7 @@ z ; (memory.size x) -> (at.const n)
    ∧ z.MEMS[x].itype = at lim page)
 ```
 
-#### memory.grow x
+#### `memory.grow x`
 
 1. Let `z` be the current state.
 2. Assert: Due to validation, a [number value](syntax-num) is on the top of the stack.
@@ -1115,7 +1115,7 @@ z ; (at.const n) (memory.grow x) -> z ; (at.const signed_{|at|}(-1))
 >
 > Failure *must* occur if the referenced memory instance has a maximum size defined that would be exceeded. However, failure *can* occur in other cases as well. In practice, the choice depends on the [resources](impl-exec) available to the [embedder](embedder).
 
-#### memory.fill x
+#### `memory.fill x`
 
 1. Let `z` be the current state.
 2. Assert: Due to validation, a [number value](syntax-num) is on the top of the stack.
@@ -1145,7 +1145,7 @@ z ; (at.const i) val (at.const n) (memory.fill x) ->
     (at.const i + 1) val (at.const n - 1) (memory.fill x)   (otherwise)
 ```
 
-#### memory.copy x_1 x_2
+#### `memory.copy x_1 x_2`
 
 1. Let `z` be the current state.
 2. Assert: Due to validation, a [number value](syntax-num) is on the top of the stack.
@@ -1190,7 +1190,7 @@ z ; (at1.const i1) (at2.const i2) (at'.const n) (memory.copy x1 x2) ->
     (at1.const i1) (at2.const i2) (at'.const n - 1) (memory.copy x1 x2)   (otherwise)
 ```
 
-#### memory.init x y
+#### `memory.init x y`
 
 1. Let `z` be the current state.
 2. Assert: Due to validation, a value of [number type](syntax-numtype) `i32` is on the top of the stack.
@@ -1224,7 +1224,7 @@ z ; (at.const i) (i32.const j) (i32.const n) (memory.init x y) ->
     (at.const i + 1) (i32.const j + 1) (i32.const n - 1) (memory.init x y)   (otherwise)
 ```
 
-#### data.drop x
+#### `data.drop x`
 
 1. Let `z` be the current state.
 2. Replace `z.DATAS[x].dbytes` with `ε`.
@@ -1235,7 +1235,7 @@ z ; (data.drop x) -> z[.DATAS[x].dbytes = ε] ; ε
 
 ### Reference Instructions
 
-#### ref.null ht
+#### `ref.null ht`
 
 1. Push the value `ref.null` to the stack.
 
@@ -1243,7 +1243,7 @@ z ; (data.drop x) -> z[.DATAS[x].dbytes = ε] ; ε
 z ; (ref.null ht) -> ref.null
 ```
 
-#### ref.func x
+#### `ref.func x`
 
 1. Let `z` be the current state.
 2. Assert: Due to validation, `x < |z.MODULE.IFUNCS|`.
@@ -1253,7 +1253,7 @@ z ; (ref.null ht) -> ref.null
 z ; (ref.func x) -> (ref.func z.MODULE.IFUNCS[x])
 ```
 
-#### ref.is_null
+#### `ref.is_null`
 
 1. Assert: Due to validation, a [reference value](syntax-ref) is on the top of the stack.
 2. Pop the value `reff` from the stack.
@@ -1267,7 +1267,7 @@ reff ref.is_null -> (i32.const 1)   (if reff = ref.null)
 reff ref.is_null -> (i32.const 0)   (otherwise)
 ```
 
-#### ref.as_non_null
+#### `ref.as_non_null`
 
 1. Assert: Due to validation, a [reference value](syntax-ref) is on the top of the stack.
 2. Pop the value `reff` from the stack.
@@ -1280,7 +1280,7 @@ reff ref.as_non_null -> trap   (if reff = ref.null)
 reff ref.as_non_null -> reff   (otherwise)
 ```
 
-#### ref.eq
+#### `ref.eq`
 
 1. Assert: Due to validation, a [reference value](syntax-ref) is on the top of the stack.
 2. Pop the value `reff2` from the stack.
@@ -1299,7 +1299,7 @@ reff1 reff2 ref.eq -> (i32.const 1)   (otherwise, if reff1 = reff2)
 reff1 reff2 ref.eq -> (i32.const 0)   (otherwise)
 ```
 
-#### ref.test rt
+#### `ref.test rt`
 
 1. Let `f` be the topmost `frame`.
 2. Assert: Due to validation, a [reference value](syntax-ref) is on the top of the stack.
@@ -1314,7 +1314,7 @@ s ; f ; reff (ref.test rt) -> (i32.const 1)   (if s |- reff : insttype_{f.MODULE
 s ; f ; reff (ref.test rt) -> (i32.const 0)   (otherwise)
 ```
 
-#### ref.cast rt
+#### `ref.cast rt`
 
 1. Let `f` be the topmost `frame`.
 2. Assert: Due to validation, a [reference value](syntax-ref) is on the top of the stack.
@@ -1328,7 +1328,7 @@ s ; f ; reff (ref.cast rt) -> reff   (if s |- reff : insttype_{f.MODULE}(rt))
 s ; f ; reff (ref.cast rt) -> trap   (otherwise)
 ```
 
-#### ref.i31
+#### `ref.i31`
 
 1. Assert: Due to validation, a value of [number type](syntax-numtype) `i32` is on the top of the stack.
 2. Pop the value `(i32.const i)` from the stack.
@@ -1338,7 +1338,7 @@ s ; f ; reff (ref.cast rt) -> trap   (otherwise)
 (i32.const i) ref.i31 -> (ref.i31 wrap_{32, 31}(i))
 ```
 
-#### i31.get_sx
+#### `i31.get_sx`
 
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value `val` from the stack.
@@ -1353,7 +1353,7 @@ ref.null (i31.get_sx) -> trap
 (ref.i31 i) (i31.get_sx) -> (i32.const extend_{31, 32}^{sx}(i))
 ```
 
-#### struct.new x
+#### `struct.new x`
 
 1. Let `z` be the current state.
 2. Assert: Due to validation, the [expansion](aux-expand-deftype) of `z.TYPES[x]` is some `struct list(fieldtype)`.
@@ -1373,7 +1373,7 @@ z ; val^n (struct.new x) -> z[.STRUCTS =⊕ si] ; (ref.struct a)
    ∧ si = { itype z.TYPES[x], ifields (packfield_{zt}(val))^n })
 ```
 
-#### struct.new_default x
+#### `struct.new_default x`
 
 1. Let `z` be the current state.
 2. Assert: Due to validation, the [expansion](aux-expand-deftype) of `z.TYPES[x]` is some `struct list(fieldtype)`.
@@ -1394,7 +1394,7 @@ z ; (struct.new_default x) -> val* (struct.new x)
    ∧ (default_{unpack(zt)} = val)^*)
 ```
 
-#### struct.get_sx? x i
+#### `struct.get_sx? x i`
 
 1. Let `z` be the current state.
 2. Assert: Due to validation, a value is on the top of the stack.
@@ -1417,7 +1417,7 @@ z ; (ref.struct a) (struct.get_sx? x i) -> unpackfield_{zt*[i]}^{sx?}(z.STRUCTS[
   (if z.TYPES[x] ≈ struct ((mut? zt)*))
 ```
 
-#### struct.set x i
+#### `struct.set x i`
 
 1. Let `z` be the current state.
 2. Assert: Due to validation, a value is on the top of the stack.
@@ -1440,7 +1440,7 @@ z ; (ref.struct a) val (struct.set x i) -> z[.STRUCTS[a].fields[i] = packfield_{
   (if z.TYPES[x] ≈ struct ((mut? zt)*))
 ```
 
-#### array.new x
+#### `array.new x`
 
 1. Assert: Due to validation, a value of [number type](syntax-numtype) `i32` is on the top of the stack.
 2. Pop the value `(i32.const n)` from the stack.
@@ -1453,7 +1453,7 @@ z ; (ref.struct a) val (struct.set x i) -> z[.STRUCTS[a].fields[i] = packfield_{
 val (i32.const n) (array.new x) -> val^n (array.new_fixed x n)
 ```
 
-#### array.new_default x
+#### `array.new_default x`
 
 1. Let `z` be the current state.
 2. Assert: Due to validation, a value of [number type](syntax-numtype) `i32` is on the top of the stack.
@@ -1472,7 +1472,7 @@ z ; (i32.const n) (array.new_default x) -> val^n (array.new_fixed x n)
    ∧ default_{unpack(zt)} = val)
 ```
 
-#### array.new_fixed x n
+#### `array.new_fixed x n`
 
 1. Let `z` be the current state.
 2. Assert: Due to validation, the [expansion](aux-expand-deftype) of `z.TYPES[x]` is some `array fieldtype`.
@@ -1491,7 +1491,7 @@ z ; val^n (array.new_fixed x n) -> z[.ARRAYS =⊕ ai] ; (ref.array a)
    ∧ a = |z.ARRAYS| ∧ ai = { itype z.TYPES[x], ifields (packfield_{zt}(val))^n })
 ```
 
-#### array.new_data x y
+#### `array.new_data x y`
 
 1. Let `z` be the current state.
 2. Assert: Due to validation, a value of [number type](syntax-numtype) `i32` is on the top of the stack.
@@ -1517,7 +1517,7 @@ z ; (i32.const i) (i32.const n) (array.new_data x y) -> (unpack(zt).const unpack
    ∧ concat bytes_{zt}(c)^n = z.DATAS[y].ibytes[i : n * |zt| / 8])
 ```
 
-#### array.new_elem x y
+#### `array.new_elem x y`
 
 1. Let `z` be the current state.
 2. Assert: Due to validation, a value of [number type](syntax-numtype) `i32` is on the top of the stack.
@@ -1536,7 +1536,7 @@ z ; (i32.const i) (i32.const n) (array.new_elem x y) -> reff^n (array.new_fixed 
   (if reff^n = z.ELEMS[y].erefs[i : n])
 ```
 
-#### array.get_sx? x
+#### `array.get_sx? x`
 
 1. Let `z` be the current state.
 2. Assert: Due to validation, a value of [number type](syntax-numtype) `i32` is on the top of the stack.
@@ -1562,7 +1562,7 @@ z ; (ref.array a) (i32.const i) (array.get_sx? x) -> unpackfield_{zt}^{sx?}(z.AR
   (if z.TYPES[x] ≈ array (mut? zt))
 ```
 
-#### array.set x
+#### `array.set x`
 
 1. Let `z` be the current state.
 2. Assert: Due to validation, a value is on the top of the stack.
@@ -1589,7 +1589,7 @@ z ; (ref.array a) (i32.const i) val (array.set x) -> z[.ARRAYS[a].fields[i] = pa
   (if z.TYPES[x] ≈ array (mut? zt))
 ```
 
-#### array.len
+#### `array.len`
 
 1. Let `z` be the current state.
 2. Assert: Due to validation, a value is on the top of the stack.
@@ -1606,7 +1606,7 @@ z ; ref.null array.len -> trap
 z ; (ref.array a) array.len -> (i32.const |z.ARRAYS[a].ifields|)
 ```
 
-#### array.fill x
+#### `array.fill x`
 
 1. Let `z` be the current state.
 2. Assert: Due to validation, a value of [number type](syntax-numtype) `i32` is on the top of the stack.
@@ -1647,7 +1647,7 @@ z ; (ref.array a) (i32.const i) val (i32.const n) (array.fill x) ->
     (ref.array a) (i32.const i + 1) val (i32.const n - 1) (array.fill x)   (otherwise)
 ```
 
-#### array.copy x_1 x_2
+#### `array.copy x_1 x_2`
 
 1. Let `z` be the current state.
 2. Assert: Due to validation, a value of [number type](syntax-numtype) `i32` is on the top of the stack.
@@ -1727,7 +1727,7 @@ sx(consttype) = ε
 sx(packtype) = s
 ```
 
-#### array.init_data x y
+#### `array.init_data x y`
 
 1. Let `z` be the current state.
 2. Assert: Due to validation, a value of [number type](syntax-numtype) `i32` is on the top of the stack.
@@ -1777,7 +1777,7 @@ z ; (ref.array a) (i32.const i) (i32.const j) (i32.const n) (array.init_data x y
     (otherwise, if z.TYPES[x] ≈ array (mut? zt) ∧ bytes_{zt}(c) = z.DATAS[y].ibytes[j : |zt| / 8])
 ```
 
-#### array.init_elem x y
+#### `array.init_elem x y`
 
 1. Let `z` be the current state.
 2. Assert: Due to validation, a value of [number type](syntax-numtype) `i32` is on the top of the stack.
@@ -1821,7 +1821,7 @@ z ; (ref.array a) (i32.const i) (i32.const j) (i32.const n) (array.init_elem x y
     (otherwise, if reff = z.ELEMS[y].erefs[j])
 ```
 
-#### any.convert_extern
+#### `any.convert_extern`
 
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value `val` from the stack.
@@ -1836,7 +1836,7 @@ ref.null any.convert_extern -> ref.null
 (ref.extern reff) any.convert_extern -> reff
 ```
 
-#### extern.convert_any
+#### `extern.convert_any`
 
 1. Assert: Due to validation, a [reference value](syntax-ref) is on the top of the stack.
 2. Pop the value `reff` from the stack.
@@ -1869,13 +1869,13 @@ Where the underlying operators are partial, the corresponding instruction will [
 
 > **Note:** For example, the result of instruction `i32.add` applied to operands `i_1, i_2` invokes `add_{i32}(i_1, i_2)`, which maps to the generic `iadd_{32}(i_1, i_2)` via the above definition. Similarly, `i64.trunc_f32_s` applied to `z` invokes `trunc^{s}_{f32,i64}(z)`, which maps to the generic `truncs_{32,64}(z)`.
 
-#### nt.const c
+#### `nt.const c`
 
 1. Push the value `(nt.const c)` to the stack.
 
 > **Note:** No formal reduction rule is required for this instruction, since `const` instructions already are [values](syntax-val).
 
-#### nt . unop
+#### `nt . unop`
 
 1. Assert: Due to [validation](valid-unop), a value of [number type](syntax-numtype) `nt` is on the top of the stack.
 2. Pop the value `(numtype0.const c1)` from the stack.
@@ -1889,7 +1889,7 @@ Where the underlying operators are partial, the corresponding instruction will [
 (nt.const c1) (nt . unop) -> trap   (if unop_{nt}(c1) = ε)
 ```
 
-#### nt . binop
+#### `nt . binop`
 
 1. Assert: Due to [validation](valid-binop), a value of [number type](syntax-numtype) `nt` is on the top of the stack.
 2. Pop the value `(numtype0.const c2)` from the stack.
@@ -1905,7 +1905,7 @@ Where the underlying operators are partial, the corresponding instruction will [
 (nt.const c1) (nt.const c2) (nt . binop) -> trap   (if binop_{nt}(c1, c2) = ε)
 ```
 
-#### nt . testop
+#### `nt . testop`
 
 1. Assert: Due to [validation](valid-testop), a value of [number type](syntax-numtype) `nt` is on the top of the stack.
 2. Pop the value `(numtype0.const c1)` from the stack.
@@ -1916,7 +1916,7 @@ Where the underlying operators are partial, the corresponding instruction will [
 (nt.const c1) (nt . testop) -> (i32.const c)   (if c = testop_{nt}(c1))
 ```
 
-#### nt . relop
+#### `nt . relop`
 
 1. Assert: Due to [validation](valid-relop), a value of [number type](syntax-numtype) `nt` is on the top of the stack.
 2. Pop the value `(numtype0.const c2)` from the stack.
@@ -1929,7 +1929,7 @@ Where the underlying operators are partial, the corresponding instruction will [
 (nt.const c1) (nt.const c2) (nt . relop) -> (i32.const c)   (if c = relop_{nt}(c1, c2))
 ```
 
-#### nt2 . cvtop_ nt1
+#### `nt2 . cvtop_ nt1`
 
 1. Assert: Due to [validation](valid-cvtop), a value of [number type](syntax-numtype) `nt1` is on the top of the stack.
 2. Pop the value `(numtype0.const c1)` from the stack.
@@ -1974,13 +1974,13 @@ The remaining vector operators use [individual definitions](op-vec).
 
 > **Note:** For example, the result of instruction `i32x4.add` applied to operands `v_1, v_2` invokes `add_{i32x4}(v_1, v_2)`, which maps to `lanes^{-1}_{i32x4}(add_{i32}(i_1, i_2)^*)`, where `i_1^*` and `i_2^*` are sequences resulting from invoking `lanes_{i32x4}(v_1)` and `lanes_{i32x4}(v_2)` respectively.
 
-#### v128.const c
+#### `v128.const c`
 
 1. Push the value `(v128.const c)` to the stack.
 
 > **Note:** No formal reduction rule is required for this instruction, since `const` instructions are already [values](syntax-val).
 
-#### v128 . vvunop
+#### `v128 . vvunop`
 
 1. Assert: Due to [validation](valid-vvunop), a value of [vector type](syntax-vectype) `v128` is on the top of the stack.
 2. Pop the value `(v128.const c1)` from the stack.
@@ -1992,7 +1992,7 @@ The remaining vector operators use [individual definitions](op-vec).
 (v128.const c1) (v128 . vvunop) -> (v128.const c)   (if c ∈ vvunop_{v128}(c1))
 ```
 
-#### v128 . vvbinop
+#### `v128 . vvbinop`
 
 1. Assert: Due to [validation](valid-vvbinop), a value of [vector type](syntax-vectype) `v128` is on the top of the stack.
 2. Pop the value `(v128.const c2)` from the stack.
@@ -2006,7 +2006,7 @@ The remaining vector operators use [individual definitions](op-vec).
 (v128.const c1) (v128.const c2) (v128 . vvbinop) -> (v128.const c)   (if c ∈ vvbinop_{v128}(c1, c2))
 ```
 
-#### v128 . vvternop
+#### `v128 . vvternop`
 
 1. Assert: Due to [validation](valid-vvternop), a value of [vector type](syntax-vectype) `v128` is on the top of the stack.
 2. Pop the value `(v128.const c3)` from the stack.
@@ -2023,7 +2023,7 @@ The remaining vector operators use [individual definitions](op-vec).
   (if c ∈ vvternop_{v128}(c1, c2, c3))
 ```
 
-#### v128 . vany_true
+#### `v128 . vany_true`
 
 1. Assert: Due to [validation](valid-vvtestop), a value of [vector type](syntax-vectype) `v128` is on the top of the stack.
 2. Pop the value `(v128.const c1)` from the stack.
@@ -2034,7 +2034,7 @@ The remaining vector operators use [individual definitions](op-vec).
 (v128.const c1) (v128 . vany_true) -> (i32.const c)   (if c = inez_{|v128|}(c1))
 ```
 
-#### sh . vunop
+#### `sh . vunop`
 
 1. Assert: Due to [validation](valid-vunop), a value of [vector type](syntax-vectype) `v128` is on the top of the stack.
 2. Pop the value `(v128.const c1)` from the stack.
@@ -2048,7 +2048,7 @@ The remaining vector operators use [individual definitions](op-vec).
 (v128.const c1) (sh . vunop) -> trap   (if vunop_{sh}(c1) = ε)
 ```
 
-#### sh . vbinop
+#### `sh . vbinop`
 
 1. Assert: Due to [validation](valid-vbinop), a value of [vector type](syntax-vectype) `v128` is on the top of the stack.
 2. Pop the value `(v128.const c2)` from the stack.
@@ -2064,7 +2064,7 @@ The remaining vector operators use [individual definitions](op-vec).
 (v128.const c1) (v128.const c2) (sh . vbinop) -> trap   (if vbinop_{sh}(c1, c2) = ε)
 ```
 
-#### sh . vternop
+#### `sh . vternop`
 
 1. Assert: Due to [validation](valid-vternop), a value of [vector type](syntax-vectype) `v128` is on the top of the stack.
 2. Pop the value `(v128.const c3)` from the stack.
@@ -2082,7 +2082,7 @@ The remaining vector operators use [individual definitions](op-vec).
 (v128.const c1) (v128.const c2) (v128.const c3) (sh . vternop) -> trap   (if vternop_{sh}(c1, c2, c3) = ε)
 ```
 
-#### iN shape M . all_true
+#### `iN shape M . all_true`
 
 1. Assert: Due to [validation](valid-vtestop), a value of [vector type](syntax-vectype) `v128` is on the top of the stack.
 2. Pop the value `(v128.const c1)` from the stack.
@@ -2096,7 +2096,7 @@ The remaining vector operators use [individual definitions](op-vec).
    ∧ c = Π (inez_N(i)^*))
 ```
 
-#### sh . vrelop
+#### `sh . vrelop`
 
 1. Assert: Due to [validation](valid-vrelop), a value of [vector type](syntax-vectype) `v128` is on the top of the stack.
 2. Pop the value `(v128.const c2)` from the stack.
@@ -2109,7 +2109,7 @@ The remaining vector operators use [individual definitions](op-vec).
 (v128.const c1) (v128.const c2) (sh . vrelop) -> (v128.const c)   (if c = vrelop_{sh}(c1, c2))
 ```
 
-#### sh . vshiftop
+#### `sh . vshiftop`
 
 1. Assert: Due to [validation](valid-vshiftop), a value of [number type](syntax-numtype) `i32` is on the top of the stack.
 2. Pop the value `(i32.const i)` from the stack.
@@ -2122,7 +2122,7 @@ The remaining vector operators use [individual definitions](op-vec).
 (v128.const c1) (i32.const i) (sh . vshiftop) -> (v128.const c)   (if c = vshiftop_{sh}(c1, i))
 ```
 
-#### sh . bitmask
+#### `sh . bitmask`
 
 1. Assert: Due to [validation](valid-vbitmask), a value of [vector type](syntax-vectype) `v128` is on the top of the stack.
 2. Pop the value `(v128.const c1)` from the stack.
@@ -2133,7 +2133,7 @@ The remaining vector operators use [individual definitions](op-vec).
 (v128.const c1) (sh . bitmask) -> (i32.const c)   (if c = bitmask_{sh}(c1))
 ```
 
-#### sh . swizzle
+#### `sh . swizzle`
 
 1. Assert: Due to [validation](valid-vswizzlop), a value of [vector type](syntax-vectype) `v128` is on the top of the stack.
 2. Pop the value `(v128.const c2)` from the stack.
@@ -2146,7 +2146,7 @@ The remaining vector operators use [individual definitions](op-vec).
 (v128.const c1) (v128.const c2) (sh . swizzle) -> (v128.const c)   (if c = swizzle_{sh}(c1, c2))
 ```
 
-#### sh . shuffle
+#### `sh . shuffle`
 
 1. Assert: Due to [validation](valid-vshuffle), a value of [vector type](syntax-vectype) `v128` is on the top of the stack.
 2. Pop the value `(v128.const c2)` from the stack.
@@ -2159,7 +2159,7 @@ The remaining vector operators use [individual definitions](op-vec).
 (v128.const c1) (v128.const c2) (sh . shuffle i*) -> (v128.const c)   (if c = vshuffle_{sh}(i*, c1, c2))
 ```
 
-#### iN shape M . splat
+#### `iN shape M . splat`
 
 1. Assert: Due to [validation](valid-vsplat), a value is on the top of the stack.
 2. Pop the value `(numtype0.const c1)` from the stack.
@@ -2171,7 +2171,7 @@ The remaining vector operators use [individual definitions](op-vec).
 (unpack(iN N).const c1) (iN shape M . splat) -> (v128.const c)   (if c = lanes^{-1}_{iN N shape M}((packnum_{iN N}(c1))^M))
 ```
 
-#### lanetype shape M . extract_lane sx'? i
+#### `lanetype shape M . extract_lane sx'? i`
 
 1. Assert: Due to [validation](valid-vextract_lane), a value of [vector type](syntax-vectype) `v128` is on the top of the stack.
 2. Pop the value `(v128.const c1)` from the stack.
@@ -2192,7 +2192,7 @@ The remaining vector operators use [individual definitions](op-vec).
 (v128.const c1) (pt shape M . extract_lane sx i) -> (i32.const c2)   (if c2 = extend_{|pt|, 32}^{sx}(lanes_{pt shape M}(c1)[i]))
 ```
 
-#### iN shape M . replace_lane i
+#### `iN shape M . replace_lane i`
 
 1. Assert: Due to [validation](valid-vreplace_lane), a value is on the top of the stack.
 2. Pop the value `(numtype0.const c2)` from the stack.
@@ -2207,7 +2207,7 @@ The remaining vector operators use [individual definitions](op-vec).
   (if c = lanes^{-1}_{iN N shape M}(lanes_{iN N shape M}(c1)[[i] = packnum_{iN N}(c2)]))
 ```
 
-#### sh2 . extunop_ sh1
+#### `sh2 . extunop_ sh1`
 
 1. Assert: Due to [validation](valid-vextunop), a value of [vector type](syntax-vectype) `v128` is on the top of the stack.
 2. Pop the value `(v128.const c1)` from the stack.
@@ -2218,7 +2218,7 @@ The remaining vector operators use [individual definitions](op-vec).
 (v128.const c1) (sh2 . extunop_ sh1) -> (v128.const c)   (if extunop_{sh1, sh2}(c1) = c)
 ```
 
-#### sh2 . extbinop_ sh1
+#### `sh2 . extbinop_ sh1`
 
 1. Assert: Due to [validation](valid-vextbinop), a value of [vector type](syntax-vectype) `v128` is on the top of the stack.
 2. Pop the value `(v128.const c2)` from the stack.
@@ -2231,7 +2231,7 @@ The remaining vector operators use [individual definitions](op-vec).
 (v128.const c1) (v128.const c2) (sh2 . extbinop_ sh1) -> (v128.const c)   (if extbinop_{sh1, sh2}(c1, c2) = c)
 ```
 
-#### sh2 . extternop_ sh1
+#### `sh2 . extternop_ sh1`
 
 1. Assert: Due to [validation](valid-vextternop), a value of [vector type](syntax-vectype) `v128` is on the top of the stack.
 2. Pop the value `(v128.const c3)` from the stack.
@@ -2247,7 +2247,7 @@ The remaining vector operators use [individual definitions](op-vec).
   (if extternop_{sh1, sh2}(c1, c2, c3) = c)
 ```
 
-#### sh2 . narrow_ sh1_ sx
+#### `sh2 . narrow_ sh1_ sx`
 
 1. Assert: Due to [validation](valid-vnarrow), a value of [vector type](syntax-vectype) `v128` is on the top of the stack.
 2. Pop the value `(v128.const c2)` from the stack.
@@ -2260,7 +2260,7 @@ The remaining vector operators use [individual definitions](op-vec).
 (v128.const c1) (v128.const c2) (sh2 . narrow_ sh1_ sx) -> (v128.const c)   (if c = narrow_{sh1, sh2}^{sx}(c1, c2))
 ```
 
-#### sh2 . cvtop_ sh1
+#### `sh2 . cvtop_ sh1`
 
 1. Assert: Due to [validation](valid-vcvtop), a value of [vector type](syntax-vectype) `v128` is on the top of the stack.
 2. Pop the value `(v128.const c1)` from the stack.
@@ -2275,7 +2275,7 @@ The remaining vector operators use [individual definitions](op-vec).
 
 An [expression](syntax-expr) is *evaluated* relative to a [current](exec-notation-textual) [frame](syntax-frame) pointing to its containing [module instance](syntax-moduleinst).
 
-#### eval_expr instr*
+#### `eval_expr instr*`
 
 1. Execute the sequence `instr*`.
 2. Pop the value `val` from the stack.

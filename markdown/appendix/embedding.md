@@ -65,7 +65,7 @@ In addition to pre- and post-conditions explicitly stated with each operation, t
 
 ### Store
 
-#### store_init() : store
+#### `store_init() : store`
 
 1. Return the empty [store](syntax-store).
 
@@ -75,7 +75,7 @@ store_init() = { }
 
 ### Modules
 
-#### module_decode(byte* : module | error)
+#### `module_decode(byte* : module | error)`
 
 1. If there exists a derivation for the [byte](syntax-byte) sequence `byte*` as a `module` according to the [binary grammar for modules](binary-module), yielding a [module](syntax-module) `m`, then return `m`.
 2. Else, return `ERROR`.
@@ -85,7 +85,7 @@ module_decode(b*) = m      (if module =>* m : b*)
 module_decode(b*) = ERROR   (otherwise)
 ```
 
-#### module_parse(char* : module | error)
+#### `module_parse(char* : module | error)`
 
 1. If there exists a derivation for the [source](text-source) `char*` as a `module` according to the [text grammar for modules](text-module), yielding a [module](syntax-module) `m`, then return `m`.
 2. Else, return `ERROR`.
@@ -95,7 +95,7 @@ module_parse(c*) = m      (if module =>* m : c*)
 module_parse(c*) = ERROR   (otherwise)
 ```
 
-#### module_validate(module : error?)
+#### `module_validate(module : error?)`
 
 1. If `module` is [valid](valid-module), then return nothing.
 2. Else, return `ERROR`.
@@ -105,7 +105,7 @@ module_validate(m) = ε      (if |- module m : externtype* -> externtype'*)
 module_validate(m) = ERROR   (otherwise)
 ```
 
-#### module_instantiate(store, module, externaddr* : (store, moduleinst | exception | error))
+#### `module_instantiate(store, module, externaddr* : (store, moduleinst | exception | error))`
 
 1. Try [instantiating](exec-instantiation) `module` in `store` with [external addresses](syntax-externaddr) `externaddr*` as imports:
 
@@ -120,7 +120,7 @@ module_instantiate(S, m, ev*) = (S', ERROR)        (otherwise, if instantiate(S,
 
 > **Note:** The store may be modified even in case of an error.
 
-#### module_imports(module : (name, name, externtype)*)
+#### `module_imports(module : (name, name, externtype)*)`
 
 1. Pre-condition: `module` is [valid](valid-module) with the external import types `externtype*` and external export types `externtype'*`.
 2. Let `import*` be the [imports](syntax-import) of `module`.
@@ -137,7 +137,7 @@ module_imports(m) = (nm1, nm2, externtype)*
   (if (IMPORT nm1 nm2 xt*)* in m ∧ |- module m : externtype* -> externtype'*)
 ```
 
-#### module_exports(module : (name, externtype)*)
+#### `module_exports(module : (name, externtype)*)`
 
 1. Pre-condition: `module` is [valid](valid-module) with the external import types `externtype*` and external export types `externtype'*`.
 2. Let `export*` be the [exports](syntax-export) of `module`.
@@ -156,7 +156,7 @@ module_exports(m) = (nm, externtype')*
 
 ### Module Instances
 
-#### instance_export(moduleinst, name : externaddr | error)
+#### `instance_export(moduleinst, name : externaddr | error)`
 
 1. Assert: due to [validity](valid-moduleinst) of the [module instance](syntax-moduleinst) `moduleinst`, all its [export names](syntax-exportinst) are different.
 2. If there exists an `exportinst_i` in `moduleinst.MIEXPORTS` such that [name](syntax-name) `exportinst_i.NAME` equals `name`, then:
@@ -172,7 +172,7 @@ instance_export(m, name) = ERROR                  (otherwise)
 
 ### Functions
 
-#### func_alloc(store, deftype, hostfunc : (store, funcaddr))
+#### `func_alloc(store, deftype, hostfunc : (store, funcaddr))`
 
 1. Pre-condition: the [defined type](syntax-deftype) `deftype` is [valid](valid-deftype) under the empty [context](context) and [expands](aux-expand-deftype) to a [function type](syntax-functype).
 2. Let `funcaddr` be the result of [allocating a host function](alloc-func) in `store` with [defined type](syntax-deftype) `deftype`, host function code `hostfunc` and an empty [module instance](syntax-moduleinst).
@@ -186,7 +186,7 @@ func_alloc(S, dt, code) = (S', a)   (if allocfunc(S, dt, code, {}) = S', a)
 >
 > Regular (non-host) function instances can only be created indirectly through [module instantiation](embed-module-instantiate).
 
-#### func_type(store, funcaddr : deftype)
+#### `func_type(store, funcaddr : deftype)`
 
 1. Let `deftype` be the [defined type](syntax-deftype) `S.SFUNCS[a].FITYPE`.
 2. Return `deftype`.
@@ -196,7 +196,7 @@ func_alloc(S, dt, code) = (S', a)   (if allocfunc(S, dt, code, {}) = S', a)
 func_type(S, a) = S.SFUNCS[a].FITYPE
 ```
 
-#### func_invoke(store, funcaddr, val* : (store, val* | exception | error))
+#### `func_invoke(store, funcaddr, val* : (store, val* | exception | error))`
 
 1. Try [invoking](exec-invocation) the function `funcaddr` in `store` with [values](syntax-val) `val*` as arguments:
 
@@ -214,7 +214,7 @@ func_invoke(S, a, v*) = (S', ERROR)      (if invoke(S, a, v*) stepto* S'; F; tra
 
 ### Tables
 
-#### table_alloc(store, tabletype, reff : (store, tableaddr))
+#### `table_alloc(store, tabletype, reff : (store, tableaddr))`
 
 1. Pre-condition: the `tabletype` is [valid](valid-tabletype) under the empty [context](context).
 2. Let `tableaddr` be the result of [allocating a table](alloc-table) in `store` with [table type](syntax-tabletype) `tabletype` and initialization value `reff`.
@@ -224,7 +224,7 @@ func_invoke(S, a, v*) = (S', ERROR)      (if invoke(S, a, v*) stepto* S'; F; tra
 table_alloc(S, tt, r) = (S', a)   (if alloctable(S, tt, r) = S', a)
 ```
 
-#### table_type(store, tableaddr : tabletype)
+#### `table_type(store, tableaddr : tabletype)`
 
 1. Return `S.TABLES[a].TYPE`.
 2. Post-condition: the returned [table type](syntax-tabletype) is [valid](valid-tabletype) under the empty [context](context).
@@ -233,7 +233,7 @@ table_alloc(S, tt, r) = (S', a)   (if alloctable(S, tt, r) = S', a)
 table_type(S, a) = S.TABLES[a].TYPE
 ```
 
-#### table_read(store, tableaddr, i:u64 : reff | error)
+#### `table_read(store, tableaddr, i:u64 : reff | error)`
 
 1. Let `ti` be the [table instance](syntax-tableinst) `store.TABLES[tableaddr]`.
 2. If `i` is larger than or equal to the length of `ti.TIREFS`, then return `ERROR`.
@@ -244,7 +244,7 @@ table_read(S, a, i) = r      (if S.TABLES[a].TIREFS[i] = r)
 table_read(S, a, i) = ERROR   (otherwise)
 ```
 
-#### table_write(store, tableaddr, i:u64, reff : store | error)
+#### `table_write(store, tableaddr, i:u64, reff : store | error)`
 
 1. Let `ti` be the [table instance](syntax-tableinst) `store.TABLES[tableaddr]`.
 2. If `i` is larger than or equal to the length of `ti.TIREFS`, then return `ERROR`.
@@ -256,7 +256,7 @@ table_write(S, a, i, r) = S'   (if S' = S with TABLES[a].TIREFS[i] = r)
 table_write(S, a, i, r) = ERROR   (otherwise)
 ```
 
-#### table_size(store, tableaddr : u64)
+#### `table_size(store, tableaddr : u64)`
 
 1. Return the length of `store.TABLES[tableaddr].TIREFS`.
 
@@ -264,7 +264,7 @@ table_write(S, a, i, r) = ERROR   (otherwise)
 table_size(S, a) = n   (if |S.TABLES[a].TIREFS| = n)
 ```
 
-#### table_grow(store, tableaddr, n:u64, reff : store | error)
+#### `table_grow(store, tableaddr, n:u64, reff : store | error)`
 
 1. Try [growing](grow-table) the [table instance](syntax-tableinst) `store.TABLES[tableaddr]` by `n` elements with initialization value `reff`:
 
@@ -277,7 +277,7 @@ table_grow(S, a, n, r) = ERROR   (otherwise)
 
 ### Memories
 
-#### mem_alloc(store, memtype : (store, memaddr))
+#### `mem_alloc(store, memtype : (store, memaddr))`
 
 1. Pre-condition: the `memtype` is [valid](valid-memtype) under the empty [context](context).
 2. Let `memaddr` be the result of [allocating a memory](alloc-mem) in `store` with [memory type](syntax-memtype) `memtype`.
@@ -287,7 +287,7 @@ table_grow(S, a, n, r) = ERROR   (otherwise)
 mem_alloc(S, mt) = (S', a)   (if allocmem(S, mt) = S', a)
 ```
 
-#### mem_type(store, memaddr : memtype)
+#### `mem_type(store, memaddr : memtype)`
 
 1. Return `S.MEMS[a].TYPE`.
 2. Post-condition: the returned [memory type](syntax-memtype) is [valid](valid-memtype) under the empty [context](context).
@@ -296,7 +296,7 @@ mem_alloc(S, mt) = (S', a)   (if allocmem(S, mt) = S', a)
 mem_type(S, a) = S.MEMS[a].TYPE
 ```
 
-#### mem_read(store, memaddr, i:u64 : byte | error)
+#### `mem_read(store, memaddr, i:u64 : byte | error)`
 
 1. Let `mi` be the [memory instance](syntax-meminst) `store.MEMS[memaddr]`.
 2. If `i` is larger than or equal to the length of `mi.MIBYTES`, then return `ERROR`.
@@ -307,7 +307,7 @@ mem_read(S, a, i) = b      (if S.MEMS[a].MIBYTES[i] = b)
 mem_read(S, a, i) = ERROR   (otherwise)
 ```
 
-#### mem_write(store, memaddr, i:u64, byte : store | error)
+#### `mem_write(store, memaddr, i:u64, byte : store | error)`
 
 1. Let `mi` be the [memory instance](syntax-meminst) `store.MEMS[memaddr]`.
 2. If `i` is larger than or equal to the length of `mi.MIBYTES`, then return `ERROR`.
@@ -319,7 +319,7 @@ mem_write(S, a, i, b) = S'   (if S' = S with MEMS[a].MIBYTES[i] = b)
 mem_write(S, a, i, b) = ERROR   (otherwise)
 ```
 
-#### mem_size(store, memaddr : u64)
+#### `mem_size(store, memaddr : u64)`
 
 1. Return the length of `store.MEMS[memaddr].MIBYTES` divided by the [page size](page-size).
 
@@ -327,7 +327,7 @@ mem_write(S, a, i, b) = ERROR   (otherwise)
 mem_size(S, a) = n   (if |S.MEMS[a].MIBYTES| = n * 64 Ki)
 ```
 
-#### mem_grow(store, memaddr, n:u64 : store | error)
+#### `mem_grow(store, memaddr, n:u64 : store | error)`
 
 1. Try [growing](grow-mem) the [memory instance](syntax-meminst) `store.MEMS[memaddr]` by `n` [pages](page-size):
 
@@ -340,7 +340,7 @@ mem_grow(S, a, n) = ERROR   (otherwise)
 
 ### Tags
 
-#### tag_alloc(store, tagtype : (store, tagaddr))
+#### `tag_alloc(store, tagtype : (store, tagaddr))`
 
 1. Pre-condition: `tagtype` is [valid](valid-tagtype).
 2. Let `tagaddr` be the result of [allocating a tag](alloc-tag) in `store` with [tag type](syntax-tagtype) `tagtype`.
@@ -350,7 +350,7 @@ mem_grow(S, a, n) = ERROR   (otherwise)
 tag_alloc(S, tt) = (S', a)   (if alloctag(S, tt) = S', a)
 ```
 
-#### tag_type(store, tagaddr : tagtype)
+#### `tag_type(store, tagaddr : tagtype)`
 
 1. Return `S.TAGS[a].TYPE`.
 2. Post-condition: the returned [tag type](syntax-tagtype) is [valid](valid-tagtype).
@@ -361,7 +361,7 @@ tag_type(S, a) = S.TAGS[a].TYPE
 
 ### Exceptions
 
-#### exn_alloc(store, tagaddr, val* : (store, exnaddr))
+#### `exn_alloc(store, tagaddr, val* : (store, exnaddr))`
 
 1. Pre-condition: `tagaddr` is an allocated [tag address](syntax-tagaddr).
 2. Let `exnaddr` be the result of [allocating an exception instance](syntax-exninst) in `store` with [tag address](syntax-tagaddr) `tagaddr` and initialization values `val*`.
@@ -371,7 +371,7 @@ tag_type(S, a) = S.TAGS[a].TYPE
 exn_alloc(S, tagaddr, val*) = (S compose {SEXNS exninst}, |S.SEXNS|)   (if exninst = {EITAG tagaddr, EIFIELDS val*})
 ```
 
-#### exn_tag(store, exnaddr : tagaddr)
+#### `exn_tag(store, exnaddr : tagaddr)`
 
 1. Let `exninst` be the [exception instance](syntax-exninst) `store.SEXNS[exnaddr]`.
 2. Return the [tag address](syntax-tagaddr) `exninst.EITAG`.
@@ -380,7 +380,7 @@ exn_alloc(S, tagaddr, val*) = (S compose {SEXNS exninst}, |S.SEXNS|)   (if exnin
 exn_tag(S, a) = exninst.EITAG   (if exninst = S.SEXNS[a])
 ```
 
-#### exn_read(store, exnaddr : val*)
+#### `exn_read(store, exnaddr : val*)`
 
 1. Let `exninst` be the [exception instance](syntax-exninst) `store.SEXNS[exnaddr]`.
 2. Return the [values](syntax-val) `exninst.EIFIELDS`.
@@ -391,7 +391,7 @@ exn_read(S, a) = exninst.EIFIELDS   (if exninst = S.SEXNS[a])
 
 ### Globals
 
-#### global_alloc(store, globaltype, val : (store, globaladdr))
+#### `global_alloc(store, globaltype, val : (store, globaladdr))`
 
 1. Pre-condition: the `globaltype` is [valid](valid-globaltype) under the empty [context](context).
 2. Let `globaladdr` be the result of [allocating a global](alloc-global) in `store` with [global type](syntax-globaltype) `globaltype` and initialization value `val`.
@@ -401,7 +401,7 @@ exn_read(S, a) = exninst.EIFIELDS   (if exninst = S.SEXNS[a])
 global_alloc(S, gt, v) = (S', a)   (if allocglobal(S, gt, v) = S', a)
 ```
 
-#### global_type(store, globaladdr : globaltype)
+#### `global_type(store, globaladdr : globaltype)`
 
 1. Return `S.GLOBALS[a].TYPE`.
 2. Post-condition: the returned [global type](syntax-globaltype) is [valid](valid-globaltype) under the empty [context](context).
@@ -410,7 +410,7 @@ global_alloc(S, gt, v) = (S', a)   (if allocglobal(S, gt, v) = S', a)
 global_type(S, a) = S.GLOBALS[a].TYPE
 ```
 
-#### global_read(store, globaladdr : val)
+#### `global_read(store, globaladdr : val)`
 
 1. Let `gi` be the [global instance](syntax-globalinst) `store.GLOBALS[globaladdr]`.
 2. Return the [value](syntax-val) `gi.GIVALUE`.
@@ -419,7 +419,7 @@ global_type(S, a) = S.GLOBALS[a].TYPE
 global_read(S, a) = v   (if S.GLOBALS[a].GIVALUE = v)
 ```
 
-#### global_write(store, globaladdr, val : store | error)
+#### `global_write(store, globaladdr, val : store | error)`
 
 1. Let `gi` be the [global instance](syntax-globalinst) `store.GLOBALS[globaladdr]`.
 2. Let `mut t` be the structure of the [global type](syntax-globaltype) `gi.GITYPE`.
@@ -434,7 +434,7 @@ global_write(S, a, v) = ERROR   (otherwise)
 
 ### Values
 
-#### ref_type(store, reff : reftype)
+#### `ref_type(store, reff : reftype)`
 
 1. Pre-condition: the [reference](syntax-ref) `reff` is [valid](valid-val) under store `S`.
 2. Return the [reference type](syntax-reftype) `t` with which `reff` is valid.
@@ -446,7 +446,7 @@ ref_type(S, r) = t   (if S |-val r : t)
 
 > **Note:** In future versions of WebAssembly, not all references may carry precise type information at run time. In such cases, this function may return a less precise supertype.
 
-#### val_default(valtype : val)
+#### `val_default(valtype : val)`
 
 1. If `default_valtype` is not defined, then return `ERROR`.
 2. Else, return the [value](syntax-val) `default_valtype`.
@@ -458,7 +458,7 @@ val_default(t) = ERROR   (if default_t = ε)
 
 ### Matching
 
-#### match_valtype(valtype1, valtype2 : bool)
+#### `match_valtype(valtype1, valtype2 : bool)`
 
 1. Pre-condition: the [value types](syntax-valtype) `valtype1` and `valtype2` are [valid](valid-valtype) under the empty [context](context).
 2. If `valtype1` [matches](match-valtype) `valtype2`, then return `TRUE`.
@@ -469,7 +469,7 @@ match_reftype(t1, t2) = TRUE    (if |- valtypematch t1 <: t2)
 match_reftype(t1, t2) = FALSE   (otherwise)
 ```
 
-#### match_externtype(externtype1, externtype2 : bool)
+#### `match_externtype(externtype1, externtype2 : bool)`
 
 1. Pre-condition: the [extern types](syntax-externtype) `externtype1` and `externtype2` are [valid](valid-externtype) under the empty [context](context).
 2. If `externtype1` [matches](match-externtype) `externtype2`, then return `TRUE`.
