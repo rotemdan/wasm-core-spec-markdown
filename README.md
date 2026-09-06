@@ -17,6 +17,10 @@ This is a project to maintain an AI-assisted conversion of the [latest official 
 * `reference/**/*` contains the reference `.rst` files generated via the [official repository](https://github.com/WebAssembly/spec/) using tools like `sphinx` and `SpecTec`. The files are extracted from `WebAssembly/spec/document/core/_spectec/**/*.rst`, which contains intermediate outputs, after the compiled LaTeX is embedded into the reStructuredText templates
 * `markdown/**/*` contains the corresponding AI converted markdown files, with a matching directory tree, and file names ending with `.md` extensions
 
+## Reference extraction date
+
+The currently used compiled reference core specification files were built from the official Git repository, last pulled at **26 August 2026**.
+
 ## Example of reference source and output markdown
 
 ### Source reStructuredText + embedded LaTeX math blocks (excerpt from `binary/types.rst`)
@@ -89,6 +93,6 @@ Note the guide was itself mostly developed by AI agents, so it may contain some 
 
 ## License
 
-The converted markdown documents are dedicated to the public domain under [Creative Commons CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/).
-
 The reference documentation is licensed under the [W3C Software and Document License](https://www.w3.org/copyright/software-license/).
+
+Any portion of the converted markdown documents (e.g. converted code blocks) that is not covered by the original copyrights, is dedicated to the public domain under [Creative Commons CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/).
