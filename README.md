@@ -19,7 +19,7 @@ This is a project to maintain an AI-assisted conversion of the [latest official 
 
 ## Reference extraction date
 
-The currently used compiled reference core specification files were built from the official Git repository, last pulled at **26 August 2026**.
+The currently used compiled reference core specification files were built from the official Git repository, last pulled on **26 August 2026**.
 
 ## Example of reference source and output markdown
 
