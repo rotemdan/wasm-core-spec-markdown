@@ -95,4 +95,4 @@ Note the guide was itself mostly developed by AI agents, so it may contain some 
 
 The reference documentation is licensed under the [W3C Software and Document License](https://www.w3.org/copyright/software-license/).
 
-Any portion of the converted markdown documents (e.g. converted code blocks) that is not covered by the original copyrights, is dedicated to the public domain under [Creative Commons CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/).
+Any portion of the converted markdown documents that is not covered by the original copyrights (e.g. converted code blocks), is dedicated to the public domain under [Creative Commons CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/).
