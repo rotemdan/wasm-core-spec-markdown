@@ -226,11 +226,6 @@ instr ::=
   | 0x4D    => i32.le_u
   | 0x4E    => i32.ge_s
   | 0x4F    => i32.ge_u
-```
-
-```text
-instr ::=
-  | ...
   | 0x50    => i64.eqz
   | 0x51    => i64.eq
   | 0x52    => i64.ne
@@ -253,11 +248,6 @@ instr ::=
   | 0x5E    => f32.gt
   | 0x5F    => f32.le
   | 0x60    => f32.ge
-```
-
-```text
-instr ::=
-  | ...
   | 0x61    => f64.eq
   | 0x62    => f64.ne
   | 0x63    => f64.lt
@@ -287,11 +277,6 @@ instr ::=
   | 0x76    => i32.shr_u
   | 0x77    => i32.rotl
   | 0x78    => i32.rotr
-```
-
-```text
-instr ::=
-  | ...
   | 0x79    => i64.clz
   | 0x7A    => i64.ctz
   | 0x7B    => i64.popcnt
@@ -329,11 +314,6 @@ instr ::=
   | 0x96    => f32.fmin
   | 0x97    => f32.fmax
   | 0x98    => f32.copysign
-```
-
-```text
-instr ::=
-  | ...
   | 0x99    => f64.abs
   | 0x9A    => f64.neg
   | 0x9B    => f64.ceil
@@ -620,11 +600,11 @@ instr ::=
   | 0xFD 152 : u32    => i16x8.max_s
   | 0xFD 153 : u32    => i16x8.max_u
   | 0xFD 155 : u32    => i16x8.avgr_u
+  | 0xFD 273 : u32    => i16x8.relaxed_q15mulr_s
   | 0xFD 156 : u32    => i16x8.extmul_low_s_i8x16
   | 0xFD 157 : u32    => i16x8.extmul_high_s_i8x16
   | 0xFD 158 : u32    => i16x8.extmul_low_u_i8x16
   | 0xFD 159 : u32    => i16x8.extmul_high_u_i8x16
-  | 0xFD 273 : u32    => i16x8.relaxed_q15mulr_s
   | 0xFD 274 : u32    => i16x8.relaxed_dot_s_i8x16
 ```
 

@@ -160,7 +160,7 @@ table ::=
   | 0x40 0x00 tt : tabletype e : expr    => table tt e
 ```
 
-> **Note:** The encoding of a table type cannot start with byte `0x40`, hence decoding is unambiguous.The zero byte following it is reserved for future extensions.
+> **Note:** The encoding of a table type cannot start with byte `0x40`, hence decoding is unambiguous. The zero byte following it is reserved for future extensions.
 
 ### Memory Section
 
@@ -225,6 +225,9 @@ The *element section* has the id 9.
 It decodes into the list of element segments defined by a module.
 
 ```text
+elemsec ::=
+  | elem* : section_9(list(elem))    => elem*
+
 elemkind ::=
   | 0x00    => ref func
 

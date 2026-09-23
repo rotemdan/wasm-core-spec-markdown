@@ -69,6 +69,4 @@ list(X) ::=
   | n : u32 (el : X)^n    => el^n
 ```
 
-[^compression]: Additional encoding layers -- for example, introducing compression -- may be defined on top of the basic representation defined here.
-
-However, such layers are outside the scope of the current specification.
+[^compression]: Additional encoding layers -- for example, introducing compression -- may be defined on top of the basic representation defined here. However, such layers are outside the scope of the current specification.

@@ -40,7 +40,7 @@ iN N ::=
   | i : sN N    => signed_N^{-1}(i)
 ```
 
-> **Note:** The side conditions `N > 7` in the productions for non-terminal bytes of the `uN N` and `sN N` encodings restrict the encoding's length. However, "trailing zeros" are still allowed within these bounds. For example, `0x03` and `0x83 0x00` are both well-formed encodings for the value `3` as a `u8`. Similarly, either of `0x7E` and `0xFE 0xFF 0x7F` and `0xFE 0xFF 0x7F` are well-formed encodings of the value `-2` as an `s16`.
+> **Note:** The side conditions `N > 7` in the productions for non-terminal bytes of the `uN N` and `sN N` encodings restrict the encoding's length. However, "trailing zeros" are still allowed within these bounds. For example, `0x03` and `0x83 0x00` are both well-formed encodings for the value `3` as a `u8`. Similarly, either of `0x7E` and `0xFE 0x7F` and `0xFE 0xFF 0x7F` are well-formed encodings of the value `-2` as an `s16`.
 >
 > The side conditions on the value `n` of terminal bytes further enforce that any unused bits in these bytes must be `0` for positive values and `1` for negative ones. For example, `0x83 0x10` is malformed as a `u8` encoding. Similarly, both `0x83 0x3E` and `0xFF 0x7B` are malformed as `s8` encodings.
 
