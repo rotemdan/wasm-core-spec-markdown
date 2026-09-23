@@ -65,8 +65,8 @@ Never keep LaTeX. Convert each `.. math::` into a `text` block.
 * Optionals `{X^?}` → `X?`
 * `\epsilon` → `ε`
 * Apply the Notation table (§4) to all `\MACRO` tokens.
-* The `=>` arrows within a production block: Ensure exactly four spaces before `=>`, so the arrow does not visually appear as if it is attached to a member
-* **Blank line between productions.** When several productions are emitted into the *same* `text` code block, separate each production from the next with a blank line: before every production header line `NAME ::=` that follows a non-blank line (a body line, or another production), insert one blank line. This matches the official rendered HTML, which shows visible spacing between successive productions. Do **not** add a blank line before the first production (immediately after the ` ```text ` fence) or anywhere one already exists. (Automated fix: insert a blank line before any column-0 `::=` line that is preceded by a non-blank, non-fence line, applied only inside fenced code blocks — see the global-correction script.)
+* **One arrow column per block.** Within a production block every `=>` starts in the same column, so the arrows line up vertically and no arrow visually attaches to a member. Set the column from the widest left-hand side in the block plus four spaces, then pad every shorter left-hand side so that its `=>` lands on that same column. A run of single-line productions aligns its `::=` the same way. A block whose arrows do not share one column, or whose widest left-hand side carries fewer than four spaces, does not conform.
+* **Blank line between productions.** When several productions are emitted into the *same* `text` code block, separate each production from the next with a blank line: before every production header line `NAME ::=` that follows a non-blank line (a body line, or another production), insert one blank line. This matches the official rendered HTML, which shows visible spacing between successive productions. Do **not** add a blank line before the first production (immediately after the ` ```text ` fence) or anywhere one already exists. (Apply this as a post-pass over each converted file: inside every fenced block, insert a blank line before any column-0 `::=` line that is preceded by a non-blank line.)
 
 **(b) Inference rule** (a `.. math::` containing `\frac`, `\vdash`, `~>`, or a fractional premise/conclusion — see §6 for the full rendering algorithm): write the rule name (if present, from the nearest `:math:`/`:ref:` heading), then premises (one per line), a `────` divider, then the conclusion, preserving every `if …` side condition.
 
@@ -141,7 +141,8 @@ Mixed-case / lowercase single-word macros are nonterminals or meta-variables. Re
 * `\Ldotdot` → `..` (range, e.g. `[n .. m]`)
 * `\epsilon` → `ε`
 * `\BOT` → `bot`
-* `\geq` → `>=` (never `≥`)
+* `\geq` → `>=` (never `≥`), `\leq` → `<=` (never `≤`), `\neq` → `!=` (never `≠`). The whole relation family stays in ASCII: `<=`, `>=`, `!=`, `=`
+* `\land` / `\wedge` → `∧`, `\lor` / `\vee` → `∨`, `\cdot` → `·`, `\bigcat` → `⋆`, `\mod` → `mod` (these keep their symbol, as in the rendered HTML)
 * `{\mathit{x}}` → `x`, `x^\ast` → `x*`, `X^?` → `X?`
 * `\sNX` / `\sN` → signed-N representation (e.g. `s33`). Inline form reads as "N-bit signed"
 
@@ -215,6 +216,7 @@ Footnotes appear as `[#name]_` inline and `.. [#name]` definition blocks (usuall
 
 * Inline: `[#cite-pldi2017]_` → `[^cite-pldi2017]` (GFM footnote reference)
 * Group all footnote definitions at the bottom of the converted file
+* A definition whose body the source spreads over several physical lines is **one** paragraph, so keep it on the definition line, or indent continuation lines to the start of the body. Never open a continuation line at column 0: a blank line followed by a column-0 line ends the definition, and the remaining sentences fall outside the footnote.
 
 **Definition example** — RST source:
 
@@ -235,11 +237,13 @@ becomes
 
 * Render `|Name|` and `|Name|_` simply as the name text: `Unicode`, `ASCII`, `FUNCREF`
 * Do **not** invent URLs. (If a definition is present in the same file, link it.)
+* The name text is the only form that is verifiable inside this tree, because the substitution definitions live outside `reference/`, so do not expand a name into substituted words (see §10).
 
 ### 5.6 Paragraphs and line breaks (no one-sentence-per-line)
 
 * **Never break a paragraph with a single newline.** In Markdown, a single newline inside a paragraph is a *soft break* and renders as an ordinary space — it has no semantic meaning and does **not** match what is actually rendered. A paragraph must be a single block of text.
-* When the RST source splits one prose paragraph across several physical lines (the common “one sentence per line” style), either rejoin those lines into a single paragraph, or split them to multiple paragraphs during conversion. Use personal judgment to decide which approach to take.
+* When the RST source splits one prose paragraph across several physical lines (the common “one sentence per line” style), **rejoin them into a single paragraph**. Do not re-segment: a blank line in the target must stand for a genuinely separate paragraph in the source. Source line breaks carry no meaning, so turning one source paragraph into several target paragraphs changes the structure of the rendered document.
+* **Copy the prose verbatim**, including source misspellings and punctuation. Do not correct spelling, rephrase, or add words. A conversion is not an editing pass, and every silent change costs a divergence report later.
 * If the text is genuinely two paragraphs, separate them with a **blank line** (a hard break / new paragraph). Do not use a bare newline to imply a paragraph break.
 * The same rule applies *inside blockquotes*: a `> **Note:** …` whose body spreads over several `>` lines is one note paragraph — join it into a single `>` line. Keep the blank `>` line that separates two genuinely separate notes.
 * (Rationale: source that relies on single newlines for “visual” line breaks looks broken in any Markdown editor/preview and misleads readers about where paragraphs actually start and end.)
@@ -472,7 +476,19 @@ C |- ht1 <: ht2
 * [ ] All `.. index::` / `pair:` / `single:` / `.. _name:` / `.. only::` / `.. toctree::` dropped.
 * [ ] Headings use the correct `#` depth. 5th-level dotted headings are `####` (never `#####` — see §5.1).
 * [ ] Lists, notes, code blocks, and footnotes preserved.
-* [ ] Prose paragraphs are single blocks — no one-sentence-per-line breaks, and notes joined into one `>` paragraph (§5.6).
+* [ ] Prose paragraphs are single blocks — no one-sentence-per-line breaks, and notes joined into one `>` paragraph (§5.6). Prose copied verbatim, including source misspellings.
 * [ ] No double (or more) blank lines anywhere — collapse runs of blank lines to a single one (§5.7).
+* [ ] Every production block has one arrow column, four spaces after the widest left-hand side (§2a).
+* [ ] Relation symbols in ASCII (`<=`, `>=`, `!=`), other symbols in Unicode (`∧`, `∨`, `·`, `⋆`, `≈`, `⊕`, `ε`) (§4.6).
+* [ ] No footnote continuation line begins at column 0 (§5.4).
 * [ ] Substitution refs rendered as plain name text. No invented URLs.
 * [ ] No information dropped: every alternative, byte, constructor, premise, and side condition preserved.
+
+## 10. Known open questions
+
+These four cases are not settled by the rules above. Where one occurs, follow the form already used in the file, and record the instance in that chapter's verification work document instead of inventing a new rendering.
+
+* **Substitution expansions.** The `|Name|` definitions live outside `reference/`, so the substituted words are not observable from the tree. §5.5 therefore renders the name text.
+* **Reference anchors.** §1 permits either `Text` or `[Text](#t)`. No anchored link occurs anywhere in `markdown/**`, so keep the plain-text form in a file that already uses it.
+* **`--` and the other Sphinx typographic transforms.** The source writes `--` where the published document shows an em-dash, so whether to keep `--` depends on the renderer configuration, which the conversion does not observe.
+* **Source misspellings.** Prose is copied verbatim (§5.6), so a misspelling in `reference/` is reproduced. Any correction already present in the tree is recorded in the chapter's verification work document.
