@@ -12,7 +12,7 @@ numtype ::= i32 | i64 | f32 | f64
 
 The types `i32` and `i64` classify 32 and 64 bit integers, respectively. Integers are not inherently signed or unsigned, their interpretation is determined by individual operations.
 
-The types `f32` and `f64` classify 32 and 64 bit floating-point data, respectively. They correspond to the respective binary floating-point representations, also known as *single* and *double* precision, as defined by the IEEE 754 standard (Section 3.3).
+The types `f32` and `f64` classify 32 and 64 bit floating-point data, respectively. They correspond to the respective binary floating-point representations, also known as *single* and *double* precision, as defined by the IEEE754 standard (Section 3.3).
 
 Number types are *transparent*, meaning that their bit patterns can be observed. Values of number type can be stored in memories.
 

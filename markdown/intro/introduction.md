@@ -1,14 +1,10 @@
 ## Introduction
 
-WebAssembly (abbreviated Wasm [^wasm]) is a *safe, portable, low-level code format* designed for efficient execution and compact representation.
-
-Its main goal is to enable high performance applications on the Web, but it does not make any Web-specific assumptions or provide Web-specific features, so it can be employed in other environments as well.
+WebAssembly (abbreviated Wasm [^wasm]) is a *safe, portable, low-level code format* designed for efficient execution and compact representation. Its main goal is to enable high performance applications on the Web, but it does not make any Web-specific assumptions or provide Web-specific features, so it can be employed in other environments as well.
 
 WebAssembly is an open standard developed by a [W3C Community Group](https://www.w3.org/community/webassembly/).
 
-This document describes version release of the core WebAssembly standard.
-
-It is intended that it will be superseded by new incremental releases with additional features in the future.
+This document describes version release of the core WebAssembly standard. It is intended that it will be superseded by new incremental releases with additional features in the future.
 
 ### Design Goals
 
@@ -36,21 +32,13 @@ WebAssembly code is also intended to be easy to inspect and debug, especially in
 
 At its core, WebAssembly is a *virtual instruction set architecture (virtual ISA)*. As such, it has many use cases and can be embedded in many different environments. To encompass their variety and enable maximum reuse, the WebAssembly specification is split and layered into several documents.
 
-This document is concerned with the core ISA layer of WebAssembly.
+This document is concerned with the core ISA layer of WebAssembly. It defines the instruction set, binary encoding, validation, and execution semantics, as well as a textual representation. It does not, however, define how WebAssembly programs can interact with a specific environment they execute in, nor how they are invoked from such an environment.
 
-It defines the instruction set, binary encoding, validation, and execution semantics, as well as a textual representation.
-
-It does not, however, define how WebAssembly programs can interact with a specific environment they execute in, nor how they are invoked from such an environment.
-
-Instead, this specification is complemented by additional documents defining interfaces to specific embedding environments such as the Web.
-
-These will each define a WebAssembly *application programming interface (API)* suitable for a given environment.
+Instead, this specification is complemented by additional documents defining interfaces to specific embedding environments such as the Web. These will each define a WebAssembly *application programming interface (API)* suitable for a given environment.
 
 ### Security Considerations
 
-WebAssembly provides no ambient access to the computing environment in which code is executed. Any interaction with the environment, such as I/O, access to resources, or operating system calls, can only be performed by invoking functions provided by the embedder and imported into a WebAssembly module.
-
-An embedder can establish security policies suitable for a respective environment by controlling or limiting which functional capabilities it makes available for import. Such considerations are an embedder's responsibility and the subject of API definitions for a specific environment.
+WebAssembly provides no ambient access to the computing environment in which code is executed. Any interaction with the environment, such as I/O, access to resources, or operating system calls, can only be performed by invoking functions provided by the embedder and imported into a WebAssembly module. An embedder can establish security policies suitable for a respective environment by controlling or limiting which functional capabilities it makes available for import. Such considerations are an embedder’s responsibility and the subject of API definitions for a specific environment.
 
 Because WebAssembly is designed to be translated into machine code running directly on the host's hardware, it is potentially vulnerable to side channel attacks on the hardware level. In environments where this is a concern, an embedder may have to put suitable mitigations into place to isolate WebAssembly computations.
 

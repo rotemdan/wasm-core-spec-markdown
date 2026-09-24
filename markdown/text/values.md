@@ -43,7 +43,7 @@ uN ::=
   | '0x' n : hexnum    => n    (if n < 2^N)
 
 sN ::=
-  | s : sign n : uN    => s * n    (if -2^(N-1) <= s * n < 2^(N-1))
+  | s : sign n : uN    => s · n    (if -2^(N-1) <= s · n < 2^(N-1))
 ```
 
 Uninterpreted integers can be written as either signed or unsigned, and are normalized to unsigned in the abstract syntax.
@@ -61,11 +61,11 @@ Floating-point values can be represented in either decimal or hexadecimal notati
 ```text
 frac ::=
   | d : digit                     => d / 10
-  | d : digit  '_'?  p : frac     => (d + p/10) / 10
+  | d : digit  '_'?  p : frac     => (d + p / 10) / 10
 
 hexfrac ::=
   | h : hexdigit                  => h / 16
-  | h : hexdigit  '_'?  p : hexfrac  => (h + p/16) / 16
+  | h : hexdigit  '_'?  p : hexfrac  => (h + p / 16) / 16
 
 mant ::=
   | p : num  '.'?                 => p
@@ -76,19 +76,17 @@ hexmant ::=
   | p : hexnum  '.'  q : hexfrac  => p + q
 
 float ::=
-  | p : mant  ('E' | 'e') s : sign e : num  => p * 10^(s*e)
+  | p : mant  ('E' | 'e') s : sign e : num  => p · 10^(s · e)
 
 hexfloat ::=
-  | '0x' p : hexmant  ('P' | 'p') s : sign e : num  => p * 2^(s*e)
+  | '0x' p : hexmant  ('P' | 'p') s : sign e : num  => p · 2^(s · e)
 ```
 
 The value of a literal must not lie outside the representable range of the corresponding IEEE754 type (that is, a numeric value must not overflow to `±∞`), but it may be rounded to the nearest representable value.
 
 > **Note:** Rounding can be prevented by using hexadecimal notation with no more significant bits than supported by the required type.
 
-Floating-point values may also be written as constants for *infinity* or *canonical NaN* (*not a number*).
-
-Furthermore, arbitrary NaN values may be expressed by providing an explicit payload value.
+Floating-point values may also be written as constants for *infinity* or *canonical NaN* (*not a number*). Furthermore, arbitrary NaN values may be expressed by providing an explicit payload value.
 
 ```text
 fN ::=
@@ -105,13 +103,11 @@ fNmag ::=
 
 ### Strings
 
-*Strings* denote sequences of bytes that can represent both textual and binary data.
-
-They are enclosed in quotation marks and may contain any character other than ASCII control characters, quotation marks (`'`), or backslash (`\`), except when expressed with an *escape sequence*.
+*Strings* denote sequences of bytes that can represent both textual and binary data. They are enclosed in quotation marks and may contain any character other than ASCII control characters, quotation marks (`'`), or backslash (`\`), except when expressed with an *escape sequence*.
 
 ```text
 string ::=
-  | ''  (b* : stringelem)*  ''  => ++ (b*)*    (if | ++ (b*)* | < 2^32)
+  | ''  (b* : stringelem)*  ''  => ⋆ (b*)*    (if | ⋆ (b*)* | < 2^32)
 
 stringelem ::=
   | c : stringchar  => utf8(c)
@@ -122,14 +118,14 @@ Each character in a string literal represents the byte sequence corresponding to
 
 ```text
 stringchar ::=
-  | c : char  => c    (if c >= U+20 && c != U+7F && c != '' && c != '\')
+  | c : char  => c    (if c >= U+20 ∧ c != U+7F ∧ c != '' ∧ c != '\')
   | '\t'  => U+09
   | '\n'  => U+0A
   | '\r'  => U+0D
   | '\"'  => U+22
   | '\''  => U+27
   | '\\'  => U+5C
-  | '\u{' n : hexnum '}'  => n    (if n < 0xD800 || 0xE800 <= n < 0x110000)
+  | '\u{' n : hexnum '}'  => n    (if n < 0xD800 ∨ 0xE800 <= n < 0x110000)
 ```
 
 ### Names

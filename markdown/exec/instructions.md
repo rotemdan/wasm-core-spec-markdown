@@ -37,13 +37,13 @@ val drop -> ε
 4. Pop the value `val_2` from the stack.
 5. Assert: Due to [validation](valid-select), a value is on the top of the stack.
 6. Pop the value `val_1` from the stack.
-7. If `c ≠ 0`, then:
+7. If `c != 0`, then:
    1. Push the value `val_1` to the stack.
 8. Else:
    1. Push the value `val_2` to the stack.
 
 ```text
-val1 val2 (i32.const c) (select (t*)^?) -> val1   (if c ≠ 0)
+val1 val2 (i32.const c) (select (t*)^?) -> val1   (if c != 0)
 val1 val2 (i32.const c) (select (t*)^?) -> val2   (if c = 0)
 ```
 
@@ -83,13 +83,13 @@ z ; val^m (loop bt instr*) -> (label_m { loop bt instr* } val^m instr*)   (if fb
 
 1. Assert: Due to validation, a value of [number type](syntax-numtype) `i32` is on the top of the stack.
 2. Pop the value `(i32.const c)` from the stack.
-3. If `c ≠ 0`, then:
+3. If `c != 0`, then:
    1. Execute the instruction `(block bt instr1*)`.
 4. Else:
    1. Execute the instruction `(block bt instr2*)`.
 
 ```text
-(i32.const c) (if bt instr1* else instr2*) -> (block bt instr1*)   (if c ≠ 0)
+(i32.const c) (if bt instr1* else instr2*) -> (block bt instr1*)   (if c != 0)
 (i32.const c) (if bt instr1* else instr2*) -> (block bt instr2*)   (if c = 0)
 ```
 
@@ -127,13 +127,13 @@ z ; val^m (loop bt instr*) -> (label_m { loop bt instr* } val^m instr*)   (if fb
 
 1. Assert: Due to [validation](valid-br_if), a value of [number type](syntax-numtype) `i32` is on the top of the stack.
 2. Pop the value `(i32.const c)` from the stack.
-3. If `c ≠ 0`, then:
+3. If `c != 0`, then:
    1. Execute the instruction `(br l)`.
 4. Else:
    1. Do nothing.
 
 ```text
-(i32.const c) (br_if l) -> (br l)   (if c ≠ 0)
+(i32.const c) (br_if l) -> (br l)   (if c != 0)
 (i32.const c) (br_if l) -> ε   (if c = 0)
 ```
 
@@ -148,7 +148,7 @@ z ; val^m (loop bt instr*) -> (label_m { loop bt instr* } val^m instr*)   (if fb
 
 ```text
 (i32.const i) (br_table l* l') -> (br l*[i])   (if i < |l*|)
-(i32.const i) (br_table l* l') -> (br l')   (if i ≥ |l*|)
+(i32.const i) (br_table l* l') -> (br l')   (if i >= |l*|)
 ```
 
 #### `br_on_null l`
@@ -250,7 +250,7 @@ s ; f ; reff (br_on_cast_fail l rt1 rt2) -> reff (br l)   (otherwise)
 6. Execute the instruction `(call_ref z.FUNCS[a].ITYPE)`.
 
 ```text
-z ; (call x) -> (ref.func a) (call_ref z.FUNCS[a].ITYPE)   (if z.MODULE.MIFUNCS[x] = a)
+z ; (call x) -> (ref.func a) (call_ref z.FUNCS[a].ITYPE)   (if z.MODULE.IFUNCS[x] = a)
 ```
 
 #### `call_ref y`
@@ -289,7 +289,7 @@ z ; (ref.null) (call_ref y) -> z ; trap
 6. Execute the instruction `(return_call_ref z.FUNCS[a].ITYPE)`.
 
 ```text
-z ; (return_call x) -> (ref.func a) (return_call_ref z.FUNCS[a].ITYPE)   (if z.MODULE.MIFUNCS[x] = a)
+z ; (return_call x) -> (ref.func a) (return_call_ref z.FUNCS[a].ITYPE)   (if z.MODULE.IFUNCS[x] = a)
 ```
 
 #### `return_call_ref y`
@@ -351,7 +351,7 @@ z ; (frame_k { f } val'* val^n (ref.func a) (return_call_ref y) instr*) -> val^n
 6. Let `a` be the length of `z.EXNS`.
 7. Assert: Due to [validation](valid-throw), there are at least `n` values on the top of the stack.
 8. Pop the values `val^n` from the stack.
-9. Let `exn` be the [exception instance](syntax-exninst) `{ itag z.MODULE.TAGS[x], ifields val^n }`.
+9. Let `exn` be the [exception instance](syntax-exninst) `{ ITAG z.MODULE.TAGS[x], IFIELDS val^n }`.
 10. Append `exn` to `z.EXNS`.
 11. Push the value `(ref.exn a)` to the stack.
 12. Execute the instruction `throw_ref`.
@@ -360,7 +360,7 @@ z ; (frame_k { f } val'* val^n (ref.func a) (return_call_ref y) instr*) -> val^n
 z ; val^n (throw x) -> z[.EXNS =⊕ exn] ; (ref.exn a) throw_ref
   (if z.TAGS[x].ITYPE ≈ func t^n -> ε
    ∧ a = |z.EXNS|
-   ∧ exn = { itag z.MODULE.TAGS[x], ifields val^n })
+   ∧ exn = { ITAG z.MODULE.TAGS[x], IFIELDS val^n })
 ```
 
 #### `throw_ref`
@@ -373,7 +373,7 @@ z ; val^n (throw x) -> z[.EXNS =⊕ exn] ; (ref.exn a) throw_ref
 5. If `val'` is some `ref.exn exnaddr`, then:
    1. Let `(ref.exn a)` be the destructuring of `val'`.
    2. Pop all values `val*` from the top of the stack.
-   3. If `val* ≠ ε`, then:
+   3. If `val* != ε`, then:
       1. Push the value `(ref.exn a)` to the stack.
       2. Execute the instruction `throw_ref`.
    4. Else if the first non-value entry of the stack is a `label`, then:
@@ -395,7 +395,7 @@ z ; val^n (throw x) -> z[.EXNS =⊕ exn] ; (ref.exn a) throw_ref
             1. Pop the `handler` from the stack.
             2. Push the value `(ref.exn a)` to the stack.
             3. Execute the instruction `throw_ref`.
-         5. Else if `a ≥ |z.EXNS|`, then:
+         5. Else if `a >= |z.EXNS|`, then:
             1. Let `catch_0 catch'*` be `catch''*`.
             2. If `catch_0` is some `catch_all labelidx`, then:
                1. Let `(catch_all l)` be the destructuring of `catch_0`.
@@ -431,7 +431,7 @@ z ; val^n (throw x) -> z[.EXNS =⊕ exn] ; (ref.exn a) throw_ref
                   6. Execute the instruction `throw_ref`.
             4. Else if `catch_0` is some `catch_ref tagidx labelidx`, then:
                1. Let `(catch_ref x l)` be the destructuring of `catch_0`.
-               2. If `x ≥ |z.MODULE.TAGS|` or `z.EXNS[a].ITAG ≠ z.MODULE.TAGS[x]`, then:
+               2. If `x >= |z.MODULE.TAGS|` or `z.EXNS[a].ITAG != z.MODULE.TAGS[x]`, then:
                   1. Let `catch catch'*` be `catch''*`.
                   2. Pop the `handler` from the stack.
                   3. Let `H'` be the `handler` whose arity is `n` and whose catch handler is `catch'*`.
@@ -470,7 +470,7 @@ z ; val^n (throw x) -> z[.EXNS =⊕ exn] ; (ref.exn a) throw_ref
 z ; (ref.null) throw_ref -> trap
 
 z ; val* (ref.exn a) throw_ref instr* -> (ref.exn a) throw_ref
-  (if val* ≠ ε ∨ instr* ≠ ε)
+  (if val* != ε ∨ instr* != ε)
 
 z ; (label_n { instr'* } (ref.exn a) throw_ref) -> (ref.exn a) throw_ref
 
@@ -692,11 +692,11 @@ val (local.tee x) -> val val (local.set x)
 #### `global.get x`
 
 1. Let `z` be the current state.
-2. Let `val` be the [value](syntax-val) `z.GLOBALS[x].value`.
+2. Let `val` be the [value](syntax-val) `z.GLOBALS[x].IVALUE`.
 3. Push the value `val` to the stack.
 
 ```text
-z ; (global.get x) -> val   (if z.GLOBALS[x].value = val)
+z ; (global.get x) -> val   (if z.GLOBALS[x].IVALUE = val)
 ```
 
 #### `global.set x`
@@ -707,7 +707,7 @@ z ; (global.get x) -> val   (if z.GLOBALS[x].value = val)
 4. Replace `z.GLOBALS[x].value` with `val`.
 
 ```text
-z ; val (global.set x) -> z[.GLOBALS[x].value = val] ; ε
+z ; val (global.set x) -> z[.GGLOBALS[x].GVALUE = val] ; ε
 ```
 
 ### Table Instructions
@@ -717,13 +717,13 @@ z ; val (global.set x) -> z[.GLOBALS[x].value = val] ; ε
 1. Let `z` be the current state.
 2. Assert: Due to validation, a [number value](syntax-num) is on the top of the stack.
 3. Pop the value `(at.const i)` from the stack.
-4. If `i ≥ |z.TABLES[x].irefs|`, then:
+4. If `i >= |z.TABLES[x].IREFS|`, then:
    1. Trap.
-5. Push the value `z.TABLES[x].irefs[i]` to the stack.
+5. Push the value `z.TABLES[x].IREFS[i]` to the stack.
 
 ```text
-z ; (at.const i) (table.get x) -> trap   (if i ≥ |z.TABLES[x].irefs|)
-z ; (at.const i) (table.get x) -> z.TABLES[x].irefs[i]   (if i < |z.TABLES[x].irefs|)
+z ; (at.const i) (table.get x) -> trap   (if i >= |z.TABLES[x].IREFS|)
+z ; (at.const i) (table.get x) -> z.TABLES[x].IREFS[i]   (if i < |z.TABLES[x].IREFS|)
 ```
 
 #### `table.set x`
@@ -733,26 +733,26 @@ z ; (at.const i) (table.get x) -> z.TABLES[x].irefs[i]   (if i < |z.TABLES[x].ir
 3. Pop the value `reff` from the stack.
 4. Assert: Due to validation, a [number value](syntax-num) is on the top of the stack.
 5. Pop the value `(at.const i)` from the stack.
-6. If `i ≥ |z.TABLES[x].irefs|`, then:
+6. If `i >= |z.TABLES[x].IREFS|`, then:
    1. Trap.
-7. Replace `z.TABLES[x].trefs[i]` with `reff`.
+7. Replace `z.TABLES[x].TREFS[i]` with `reff`.
 
 ```text
-z ; (at.const i) reff (table.set x) -> z ; trap   (if i ≥ |z.TABLES[x].irefs|)
-z ; (at.const i) reff (table.set x) -> z[.TABLES[x].trefs[i] = reff] ; ε   (if i < |z.TABLES[x].irefs|)
+z ; (at.const i) reff (table.set x) -> z ; trap   (if i >= |z.TABLES[x].IREFS|)
+z ; (at.const i) reff (table.set x) -> z[.TTABLES[x].TREFS[i] = reff] ; ε   (if i < |z.TABLES[x].IREFS|)
 ```
 
 #### `table.size x`
 
 1. Let `z` be the current state.
-2. Let `(at lim rt)` be the destructuring of `z.TABLES[x].itype`.
-3. Let `n` be the length of `z.TABLES[x].irefs`.
+2. Let `(at lim rt)` be the destructuring of `z.TABLES[x].ITYPE`.
+3. Let `n` be the length of `z.TABLES[x].IREFS`.
 4. Push the value `(at.const n)` to the stack.
 
 ```text
 z ; (table.size x) -> (at.const n)
-  (if |z.TABLES[x].irefs| = n
-   ∧ z.TABLES[x].itype = at lim rt)
+  (if |z.TABLES[x].IREFS| = n
+   ∧ z.TABLES[x].ITYPE = at lim rt)
 ```
 
 #### `table.grow x`
@@ -764,13 +764,13 @@ z ; (table.size x) -> (at.const n)
 5. Pop the value `reff` from the stack.
 6. Either:
    1. Let `ti` be the [table instance](syntax-tableinst) `growtable(z.TABLES[x], n, reff)`.
-   2. Push the value `(at.const |z.TABLES[x].irefs|)` to the stack.
+   2. Push the value `(at.const |z.TABLES[x].IREFS|)` to the stack.
    3. Replace `z.TABLES[x]` with `ti`.
 7. Or:
    1. Push the value `(at.const signed_{|at|}(-1))` to the stack.
 
 ```text
-z ; reff (at.const n) (table.grow x) -> z[.TABLES[x] = ti] ; (at.const |z.TABLES[x].irefs|)
+z ; reff (at.const n) (table.grow x) -> z[.TABLES[x] = ti] ; (at.const |z.TABLES[x].IREFS|)
   (if ti = growtable(z.TABLES[x], n, reff))
 z ; reff (at.const n) (table.grow x) -> z ; (at.const signed_{|at|}(-1))
 ```
@@ -788,7 +788,7 @@ z ; reff (at.const n) (table.grow x) -> z ; (at.const signed_{|at|}(-1))
 5. Pop the value `val` from the stack.
 6. Assert: Due to validation, a value of [number type](syntax-numtype) `at` is on the top of the stack.
 7. Pop the value `(numtype0.const i)` from the stack.
-8. If `i + n > |z.TABLES[x].irefs|`, then:
+8. If `i + n > |z.TABLES[x].IREFS|`, then:
    1. Trap.
 9. If `n = 0`, then:
    1. Do nothing.
@@ -802,7 +802,7 @@ z ; reff (at.const n) (table.grow x) -> z ; (at.const signed_{|at|}(-1))
     7. Execute the instruction `(table.fill x)`.
 
 ```text
-z ; (at.const i) val (at.const n) (table.fill x) -> trap   (if i + n > |z.TABLES[x].irefs|)
+z ; (at.const i) val (at.const n) (table.fill x) -> trap   (if i + n > |z.TABLES[x].IREFS|)
 z ; (at.const i) val (at.const n) (table.fill x) -> ε   (otherwise, if n = 0)
 z ; (at.const i) val (at.const n) (table.fill x) ->
     (at.const i) val (table.set x)
@@ -818,14 +818,14 @@ z ; (at.const i) val (at.const n) (table.fill x) ->
 5. Pop the value `(at2.const i2)` from the stack.
 6. Assert: Due to validation, a [number value](syntax-num) is on the top of the stack.
 7. Pop the value `(at1.const i1)` from the stack.
-8. If `i1 + n > |z.TABLES[x_1].irefs|`, then:
+8. If `i1 + n > |z.TABLES[x_1].IREFS|`, then:
    1. Trap.
-9. If `i2 + n > |z.TABLES[x_2].irefs|`, then:
+9. If `i2 + n > |z.TABLES[x_2].IREFS|`, then:
    1. Trap.
 10. If `n = 0`, then:
     1. Do nothing.
 11. Else:
-    1. If `i1 ≤ i2`, then:
+    1. If `i1 <= i2`, then:
        1. Push the value `(at1.const i1)` to the stack.
        2. Push the value `(at2.const i2)` to the stack.
        3. Execute the instruction `(table.get x2)`.
@@ -844,11 +844,11 @@ z ; (at.const i) val (at.const n) (table.fill x) ->
 
 ```text
 z ; (at1.const i1) (at2.const i2) (at'.const n) (table.copy x y) -> trap
-  (if i1 + n > |z.TABLES[x_1].irefs| ∨ i2 + n > |z.TABLES[x_2].irefs|)
+  (if i1 + n > |z.TABLES[x_1].IREFS| ∨ i2 + n > |z.TABLES[x_2].IREFS|)
 z ; (at1.const i1) (at2.const i2) (at'.const n) (table.copy x y) -> ε   (otherwise, if n = 0)
 z ; (at1.const i1) (at2.const i2) (at'.const n) (table.copy x y) ->
     (at1.const i1) (at2.const i2) (table.get x2) (table.set x1)
-    (at1.const i1 + 1) (at2.const i2 + 1) (at'.const n - 1) (table.copy x y)   (otherwise, if i1 ≤ i2)
+    (at1.const i1 + 1) (at2.const i2 + 1) (at'.const n - 1) (table.copy x y)   (otherwise, if i1 <= i2)
 z ; (at1.const i1) (at2.const i2) (at'.const n) (table.copy x y) ->
     (at1.const i1 + n - 1) (at2.const i2 + n - 1) (table.get x2) (table.set x1)
     (at1.const i1) (at2.const i2) (at'.const n - 1) (table.copy x y)   (otherwise)
@@ -863,16 +863,16 @@ z ; (at1.const i1) (at2.const i2) (at'.const n) (table.copy x y) ->
 5. Pop the value `(i32.const j)` from the stack.
 6. Assert: Due to validation, a [number value](syntax-num) is on the top of the stack.
 7. Pop the value `(at.const i)` from the stack.
-8. If `i + n > |z.TABLES[x].irefs|`, then:
+8. If `i + n > |z.TABLES[x].IREFS|`, then:
    1. Trap.
-9. If `j + n > |z.ELEMS[y].erefs|`, then:
+9. If `j + n > |z.ELEMS[y].IREFS|`, then:
    1. Trap.
 10. If `n = 0`, then:
     1. Do nothing.
 11. Else:
-    1. Assert: Due to validation, `j < |z.ELEMS[y].erefs|`.
+    1. Assert: Due to validation, `j < |z.ELEMS[y].IREFS|`.
     2. Push the value `(at.const i)` to the stack.
-    3. Push the value `z.ELEMS[y].erefs[j]` to the stack.
+    3. Push the value `z.ELEMS[y].IREFS[j]` to the stack.
     4. Execute the instruction `(table.set x)`.
     5. Push the value `(at.const i + 1)` to the stack.
     6. Push the value `(i32.const j + 1)` to the stack.
@@ -881,20 +881,20 @@ z ; (at1.const i1) (at2.const i2) (at'.const n) (table.copy x y) ->
 
 ```text
 z ; (at.const i) (i32.const j) (i32.const n) (table.init x y) -> trap
-  (if i + n > |z.TABLES[x].irefs| ∨ j + n > |z.ELEMS[y].erefs|)
+  (if i + n > |z.TABLES[x].IREFS| ∨ j + n > |z.ELEMS[y].IREFS|)
 z ; (at.const i) (i32.const j) (i32.const n) (table.init x y) -> ε   (otherwise, if n = 0)
 z ; (at.const i) (i32.const j) (i32.const n) (table.init x y) ->
-    (at.const i) z.ELEMS[y].erefs[j] (table.set x)
+    (at.const i) z.ELEMS[y].IREFS[j] (table.set x)
     (at.const i + 1) (i32.const j + 1) (i32.const n - 1) (table.init x y)   (otherwise)
 ```
 
 #### `elem.drop x`
 
 1. Let `z` be the current state.
-2. Replace `z.ELEMS[x].erefs` with `ε`.
+2. Replace `z.ELEMS[x].IREFS` with `ε`.
 
 ```text
-z ; (elem.drop x) -> z[.ELEMS[x].erefs = ε] ; ε
+z ; (elem.drop x) -> z[.ELEMS[x].IREFS = ε] ; ε
 ```
 
 ### Memory Instructions
@@ -909,28 +909,28 @@ z ; (elem.drop x) -> z[.ELEMS[x].erefs = ε] ; ε
 2. Assert: Due to validation, a [number value](syntax-num) is on the top of the stack.
 3. Pop the value `(at.const i)` from the stack.
 4. If `loadop?` is not defined, then:
-   1. If `i + ao.offset + |nt| / 8 > |z.MEMS[x].ibytes|`, then:
+   1. If `i + ao.offset + |nt| / 8 > |z.MEMS[x].IBYTES|`, then:
       1. Trap.
-   2. Let `c` be the result for which `bytes_nt(c) = z.MEMS[x].ibytes[i + ao.offset : |nt| / 8]`.
+   2. Let `c` be the result for which `bytes_nt(c) = z.MEMS[x].IBYTES[i + ao.offset : |nt| / 8]`.
    3. Push the value `(nt.const c)` to the stack.
 5. Else:
    1. Assert: Due to validation, `nt` is `iN`.
    2. Let `loadop_0` be `loadop?`.
    3. Let `n_sx` be the destructuring of `loadop_0`.
-   4. If `i + ao.offset + n / 8 > |z.MEMS[x].ibytes|`, then:
+   4. If `i + ao.offset + n / 8 > |z.MEMS[x].IBYTES|`, then:
       1. Trap.
-   5. Let `c` be the result for which `bytes_{iN n}(c) = z.MEMS[x].ibytes[i + ao.offset : n / 8]`.
+   5. Let `c` be the result for which `bytes_{iN n}(c) = z.MEMS[x].IBYTES[i + ao.offset : n / 8]`.
    6. Push the value `(iN.const extend_{n, |nt|}^{sx}(c))` to the stack.
 
 ```text
 z ; (at.const i) (nt.load x ao) -> trap
-  (if i + ao.offset + |nt| / 8 > |z.MEMS[x].ibytes|)
+  (if i + ao.offset + |nt| / 8 > |z.MEMS[x].IBYTES|)
 z ; (at.const i) (nt.load x ao) -> (nt.const c)
-  (if bytes_nt(c) = z.MEMS[x].ibytes[i + ao.offset : |nt| / 8])
+  (if bytes_nt(c) = z.MEMS[x].IBYTES[i + ao.offset : |nt| / 8])
 z ; (at.const i) (iN.load n_sx x ao) -> trap
-  (if i + ao.offset + n / 8 > |z.MEMS[x].ibytes|)
+  (if i + ao.offset + n / 8 > |z.MEMS[x].IBYTES|)
 z ; (at.const i) (iN.load n_sx x ao) -> (iN.const extend_{n, |iN|}^{sx}(c))
-  (if bytes_{iN n}(c) = z.MEMS[x].ibytes[i + ao.offset : n / 8])
+  (if bytes_{iN n}(c) = z.MEMS[x].IBYTES[i + ao.offset : n / 8])
 ```
 
 #### `v128.load K shape M_sx x ao`
@@ -938,18 +938,18 @@ z ; (at.const i) (iN.load n_sx x ao) -> (iN.const extend_{n, |iN|}^{sx}(c))
 1. Let `z` be the current state.
 2. Assert: Due to validation, a [number value](syntax-num) is on the top of the stack.
 3. Pop the value `(at.const i)` from the stack.
-4. If `i + ao.offset + K * M / 8 > |z.MEMS[x].ibytes|`, then:
+4. If `i + ao.offset + K * M / 8 > |z.MEMS[x].IBYTES|`, then:
    1. Trap.
-5. Let `j^M` be the result for which `(bytes_{iN K}(j) = z.MEMS[x].ibytes[i + ao.offset + k * K / 8 : K / 8])^{k<M}`.
+5. Let `j^M` be the result for which `(bytes_{iN K}(j) = z.MEMS[x].IBYTES[i + ao.offset + k * K / 8 : K / 8])^{k<M}`.
 6. Let `iN N` be the result for which `N = K * 2`.
 7. Let `c` be `lanes^{-1}_{iN N shape M}((extend_{K, N}^{sx}(j))^{M})`.
 8. Push the value `(v128.const c)` to the stack.
 
 ```text
 z ; (at.const i) (v128.load K shape M_sx x ao) -> trap
-  (if i + ao.offset + K * M / 8 > |z.MEMS[x].ibytes|)
+  (if i + ao.offset + K * M / 8 > |z.MEMS[x].IBYTES|)
 z ; (at.const i) (v128.load K shape M_sx x ao) -> (v128.const c)
-  (if (bytes_{iN K}(j) = z.MEMS[x].ibytes[i + ao.offset + k * K / 8 : K / 8])^{k<M}
+  (if (bytes_{iN K}(j) = z.MEMS[x].IBYTES[i + ao.offset + k * K / 8 : K / 8])^{k<M}
    ∧ c = lanes^{-1}_{iN N shape M}((extend_{K, N}^{sx}(j))^{M}) ∧ N = K * 2)
 ```
 
@@ -958,19 +958,19 @@ z ; (at.const i) (v128.load K shape M_sx x ao) -> (v128.const c)
 1. Let `z` be the current state.
 2. Assert: Due to validation, a [number value](syntax-num) is on the top of the stack.
 3. Pop the value `(at.const i)` from the stack.
-4. If `i + ao.offset + N / 8 > |z.MEMS[x].ibytes|`, then:
+4. If `i + ao.offset + N / 8 > |z.MEMS[x].IBYTES|`, then:
    1. Trap.
 5. Let `M` be `128 / N`.
 6. Let `iN N` be the result for which `|iN N| = N`.
-7. Let `j` be the result for which `bytes_{iN N}(j) = z.MEMS[x].ibytes[i + ao.offset : N / 8]`.
+7. Let `j` be the result for which `bytes_{iN N}(j) = z.MEMS[x].IBYTES[i + ao.offset : N / 8]`.
 8. Let `c` be `lanes^{-1}_{iN N shape M}(j^{M})`.
 9. Push the value `(v128.const c)` to the stack.
 
 ```text
 z ; (at.const i) (v128.load N_splat x ao) -> trap
-  (if i + ao.offset + N / 8 > |z.MEMS[x].ibytes|)
+  (if i + ao.offset + N / 8 > |z.MEMS[x].IBYTES|)
 z ; (at.const i) (v128.load N_splat x ao) -> (v128.const c)
-  (if bytes_{iN N}(j) = z.MEMS[x].ibytes[i + ao.offset : N / 8]
+  (if bytes_{iN N}(j) = z.MEMS[x].IBYTES[i + ao.offset : N / 8]
    ∧ N = |iN N|
    ∧ M = 128 / N
    ∧ c = lanes^{-1}_{iN N shape M}(j^{M}))
@@ -981,17 +981,17 @@ z ; (at.const i) (v128.load N_splat x ao) -> (v128.const c)
 1. Let `z` be the current state.
 2. Assert: Due to validation, a [number value](syntax-num) is on the top of the stack.
 3. Pop the value `(at.const i)` from the stack.
-4. If `i + ao.offset + N / 8 > |z.MEMS[x].ibytes|`, then:
+4. If `i + ao.offset + N / 8 > |z.MEMS[x].IBYTES|`, then:
    1. Trap.
-5. Let `j` be the result for which `bytes_{iN N}(j) = z.MEMS[x].ibytes[i + ao.offset : N / 8]`.
+5. Let `j` be the result for which `bytes_{iN N}(j) = z.MEMS[x].IBYTES[i + ao.offset : N / 8]`.
 6. Let `c` be `extend_{N, 128}^{u}(j)`.
 7. Push the value `(v128.const c)` to the stack.
 
 ```text
 z ; (at.const i) (v128.load N_zero x ao) -> trap
-  (if i + ao.offset + N / 8 > |z.MEMS[x].ibytes|)
+  (if i + ao.offset + N / 8 > |z.MEMS[x].IBYTES|)
 z ; (at.const i) (v128.load N_zero x ao) -> (v128.const c)
-  (if bytes_{iN N}(j) = z.MEMS[x].ibytes[i + ao.offset : N / 8]
+  (if bytes_{iN N}(j) = z.MEMS[x].IBYTES[i + ao.offset : N / 8]
    ∧ c = extend_{N, 128}^{u}(j))
 ```
 
@@ -1002,19 +1002,19 @@ z ; (at.const i) (v128.load N_zero x ao) -> (v128.const c)
 3. Pop the value `(v128.const c1)` from the stack.
 4. Assert: Due to [validation](valid-vload_lane), a [number value](syntax-num) is on the top of the stack.
 5. Pop the value `(at.const i)` from the stack.
-6. If `i + ao.offset + N / 8 > |z.MEMS[x].ibytes|`, then:
+6. If `i + ao.offset + N / 8 > |z.MEMS[x].IBYTES|`, then:
    1. Trap.
 7. Let `M` be `|v128| / N`.
 8. Let `iN N` be the result for which `|iN N| = N`.
-9. Let `k` be the result for which `bytes_{iN N}(k) = z.MEMS[x].ibytes[i + ao.offset : N / 8]`.
+9. Let `k` be the result for which `bytes_{iN N}(k) = z.MEMS[x].IBYTES[i + ao.offset : N / 8]`.
 10. Let `c` be `lanes^{-1}_{iN N shape M}(lanes_{iN N shape M}(c1)[[j] = k])`.
 11. Push the value `(v128.const c)` to the stack.
 
 ```text
 z ; (at.const i) (v128.const c1) (v128.load N_lane x ao j) -> trap
-  (if i + ao.offset + N / 8 > |z.MEMS[x].ibytes|)
+  (if i + ao.offset + N / 8 > |z.MEMS[x].IBYTES|)
 z ; (at.const i) (v128.const c1) (v128.load N_lane x ao j) -> (v128.const c)
-  (if bytes_{iN N}(k) = z.MEMS[x].ibytes[i + ao.offset : N / 8]
+  (if bytes_{iN N}(k) = z.MEMS[x].IBYTES[i + ao.offset : N / 8]
    ∧ N = |iN N|
    ∧ M = |v128| / N
    ∧ c = lanes^{-1}_{iN N shape M}(lanes_{iN N shape M}(c1)[[j] = k]))
@@ -1029,30 +1029,30 @@ z ; (at.const i) (v128.const c1) (v128.load N_lane x ao j) -> (v128.const c)
 5. Pop the value `(at.const i)` from the stack.
 6. Assert: Due to [validation](valid-store), `nt = nt'`.
 7. If `storeop?` is not defined, then:
-   1. If `i + ao.offset + |nt'| / 8 > |z.MEMS[x].ibytes|`, then:
+   1. If `i + ao.offset + |nt'| / 8 > |z.MEMS[x].IBYTES|`, then:
       1. Trap.
    2. Let `b*` be `bytes_{nt'}(c)`.
    3. Replace `z.MEMS[x].bytes[i + ao.offset : |nt'| / 8]` with `b*`.
 8. Else:
    1. Assert: Due to [validation](valid-store), `nt'` is `iN`.
    2. Let `n` be `storeop?`.
-   3. If `i + ao.offset + n / 8 > |z.MEMS[x].ibytes|`, then:
+   3. If `i + ao.offset + n / 8 > |z.MEMS[x].IBYTES|`, then:
       1. Trap.
    4. Let `b*` be `bytes_{iN n}(wrap_{|nt'|, n}(c))`.
    5. Replace `z.MEMS[x].bytes[i + ao.offset : n / 8]` with `b*`.
 
 ```text
 z ; (at.const i) (nt.const c) (nt.store x ao) -> z ; trap
-  (if i + ao.offset + |nt| / 8 > |z.MEMS[x].ibytes|)
-z ; (at.const i) (nt.const c) (nt.store x ao) -> z[.MEMS[x].mbytes[i + ao.offset : |nt| / 8] = b*] ; ε
+  (if i + ao.offset + |nt| / 8 > |z.MEMS[x].IBYTES|)
+z ; (at.const i) (nt.const c) (nt.store x ao) -> z[.MMEMS[x].MBYTES[i + ao.offset : |nt| / 8] = b*] ; ε
   (if b* = bytes_nt(c))
 z ; (at.const i) (iN.const c) (iN.store n x ao) -> z ; trap
-  (if i + ao.offset + n / 8 > |z.MEMS[x].ibytes|)
-z ; (at.const i) (iN.const c) (iN.store n x ao) -> z[.MEMS[x].mbytes[i + ao.offset : n / 8] = b*] ; ε
+  (if i + ao.offset + n / 8 > |z.MEMS[x].IBYTES|)
+z ; (at.const i) (iN.const c) (iN.store n x ao) -> z[.MMEMS[x].MBYTES[i + ao.offset : n / 8] = b*] ; ε
   (if b* = bytes_{iN n}(wrap_{|iN|, n}(c)))
 z ; (at.const i) (v128.const c) (v128.store x ao) -> z ; trap
-  (if i + ao.offset + |v128| / 8 > |z.MEMS[x].ibytes|)
-z ; (at.const i) (v128.const c) (v128.store x ao) -> z[.MEMS[x].mbytes[i + ao.offset : |v128| / 8] = b*] ; ε
+  (if i + ao.offset + |v128| / 8 > |z.MEMS[x].IBYTES|)
+z ; (at.const i) (v128.const c) (v128.store x ao) -> z[.MMEMS[x].MBYTES[i + ao.offset : |v128| / 8] = b*] ; ε
   (if b* = bytes_{v128}(c))
 ```
 
@@ -1063,7 +1063,7 @@ z ; (at.const i) (v128.const c) (v128.store x ao) -> z[.MEMS[x].mbytes[i + ao.of
 3. Pop the value `(v128.const c)` from the stack.
 4. Assert: Due to [validation](valid-vstore_lane), a [number value](syntax-num) is on the top of the stack.
 5. Pop the value `(at.const i)` from the stack.
-6. If `i + ao.offset + N / 8 > |z.MEMS[x].ibytes|`, then:
+6. If `i + ao.offset + N / 8 > |z.MEMS[x].IBYTES|`, then:
    1. Trap.
 7. Let `M` be `128 / N`.
 8. Let `iN N` be the result for which `|iN N| = N`.
@@ -1073,8 +1073,8 @@ z ; (at.const i) (v128.const c) (v128.store x ao) -> z[.MEMS[x].mbytes[i + ao.of
 
 ```text
 z ; (at.const i) (v128.const c) (v128.store N_lane x ao j) -> z ; trap
-  (if i + ao.offset + N / 8 > |z.MEMS[x].ibytes|)
-z ; (at.const i) (v128.const c) (v128.store N_lane x ao j) -> z[.MEMS[x].mbytes[i + ao.offset : N / 8] = b*] ; ε
+  (if i + ao.offset + N / 8 > |z.MEMS[x].IBYTES|)
+z ; (at.const i) (v128.const c) (v128.store N_lane x ao j) -> z[.MMEMS[x].MBYTES[i + ao.offset : N / 8] = b*] ; ε
   (if N = |iN N|
    ∧ M = 128 / N
    ∧ b* = bytes_{iN N}(lanes_{iN N shape M}(c)[j]))
@@ -1083,14 +1083,14 @@ z ; (at.const i) (v128.const c) (v128.store N_lane x ao j) -> z[.MEMS[x].mbytes[
 #### `memory.size x`
 
 1. Let `z` be the current state.
-2. Let `(at lim page)` be the destructuring of `z.MEMS[x].itype`.
-3. Let `n * 64 Ki` be the length of `z.MEMS[x].ibytes`.
+2. Let `(at lim page)` be the destructuring of `z.MEMS[x].ITYPE`.
+3. Let `n * 64 Ki` be the length of `z.MEMS[x].IBYTES`.
 4. Push the value `(at.const n)` to the stack.
 
 ```text
 z ; (memory.size x) -> (at.const n)
-  (if n * 64 Ki = |z.MEMS[x].ibytes|
-   ∧ z.MEMS[x].itype = at lim page)
+  (if n * 64 Ki = |z.MEMS[x].IBYTES|
+   ∧ z.MEMS[x].ITYPE = at lim page)
 ```
 
 #### `memory.grow x`
@@ -1100,13 +1100,13 @@ z ; (memory.size x) -> (at.const n)
 3. Pop the value `(at.const n)` from the stack.
 4. Either:
    1. Let `mi` be the [memory instance](syntax-meminst) `growmem(z.MEMS[x], n)`.
-   2. Push the value `(at.const |z.MEMS[x].ibytes| / (64 Ki))` to the stack.
+   2. Push the value `(at.const |z.MEMS[x].IBYTES| / (64 Ki))` to the stack.
    3. Replace `z.MEMS[x]` with `mi`.
 5. Or:
    1. Push the value `(at.const signed_{|at|}(-1))` to the stack.
 
 ```text
-z ; (at.const n) (memory.grow x) -> z[.MEMS[x] = mi] ; (at.const |z.MEMS[x].ibytes| / 64 Ki)
+z ; (at.const n) (memory.grow x) -> z[.MEMS[x] = mi] ; (at.const |z.MEMS[x].IBYTES| / 64 Ki)
   (if mi = growmem(z.MEMS[x], n))
 z ; (at.const n) (memory.grow x) -> z ; (at.const signed_{|at|}(-1))
 ```
@@ -1124,7 +1124,7 @@ z ; (at.const n) (memory.grow x) -> z ; (at.const signed_{|at|}(-1))
 5. Pop the value `val` from the stack.
 6. Assert: Due to validation, a value of [number type](syntax-numtype) `at` is on the top of the stack.
 7. Pop the value `(numtype0.const i)` from the stack.
-8. If `i + n > |z.MEMS[x].ibytes|`, then:
+8. If `i + n > |z.MEMS[x].IBYTES|`, then:
    1. Trap.
 9. If `n = 0`, then:
    1. Do nothing.
@@ -1138,7 +1138,7 @@ z ; (at.const n) (memory.grow x) -> z ; (at.const signed_{|at|}(-1))
     7. Execute the instruction `(memory.fill x)`.
 
 ```text
-z ; (at.const i) val (at.const n) (memory.fill x) -> trap   (if i + n > |z.MEMS[x].ibytes|)
+z ; (at.const i) val (at.const n) (memory.fill x) -> trap   (if i + n > |z.MEMS[x].IBYTES|)
 z ; (at.const i) val (at.const n) (memory.fill x) -> ε   (otherwise, if n = 0)
 z ; (at.const i) val (at.const n) (memory.fill x) ->
     (at.const i) val (i32.store 8 x)
@@ -1154,14 +1154,14 @@ z ; (at.const i) val (at.const n) (memory.fill x) ->
 5. Pop the value `(at2.const i2)` from the stack.
 6. Assert: Due to validation, a [number value](syntax-num) is on the top of the stack.
 7. Pop the value `(at1.const i1)` from the stack.
-8. If `i1 + n > |z.MEMS[x_1].ibytes|`, then:
+8. If `i1 + n > |z.MEMS[x_1].IBYTES|`, then:
    1. Trap.
-9. If `i2 + n > |z.MEMS[x_2].ibytes|`, then:
+9. If `i2 + n > |z.MEMS[x_2].IBYTES|`, then:
    1. Trap.
 10. If `n = 0`, then:
     1. Do nothing.
 11. Else:
-    1. If `i1 ≤ i2`, then:
+    1. If `i1 <= i2`, then:
        1. Push the value `(at1.const i1)` to the stack.
        2. Push the value `(at2.const i2)` to the stack.
        3. Execute the instruction `(i32.load 8_u x2)`.
@@ -1180,11 +1180,11 @@ z ; (at.const i) val (at.const n) (memory.fill x) ->
 
 ```text
 z ; (at1.const i1) (at2.const i2) (at'.const n) (memory.copy x1 x2) -> trap
-  (if i1 + n > |z.MEMS[x_1].ibytes| ∨ i2 + n > |z.MEMS[x_2].ibytes|)
+  (if i1 + n > |z.MEMS[x_1].IBYTES| ∨ i2 + n > |z.MEMS[x_2].IBYTES|)
 z ; (at1.const i1) (at2.const i2) (at'.const n) (memory.copy x1 x2) -> ε   (otherwise, if n = 0)
 z ; (at1.const i1) (at2.const i2) (at'.const n) (memory.copy x1 x2) ->
     (at1.const i1) (at2.const i2) (i32.load 8_u x2) (i32.store 8 x1)
-    (at1.const i1 + 1) (at2.const i2 + 1) (at'.const n - 1) (memory.copy x1 x2)   (otherwise, if i1 ≤ i2)
+    (at1.const i1 + 1) (at2.const i2 + 1) (at'.const n - 1) (memory.copy x1 x2)   (otherwise, if i1 <= i2)
 z ; (at1.const i1) (at2.const i2) (at'.const n) (memory.copy x1 x2) ->
     (at1.const i1 + n - 1) (at2.const i2 + n - 1) (i32.load 8_u x2) (i32.store 8 x1)
     (at1.const i1) (at2.const i2) (at'.const n - 1) (memory.copy x1 x2)   (otherwise)
@@ -1199,16 +1199,16 @@ z ; (at1.const i1) (at2.const i2) (at'.const n) (memory.copy x1 x2) ->
 5. Pop the value `(i32.const j)` from the stack.
 6. Assert: Due to validation, a [number value](syntax-num) is on the top of the stack.
 7. Pop the value `(at.const i)` from the stack.
-8. If `i + n > |z.MEMS[x].ibytes|`, then:
+8. If `i + n > |z.MEMS[x].IBYTES|`, then:
    1. Trap.
-9. If `j + n > |z.DATAS[y].ibytes|`, then:
+9. If `j + n > |z.DATAS[y].IBYTES|`, then:
    1. Trap.
 10. If `n = 0`, then:
     1. Do nothing.
 11. Else:
-    1. Assert: Due to validation, `j < |z.DATAS[y].ibytes|`.
+    1. Assert: Due to validation, `j < |z.DATAS[y].IBYTES|`.
     2. Push the value `(at.const i)` to the stack.
-    3. Push the value `(i32.const z.DATAS[y].ibytes[j])` to the stack.
+    3. Push the value `(i32.const z.DATAS[y].IBYTES[j])` to the stack.
     4. Execute the instruction `(i32.store 8 x)`.
     5. Push the value `(at.const i + 1)` to the stack.
     6. Push the value `(i32.const j + 1)` to the stack.
@@ -1217,20 +1217,20 @@ z ; (at1.const i1) (at2.const i2) (at'.const n) (memory.copy x1 x2) ->
 
 ```text
 z ; (at.const i) (i32.const j) (i32.const n) (memory.init x y) -> trap
-  (if i + n > |z.MEMS[x].ibytes| ∨ j + n > |z.DATAS[y].ibytes|)
+  (if i + n > |z.MEMS[x].IBYTES| ∨ j + n > |z.DATAS[y].IBYTES|)
 z ; (at.const i) (i32.const j) (i32.const n) (memory.init x y) -> ε   (otherwise, if n = 0)
 z ; (at.const i) (i32.const j) (i32.const n) (memory.init x y) ->
-    (at.const i) (i32.const z.DATAS[y].ibytes[j]) (i32.store 8 x)
+    (at.const i) (i32.const z.DATAS[y].IBYTES[j]) (i32.store 8 x)
     (at.const i + 1) (i32.const j + 1) (i32.const n - 1) (memory.init x y)   (otherwise)
 ```
 
 #### `data.drop x`
 
 1. Let `z` be the current state.
-2. Replace `z.DATAS[x].dbytes` with `ε`.
+2. Replace `z.DATAS[x].DBYTES` with `ε`.
 
 ```text
-z ; (data.drop x) -> z[.DATAS[x].dbytes = ε] ; ε
+z ; (data.drop x) -> z[.DDATAS[x].DBYTES = ε] ; ε
 ```
 
 ### Reference Instructions
@@ -1362,7 +1362,7 @@ ref.null (i31.get_sx) -> trap
 5. Let `a` be the length of `z.STRUCTS`.
 6. Assert: Due to validation, there are at least `n` values on the top of the stack.
 7. Pop the values `val^n` from the stack.
-8. Let `si` be the [structure instance](syntax-structinst) `{ itype z.TYPES[x], ifields (packfield_{zt}(val))^n }`.
+8. Let `si` be the [structure instance](syntax-structinst) `{ ITYPE z.TYPES[x], IFIELDS (packfield_{zt}(val))^n }`.
 9. Push the value `(ref.struct a)` to the stack.
 10. Append `si` to `z.STRUCTS`.
 
@@ -1370,7 +1370,7 @@ ref.null (i31.get_sx) -> trap
 z ; val^n (struct.new x) -> z[.STRUCTS =⊕ si] ; (ref.struct a)
   (if z.TYPES[x] ≈ struct ((mut? zt)^n)
    ∧ a = |z.STRUCTS|
-   ∧ si = { itype z.TYPES[x], ifields (packfield_{zt}(val))^n })
+   ∧ si = { ITYPE z.TYPES[x], IFIELDS (packfield_{zt}(val))^n })
 ```
 
 #### `struct.new_default x`
@@ -1403,17 +1403,17 @@ z ; (struct.new_default x) -> val* (struct.new x)
    1. Trap.
 5. Assert: Due to validation, `val` is some `ref.struct structaddr`.
 6. Let `(ref.struct a)` be the destructuring of `val`.
-7. Assert: Due to validation, `i < |z.STRUCTS[a].ifields|`.
+7. Assert: Due to validation, `i < |z.STRUCTS[a].IFIELDS|`.
 8. Assert: Due to validation, `a < |z.STRUCTS|`.
 9. Assert: Due to validation, the [expansion](aux-expand-deftype) of `z.TYPES[x]` is some `struct list(fieldtype)`.
 10. Let `(struct list_0)` be the destructuring of the [expansion](aux-expand-deftype) of `z.TYPES[x]`.
 11. Let `((mut? zt)*)` be `list_0`.
 12. Assert: Due to validation, `i < |zt*|`.
-13. Push the value `unpackfield_{zt*[i]}^{sx?}(z.STRUCTS[a].ifields[i])` to the stack.
+13. Push the value `unpackfield_{zt*[i]}^{sx?}(z.STRUCTS[a].IFIELDS[i])` to the stack.
 
 ```text
 z ; ref.null (struct.get_sx? x i) -> trap
-z ; (ref.struct a) (struct.get_sx? x i) -> unpackfield_{zt*[i]}^{sx?}(z.STRUCTS[a].ifields[i])
+z ; (ref.struct a) (struct.get_sx? x i) -> unpackfield_{zt*[i]}^{sx?}(z.STRUCTS[a].IFIELDS[i])
   (if z.TYPES[x] ≈ struct ((mut? zt)*))
 ```
 
@@ -1432,11 +1432,11 @@ z ; (ref.struct a) (struct.get_sx? x i) -> unpackfield_{zt*[i]}^{sx?}(z.STRUCTS[
 10. Let `(struct list_0)` be the destructuring of the [expansion](aux-expand-deftype) of `z.TYPES[x]`.
 11. Let `((mut? zt)*)` be `list_0`.
 12. Assert: Due to validation, `i < |zt*|`.
-13. Replace `z.STRUCTS[a].fields[i]` with `packfield_{zt*[i]}(val)`.
+13. Replace `z.STRUCTS[a].FIELDS[i]` with `packfield_{zt*[i]}(val)`.
 
 ```text
 z ; ref.null val (struct.set x i) -> z ; trap
-z ; (ref.struct a) val (struct.set x i) -> z[.STRUCTS[a].fields[i] = packfield_{zt*[i]}(val)] ; ε
+z ; (ref.struct a) val (struct.set x i) -> z[.SSTRUCTS[a].SFIELDS[i] = packfield_{zt*[i]}(val)] ; ε
   (if z.TYPES[x] ≈ struct ((mut? zt)*))
 ```
 
@@ -1481,14 +1481,14 @@ z ; (i32.const n) (array.new_default x) -> val^n (array.new_fixed x n)
 5. Let `a` be the length of `z.ARRAYS`.
 6. Assert: Due to validation, there are at least `n` values on the top of the stack.
 7. Pop the values `val^n` from the stack.
-8. Let `ai` be the [array instance](syntax-arrayinst) `{ itype z.TYPES[x], ifields (packfield_{zt}(val))^n }`.
+8. Let `ai` be the [array instance](syntax-arrayinst) `{ ITYPE z.TYPES[x], IFIELDS (packfield_{zt}(val))^n }`.
 9. Push the value `(ref.array a)` to the stack.
 10. Append `ai` to `z.ARRAYS`.
 
 ```text
 z ; val^n (array.new_fixed x n) -> z[.ARRAYS =⊕ ai] ; (ref.array a)
   (if z.TYPES[x] ≈ array (mut? zt)
-   ∧ a = |z.ARRAYS| ∧ ai = { itype z.TYPES[x], ifields (packfield_{zt}(val))^n })
+   ∧ a = |z.ARRAYS| ∧ ai = { ITYPE z.TYPES[x], IFIELDS (packfield_{zt}(val))^n })
 ```
 
 #### `array.new_data x y`
@@ -1501,9 +1501,9 @@ z ; val^n (array.new_fixed x n) -> z[.ARRAYS =⊕ ai] ; (ref.array a)
 6. Assert: Due to validation, the [expansion](aux-expand-deftype) of `z.TYPES[x]` is some `array fieldtype`.
 7. Let `(array fieldtype_0)` be the destructuring of the [expansion](aux-expand-deftype) of `z.TYPES[x]`.
 8. Let `(mut? zt)` be the destructuring of `fieldtype_0`.
-9. If `i + n * |zt| / 8 > |z.DATAS[y].ibytes|`, then:
+9. If `i + n * |zt| / 8 > |z.DATAS[y].IBYTES|`, then:
    1. Trap.
-10. Let `byte**` be the result for which each `byte*` has length `|zt| / 8`, and the [concatenation](notation-concat) of `byte**` is `z.DATAS[y].ibytes[i : n * |zt| / 8]`.
+10. Let `byte**` be the result for which each `byte*` has length `|zt| / 8`, and the [concatenation](notation-concat) of `byte**` is `z.DATAS[y].IBYTES[i : n * |zt| / 8]`.
 11. Let `c^n` be the result for which `(bytes_{zt}(c^n) = byte*)^*`.
 12. Push the values `(unpack(zt).const unpacknum_{zt}(c))^n` to the stack.
 13. Execute the instruction `(array.new_fixed x n)`.
@@ -1511,10 +1511,10 @@ z ; val^n (array.new_fixed x n) -> z[.ARRAYS =⊕ ai] ; (ref.array a)
 ```text
 z ; (i32.const i) (i32.const n) (array.new_data x y) -> trap
   (if z.TYPES[x] ≈ array (mut? zt)
-   ∧ i + n * |zt| / 8 > |z.DATAS[y].ibytes|)
+   ∧ i + n * |zt| / 8 > |z.DATAS[y].IBYTES|)
 z ; (i32.const i) (i32.const n) (array.new_data x y) -> (unpack(zt).const unpacknum_{zt}(c))^n (array.new_fixed x n)
   (if z.TYPES[x] ≈ array (mut? zt)
-   ∧ concat bytes_{zt}(c)^n = z.DATAS[y].ibytes[i : n * |zt| / 8])
+   ∧ concat bytes_{zt}(c)^n = z.DATAS[y].IBYTES[i : n * |zt| / 8])
 ```
 
 #### `array.new_elem x y`
@@ -1524,16 +1524,16 @@ z ; (i32.const i) (i32.const n) (array.new_data x y) -> (unpack(zt).const unpack
 3. Pop the value `(i32.const n)` from the stack.
 4. Assert: Due to validation, a value of [number type](syntax-numtype) `i32` is on the top of the stack.
 5. Pop the value `(i32.const i)` from the stack.
-6. If `i + n > |z.ELEMS[y].erefs|`, then:
+6. If `i + n > |z.ELEMS[y].IREFS|`, then:
    1. Trap.
-7. Let `reff^n` be `z.ELEMS[y].erefs[i : n]`.
+7. Let `reff^n` be `z.ELEMS[y].IREFS[i : n]`.
 8. Push the values `reff^n` to the stack.
 9. Execute the instruction `(array.new_fixed x n)`.
 
 ```text
-z ; (i32.const i) (i32.const n) (array.new_elem x y) -> trap   (if i + n > |z.ELEMS[y].erefs|)
+z ; (i32.const i) (i32.const n) (array.new_elem x y) -> trap   (if i + n > |z.ELEMS[y].IREFS|)
 z ; (i32.const i) (i32.const n) (array.new_elem x y) -> reff^n (array.new_fixed x n)
-  (if reff^n = z.ELEMS[y].erefs[i : n])
+  (if reff^n = z.ELEMS[y].IREFS[i : n])
 ```
 
 #### `array.get_sx? x`
@@ -1548,17 +1548,17 @@ z ; (i32.const i) (i32.const n) (array.new_elem x y) -> reff^n (array.new_fixed 
 7. Assert: Due to validation, `val` is some `ref.array arrayaddr`.
 8. Let `(ref.array a)` be the destructuring of `val`.
 9. Assert: Due to validation, `a < |z.ARRAYS|`.
-10. If `i ≥ |z.ARRAYS[a].ifields|`, then:
+10. If `i >= |z.ARRAYS[a].IFIELDS|`, then:
     1. Trap.
 11. Assert: Due to validation, the [expansion](aux-expand-deftype) of `z.TYPES[x]` is some `array fieldtype`.
 12. Let `(array fieldtype_0)` be the destructuring of the [expansion](aux-expand-deftype) of `z.TYPES[x]`.
 13. Let `(mut? zt)` be the destructuring of `fieldtype_0`.
-14. Push the value `unpackfield_{zt}^{sx?}(z.ARRAYS[a].ifields[i])` to the stack.
+14. Push the value `unpackfield_{zt}^{sx?}(z.ARRAYS[a].IFIELDS[i])` to the stack.
 
 ```text
 z ; ref.null (i32.const i) (array.get_sx? x) -> trap
-z ; (ref.array a) (i32.const i) (array.get_sx? x) -> trap   (if i ≥ |z.ARRAYS[a].ifields|)
-z ; (ref.array a) (i32.const i) (array.get_sx? x) -> unpackfield_{zt}^{sx?}(z.ARRAYS[a].ifields[i])
+z ; (ref.array a) (i32.const i) (array.get_sx? x) -> trap   (if i >= |z.ARRAYS[a].IFIELDS|)
+z ; (ref.array a) (i32.const i) (array.get_sx? x) -> unpackfield_{zt}^{sx?}(z.ARRAYS[a].IFIELDS[i])
   (if z.TYPES[x] ≈ array (mut? zt))
 ```
 
@@ -1575,17 +1575,17 @@ z ; (ref.array a) (i32.const i) (array.get_sx? x) -> unpackfield_{zt}^{sx?}(z.AR
    1. Trap.
 9. Assert: Due to validation, `val'` is some `ref.array arrayaddr`.
 10. Let `(ref.array a)` be the destructuring of `val'`.
-11. If `a < |z.ARRAYS|` and `i ≥ |z.ARRAYS[a].ifields|`, then:
+11. If `a < |z.ARRAYS|` and `i >= |z.ARRAYS[a].IFIELDS|`, then:
     1. Trap.
 12. Assert: Due to validation, the [expansion](aux-expand-deftype) of `z.TYPES[x]` is some `array fieldtype`.
 13. Let `(array fieldtype_0)` be the destructuring of the [expansion](aux-expand-deftype) of `z.TYPES[x]`.
 14. Let `(mut? zt)` be the destructuring of `fieldtype_0`.
-15. Replace `z.ARRAYS[a].fields[i]` with `packfield_{zt}(val)`.
+15. Replace `z.ARRAYS[a].FIELDS[i]` with `packfield_{zt}(val)`.
 
 ```text
 z ; ref.null (i32.const i) val (array.set x) -> z ; trap
-z ; (ref.array a) (i32.const i) val (array.set x) -> z ; trap   (if i ≥ |z.ARRAYS[a].ifields|)
-z ; (ref.array a) (i32.const i) val (array.set x) -> z[.ARRAYS[a].fields[i] = packfield_{zt}(val)] ; ε
+z ; (ref.array a) (i32.const i) val (array.set x) -> z ; trap   (if i >= |z.ARRAYS[a].IFIELDS|)
+z ; (ref.array a) (i32.const i) val (array.set x) -> z[.AARRAYS[a].AFIELDS[i] = packfield_{zt}(val)] ; ε
   (if z.TYPES[x] ≈ array (mut? zt))
 ```
 
@@ -1599,11 +1599,11 @@ z ; (ref.array a) (i32.const i) val (array.set x) -> z[.ARRAYS[a].fields[i] = pa
 5. Assert: Due to validation, `val` is some `ref.array arrayaddr`.
 6. Let `(ref.array a)` be the destructuring of `val`.
 7. Assert: Due to validation, `a < |z.ARRAYS|`.
-8. Push the value `(i32.const |z.ARRAYS[a].ifields|)` to the stack.
+8. Push the value `(i32.const |z.ARRAYS[a].IFIELDS|)` to the stack.
 
 ```text
 z ; ref.null array.len -> trap
-z ; (ref.array a) array.len -> (i32.const |z.ARRAYS[a].ifields|)
+z ; (ref.array a) array.len -> (i32.const |z.ARRAYS[a].IFIELDS|)
 ```
 
 #### `array.fill x`
@@ -1621,9 +1621,9 @@ z ; (ref.array a) array.len -> (i32.const |z.ARRAYS[a].ifields|)
     1. Trap.
 11. Assert: Due to validation, `val'` is some `ref.array arrayaddr`.
 12. Let `(ref.array a)` be the destructuring of `val'`.
-13. If `a ≥ |z.ARRAYS|`, then:
+13. If `a >= |z.ARRAYS|`, then:
     1. Do nothing.
-14. Else if `i + n > |z.ARRAYS[a].ifields|`, then:
+14. Else if `i + n > |z.ARRAYS[a].IFIELDS|`, then:
     1. Trap.
 15. If `n = 0`, then:
     1. Do nothing.
@@ -1640,7 +1640,7 @@ z ; (ref.array a) array.len -> (i32.const |z.ARRAYS[a].ifields|)
 
 ```text
 z ; ref.null (i32.const i) val (i32.const n) (array.fill x) -> trap
-z ; (ref.array a) (i32.const i) val (i32.const n) (array.fill x) -> trap   (if i + n > |z.ARRAYS[a].ifields|)
+z ; (ref.array a) (i32.const i) val (i32.const n) (array.fill x) -> trap   (if i + n > |z.ARRAYS[a].IFIELDS|)
 z ; (ref.array a) (i32.const i) val (i32.const n) (array.fill x) -> ε   (otherwise, if n = 0)
 z ; (ref.array a) (i32.const i) val (i32.const n) (array.fill x) ->
     (ref.array a) (i32.const i) val (array.set x)
@@ -1667,12 +1667,12 @@ z ; (ref.array a) (i32.const i) val (i32.const n) (array.fill x) ->
 14. If `val'` is some `ref.array arrayaddr`, then:
     1. Let `(ref.array a1)` be the destructuring of `val'`.
     2. If `val` is some `ref.array arrayaddr`, then:
-       1. If `a1 < |z.ARRAYS|` and `i1 + n > |z.ARRAYS[a1].ifields|`, then:
+       1. If `a1 < |z.ARRAYS|` and `i1 + n > |z.ARRAYS[a1].IFIELDS|`, then:
           1. Trap.
        2. Let `(ref.array a2)` be the destructuring of `val`.
-       3. If `a2 ≥ |z.ARRAYS|`, then:
+       3. If `a2 >= |z.ARRAYS|`, then:
           1. Do nothing.
-       4. Else if `i2 + n > |z.ARRAYS[a2].ifields|`, then:
+       4. Else if `i2 + n > |z.ARRAYS[a2].IFIELDS|`, then:
           1. Trap.
        5. If `n = 0`, then:
           1. Do nothing.
@@ -1682,7 +1682,7 @@ z ; (ref.array a) (i32.const i) val (i32.const n) (array.fill x) ->
           3. Let `(mut? zt2)` be the destructuring of `fieldtype_0`.
           4. Let `sx?` be `sx(zt2)`.
           5. Push the value `(ref.array a1)` to the stack.
-          6. If `i1 ≤ i2`, then:
+          6. If `i1 <= i2`, then:
              1. Push the value `(i32.const i1)` to the stack.
              2. Push the value `(ref.array a2)` to the stack.
              3. Push the value `(i32.const i2)` to the stack.
@@ -1708,13 +1708,13 @@ z ; (ref.array a) (i32.const i) val (i32.const n) (array.fill x) ->
 ```text
 z ; ref.null (i32.const i1) reff (i32.const i2) (i32.const n) (array.copy x1 x2) -> trap
 z ; reff (i32.const i1) ref.null (i32.const i2) (i32.const n) (array.copy x1 x2) -> trap
-z ; (ref.array a1) (i32.const i1) (ref.array a2) (i32.const i2) (i32.const n) (array.copy x1 x2) -> trap   (if i1 + n > |z.ARRAYS[a1].ifields|)
-z ; (ref.array a1) (i32.const i1) (ref.array a2) (i32.const i2) (i32.const n) (array.copy x1 x2) -> trap   (if i2 + n > |z.ARRAYS[a2].ifields|)
+z ; (ref.array a1) (i32.const i1) (ref.array a2) (i32.const i2) (i32.const n) (array.copy x1 x2) -> trap   (if i1 + n > |z.ARRAYS[a1].IFIELDS|)
+z ; (ref.array a1) (i32.const i1) (ref.array a2) (i32.const i2) (i32.const n) (array.copy x1 x2) -> trap   (if i2 + n > |z.ARRAYS[a2].IFIELDS|)
 z ; (ref.array a1) (i32.const i1) (ref.array a2) (i32.const i2) (i32.const n) (array.copy x1 x2) -> ε   (otherwise, if n = 0)
 z ; (ref.array a1) (i32.const i1) (ref.array a2) (i32.const i2) (i32.const n) (array.copy x1 x2) ->
     (ref.array a1) (i32.const i1) (ref.array a2) (i32.const i2) (array.get_sx? x2) (array.set x1)
     (ref.array a1) (i32.const i1 + 1) (ref.array a2) (i32.const i2 + 1) (i32.const n - 1) (array.copy x1 x2)
-    (otherwise, if z.TYPES[x2] ≈ array (mut? zt2) ∧ i1 ≤ i2 ∧ sx? = sx(zt2))
+    (otherwise, if z.TYPES[x2] ≈ array (mut? zt2) ∧ i1 <= i2 ∧ sx? = sx(zt2))
 z ; (ref.array a1) (i32.const i1 + n - 1) (ref.array a2) (i32.const i2 + n - 1) (array.get_sx? x2) (array.set x1)
     (ref.array a1) (i32.const i1) (ref.array a2) (i32.const i2) (i32.const n - 1) (array.copy x1 x2)
     (otherwise, if z.TYPES[x2] ≈ array (mut? zt2) ∧ sx? = sx(zt2))
@@ -1742,17 +1742,17 @@ sx(packtype) = s
     1. Trap.
 11. Assert: Due to validation, `val` is some `ref.array arrayaddr`.
 12. Let `(ref.array a)` be the destructuring of `val`.
-13. If `a < |z.ARRAYS|` and `i + n > |z.ARRAYS[a].ifields|`, then:
+13. If `a < |z.ARRAYS|` and `i + n > |z.ARRAYS[a].IFIELDS|`, then:
     1. Trap.
 14. If the [expansion](aux-expand-deftype) of `z.TYPES[x]` is some `array fieldtype`, then:
     1. Let `(array fieldtype_0)` be the destructuring of the [expansion](aux-expand-deftype) of `z.TYPES[x]`.
     2. Let `(mut? zt)` be the destructuring of `fieldtype_0`.
-    3. If `j + n * |zt| / 8 > |z.DATAS[y].ibytes|`, then:
+    3. If `j + n * |zt| / 8 > |z.DATAS[y].IBYTES|`, then:
        1. Trap.
     4. If `n = 0`, then:
        1. Do nothing.
     5. Else:
-       1. Let `c` be the result for which `bytes_{zt}(c) = z.DATAS[y].ibytes[j : |zt| / 8]`.
+       1. Let `c` be the result for which `bytes_{zt}(c) = z.DATAS[y].IBYTES[j : |zt| / 8]`.
        2. Push the value `(ref.array a)` to the stack.
        3. Push the value `(i32.const i)` to the stack.
        4. Push the value `(unpack(zt).const unpacknum_{zt}(c))` to the stack.
@@ -1767,14 +1767,14 @@ sx(packtype) = s
 
 ```text
 z ; ref.null (i32.const i) (i32.const j) (i32.const n) (array.init_data x y) -> trap
-z ; (ref.array a) (i32.const i) (i32.const j) (i32.const n) (array.init_data x y) -> trap   (if i + n > |z.ARRAYS[a].ifields|)
+z ; (ref.array a) (i32.const i) (i32.const j) (i32.const n) (array.init_data x y) -> trap   (if i + n > |z.ARRAYS[a].IFIELDS|)
 z ; (ref.array a) (i32.const i) (i32.const j) (i32.const n) (array.init_data x y) -> trap
-   (if z.TYPES[x] ≈ array (mut? zt) ∧ j + n * |zt| / 8 > |z.DATAS[y].ibytes|)
+   (if z.TYPES[x] ≈ array (mut? zt) ∧ j + n * |zt| / 8 > |z.DATAS[y].IBYTES|)
 z ; (ref.array a) (i32.const i) (i32.const j) (i32.const n) (array.init_data x y) -> ε   (otherwise, if n = 0)
 z ; (ref.array a) (i32.const i) (i32.const j) (i32.const n) (array.init_data x y) ->
     (ref.array a) (i32.const i) (unpack(zt).const unpacknum_{zt}(c)) (array.set x)
     (ref.array a) (i32.const i + 1) (i32.const j + |zt| / 8) (i32.const n - 1) (array.init_data x y)
-    (otherwise, if z.TYPES[x] ≈ array (mut? zt) ∧ bytes_{zt}(c) = z.DATAS[y].ibytes[j : |zt| / 8])
+    (otherwise, if z.TYPES[x] ≈ array (mut? zt) ∧ bytes_{zt}(c) = z.DATAS[y].IBYTES[j : |zt| / 8])
 ```
 
 #### `array.init_elem x y`
@@ -1792,14 +1792,14 @@ z ; (ref.array a) (i32.const i) (i32.const j) (i32.const n) (array.init_data x y
     1. Trap.
 11. Assert: Due to validation, `val` is some `ref.array arrayaddr`.
 12. Let `(ref.array a)` be the destructuring of `val`.
-13. If `a < |z.ARRAYS|` and `i + n > |z.ARRAYS[a].ifields|`, then:
+13. If `a < |z.ARRAYS|` and `i + n > |z.ARRAYS[a].IFIELDS|`, then:
     1. Trap.
-14. If `j + n > |z.ELEMS[y].erefs|`, then:
+14. If `j + n > |z.ELEMS[y].IREFS|`, then:
     1. Trap.
 15. If `n = 0`, then:
     1. Do nothing.
-16. Else if `j < |z.ELEMS[y].erefs|`, then:
-    1. Let `reff` be the [reference value](syntax-ref) `z.ELEMS[y].erefs[j]`.
+16. Else if `j < |z.ELEMS[y].IREFS|`, then:
+    1. Let `reff` be the [reference value](syntax-ref) `z.ELEMS[y].IREFS[j]`.
     2. Push the value `(ref.array a)` to the stack.
     3. Push the value `(i32.const i)` to the stack.
     4. Push the value `reff` to the stack.
@@ -1812,13 +1812,13 @@ z ; (ref.array a) (i32.const i) (i32.const j) (i32.const n) (array.init_data x y
 
 ```text
 z ; ref.null (i32.const i) (i32.const j) (i32.const n) (array.init_elem x y) -> trap
-z ; (ref.array a) (i32.const i) (i32.const j) (i32.const n) (array.init_elem x y) -> trap   (if i + n > |z.ARRAYS[a].ifields|)
-z ; (ref.array a) (i32.const i) (i32.const j) (i32.const n) (array.init_elem x y) -> trap   (if j + n > |z.ELEMS[y].erefs|)
+z ; (ref.array a) (i32.const i) (i32.const j) (i32.const n) (array.init_elem x y) -> trap   (if i + n > |z.ARRAYS[a].IFIELDS|)
+z ; (ref.array a) (i32.const i) (i32.const j) (i32.const n) (array.init_elem x y) -> trap   (if j + n > |z.ELEMS[y].IREFS|)
 z ; (ref.array a) (i32.const i) (i32.const j) (i32.const n) (array.init_elem x y) -> ε   (otherwise, if n = 0)
 z ; (ref.array a) (i32.const i) (i32.const j) (i32.const n) (array.init_elem x y) ->
     (ref.array a) (i32.const i) reff (array.set x)
     (ref.array a) (i32.const i + 1) (i32.const j + 1) (i32.const n - 1) (array.init_elem x y)
-    (otherwise, if reff = z.ELEMS[y].erefs[j])
+    (otherwise, if reff = z.ELEMS[y].IREFS[j])
 ```
 
 #### `any.convert_extern`

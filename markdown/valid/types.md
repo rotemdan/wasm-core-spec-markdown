@@ -11,6 +11,7 @@ Moreover, block types are converted to instruction types for ease of processing.
 The number type `numtype` is always valid.
 
 ```text
+─────────────────
 C |- numtype : OK
 ```
 
@@ -19,6 +20,7 @@ C |- numtype : OK
 The vector type `vectype` is always valid.
 
 ```text
+─────────────────
 C |- vectype : OK
 ```
 
@@ -39,6 +41,7 @@ C |- typeidx : OK
 The heap type `absheaptype` is always valid.
 
 ```text
+─────────────────────
 C |- absheaptype : OK
 ```
 
@@ -71,6 +74,7 @@ The value type `valtype` is valid if:
   * The value type `valtype` is of the form `bot`.
 
 ```text
+─────────────
 C |- bot : OK
 ```
 
@@ -178,6 +182,7 @@ C |- mut? storagetype : OK
 The packed type `packtype` is always valid.
 
 ```text
+──────────────────
 C |- packtype : OK
 ```
 
@@ -197,7 +202,9 @@ The recursive type `(rec subtype*)` is valid for the type index `x` if:
 ```text
 ────────────────────
 C |- rec ε : OK(x)
+```
 
+```text
 C |- subtype1 : OK(x)
 C |- rec subtype* : OK(x + 1)
 ──────────────────────────────────────

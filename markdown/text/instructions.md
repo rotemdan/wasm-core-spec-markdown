@@ -15,11 +15,7 @@ In addition, as a syntactic abbreviation, instructions can be written as S-expre
 
 ### Labels
 
-Structured control instructions can be annotated with a symbolic label identifier.
-
-They are the only symbolic identifiers that can be bound locally in an instruction sequence.
-
-The following grammar handles the corresponding update to the identifier context by composing the context with an additional label entry.
+Structured control instructions can be annotated with a symbolic label identifier. They are the only symbolic identifiers that can be bound locally in an instruction sequence. The following grammar handles the corresponding update to the identifier context by composing the context with an additional label entry.
 
 ```text
 label_I ::=
@@ -44,13 +40,9 @@ plaininstr_I ::=
 
 ### Control Instructions
 
-Structured control instructions can bind an optional symbolic label identifier.
+Structured control instructions can bind an optional symbolic label identifier. The same label identifier may optionally be repeated after the corresponding `end` or `else` keywords, to indicate the matching delimiters.
 
-The same label identifier may optionally be repeated after the corresponding `end` or `else` keywords, to indicate the matching delimiters.
-
-Their block type is given as a type use, analogous to the type of functions.
-
-However, the special case of a type use that is syntactically empty or consists of only a single result is not regarded as an abbreviation for an inline function type, but is parsed directly into an optional value type.
+Their block type is given as a type use, analogous to the type of functions. However, the special case of a type use that is syntactically empty or consists of only a single result is not regarded as an abbreviation for an inline function type, but is parsed directly into an optional value type.
 
 ```text
 blocktype_I ::=
@@ -59,24 +51,26 @@ blocktype_I ::=
 
 blockinstr_I ::=
   | 'block' (id?, I') : label_I bt : blocktype_I in* : instrs_I' 'end' id'? : id?
-        => block bt in*    (if id'? = ε || id'? = id?)
+        => block bt in*    (if id'? = ε ∨ id'? = id?)
   | 'loop' (id?, I') : label_I bt : blocktype_I in* : instrs_I' 'end' id'? : id?
-        => loop bt in*    (if id'? = ε || id'? = id?)
+        => loop bt in*    (if id'? = ε ∨ id'? = id?)
   | 'if' (id?, I') : label_I bt : blocktype_I in1* : instrs_I' 'else' id1? : id? in2* : instrs_I' 'end' id2? : id?
-        => if bt in1* else in2*    (if (id1? = ε || id1? = id?) && (id2? = ε || id2? = id?))
+        => if bt in1* else in2*    (if (id1? = ε ∨ id1? = id?) ∧ (id2? = ε ∨ id2? = id?))
   | 'try_table' (id?, I') : label_I bt : blocktype_I c* : catch_I* in* : instrs_I' 'end' id'? : id?
-        => try_table bt c* in*    (if id'? = ε || id'? = id?)
-  | 'catch' x : tagidx_I l : labelidx_I  => catch x l
-  | 'catch_ref' x : tagidx_I l : labelidx_I  => catch_ref x l
-  | 'catch_all' l : labelidx_I  => catch_all l
-  | 'catch_all_ref' l : labelidx_I  => catch_all_ref l
+        => try_table bt c* in*    (if id'? = ε ∨ id'? = id?)
+
+catch_I ::=
+  | '(' 'catch' x : tagidx_I l : labelidx_I ')'  => catch x l
+  | '(' 'catch_ref' x : tagidx_I l : labelidx_I ')'  => catch_ref x l
+  | '(' 'catch_all' l : labelidx_I ')'  => catch_all l
+  | '(' 'catch_all_ref' l : labelidx_I ')'  => catch_all_ref l
 ```
 
 > **Note:** The side condition stating that the identifier context `I'` must only contain unnamed entries in the rule for `typeuse` block types enforces that no identifier can be bound in any `param` declaration for a block type.
 
 All other control instruction are represented verbatim.
 
-> **Note:** The side condition stating that the identifier context `I'` must only contain unnamed entries in the rule for CALLINDIRECT enforces that no identifier can be bound in any `param` declaration appearing in the type annotation.
+> **Note:** The side condition stating that the identifier context `I'` must only contain unnamed entries in the rule for CALLINDIRECT enforces that no identifier can be bound in any Tparam declaration appearing in the type annotation.
 
 #### Abbreviations
 
@@ -500,12 +494,12 @@ Vector constant instructions have a mandatory shape descriptor, which determines
 ```text
 plaininstr_I ::=
   | ...
-  | 'v128.const' 'i8x16' c* : i8^16  => v128.const bytes128^(-1)( ++ (bytes8(c)*) )
-  | 'v128.const' 'i16x8' c* : i16^8  => v128.const bytes128^(-1)( ++ (bytes16(c)*) )
-  | 'v128.const' 'i32x4' c* : i32^4  => v128.const bytes128^(-1)( ++ (bytes32(c)*) )
-  | 'v128.const' 'i64x2' c* : i64^2  => v128.const bytes128^(-1)( ++ (bytes64(c)*) )
-  | 'v128.const' 'f32x4' c* : f32^4  => v128.const bytes128^(-1)( ++ (bytes32(c)*) )
-  | 'v128.const' 'f64x2' c* : f64^2  => v128.const bytes128^(-1)( ++ (bytes64(c)*) )
+  | 'v128.const' 'i8x16' c* : i8^16  => v128.const bytes128^(-1)( ⋆ (bytes8(c)*) )
+  | 'v128.const' 'i16x8' c* : i16^8  => v128.const bytes128^(-1)( ⋆ (bytes16(c)*) )
+  | 'v128.const' 'i32x4' c* : i32^4  => v128.const bytes128^(-1)( ⋆ (bytes32(c)*) )
+  | 'v128.const' 'i64x2' c* : i64^2  => v128.const bytes128^(-1)( ⋆ (bytes64(c)*) )
+  | 'v128.const' 'f32x4' c* : f32^4  => v128.const bytes128^(-1)( ⋆ (bytes32(c)*) )
+  | 'v128.const' 'f64x2' c* : f64^2  => v128.const bytes128^(-1)( ⋆ (bytes64(c)*) )
 ```
 
 ```text
@@ -698,7 +692,6 @@ plaininstr_I ::=
   | 'f32x4.div'  => f32x4.div
   | 'f32x4.min'  => f32x4.min
   | 'f32x4.max'  => f32x4.max
-  | 'f32x4.copysign'  => f32x4.copysign
   | 'f32x4.pmin'  => f32x4.pmin
   | 'f32x4.pmax'  => f32x4.pmax
   | 'f32x4.relaxed_min'  => f32x4.relaxed_min
@@ -796,13 +789,9 @@ plaininstr_I ::=
 
 Instructions can be written as S-expressions by grouping them into *folded* form. In that notation, an instruction is wrapped in parentheses and optionally includes nested folded instructions to indicate its operands.
 
-In the case of block instructions, the folded form omits the `end` delimiter.
+In the case of block instructions, the folded form omits the `end` delimiter. For `if` instructions, both branches have to be wrapped into nested S-expressions, headed by the keywords `then` and `else`.
 
-For `if` instructions, both branches have to be wrapped into nested S-expressions, headed by the keywords `then` and `else`.
-
-The set of all phrases defined by the following abbreviations recursively forms the auxiliary syntactic class `foldedinstr`.
-
-Such a folded instruction can appear anywhere a regular instruction can.
+The set of all phrases defined by the following abbreviations recursively forms the auxiliary syntactic class `foldedinstr`. Such a folded instruction can appear anywhere a regular instruction can.
 
 ```text
 foldedinstr_I ::=

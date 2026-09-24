@@ -551,3 +551,36 @@
 | `f64x2.max` | `0xFD 0xF5 0x01` | `[v128 v128] -> [v128]` | [validation](valid-vbinop) | [execution](exec-vbinop) ([operator](op-fmax)) |
 | `f64x2.pmin` | `0xFD 0xF6 0x01` | `[v128 v128] -> [v128]` | [validation](valid-vbinop) | [execution](exec-vbinop) ([operator](op-fpmin)) |
 | `f64x2.pmax` | `0xFD 0xF7 0x01` | `[v128 v128] -> [v128]` | [validation](valid-vbinop) | [execution](exec-vbinop) ([operator](op-fpmax)) |
+| `i32x4.trunc_sat_f32x4_s` | `0xFD 0xF8 0x01` | `[v128] -> [v128]` | [validation](valid-vcvtop) | [execution](exec-vcvtop) ([operator](op-trunc_sat)) |
+| `i32x4.trunc_sat_f32x4_u` | `0xFD 0xF9 0x01` | `[v128] -> [v128]` | [validation](valid-vcvtop) | [execution](exec-vcvtop) ([operator](op-trunc_sat)) |
+| `f32x4.convert_i32x4_s` | `0xFD 0xFA 0x01` | `[v128] -> [v128]` | [validation](valid-vcvtop) | [execution](exec-vcvtop) ([operator](op-convert)) |
+| `f32x4.convert_i32x4_u` | `0xFD 0xFB 0x01` | `[v128] -> [v128]` | [validation](valid-vcvtop) | [execution](exec-vcvtop) ([operator](op-convert)) |
+| `i32x4.trunc_sat_f64x2_s_zero` | `0xFD 0xFC 0x01` | `[v128] -> [v128]` | [validation](valid-vcvtop) | [execution](exec-vcvtop) ([operator](op-trunc_sat)) |
+| `i32x4.trunc_sat_f64x2_u_zero` | `0xFD 0xFD 0x01` | `[v128] -> [v128]` | [validation](valid-vcvtop) | [execution](exec-vcvtop) ([operator](op-trunc_sat)) |
+| `f64x2.convert_low_i32x4_s` | `0xFD 0xFE 0x01` | `[v128] -> [v128]` | [validation](valid-vcvtop) | [execution](exec-vcvtop) ([operator](op-convert)) |
+| `f64x2.convert_low_i32x4_u` | `0xFD 0xFF 0x01` | `[v128] -> [v128]` | [validation](valid-vcvtop) | [execution](exec-vcvtop) ([operator](op-convert)) |
+| `i8x16.relaxed_swizzle` | `0xFD 0x80 0x02` | `[v128 v128] -> [v128]` | [validation](valid-vswizzlop) | [execution](exec-vswizzlop) ([operator](op-ivrelaxed_swizzle)) |
+| `i32x4.relaxed_trunc_f32x4_s` | `0xFD 0x81 0x02` | `[v128] -> [v128]` | [validation](valid-vcvtop) | [execution](exec-vcvtop) ([operator](op-relaxed_trunc_s)) |
+| `i32x4.relaxed_trunc_f32x4_u` | `0xFD 0x82 0x02` | `[v128] -> [v128]` | [validation](valid-vcvtop) | [execution](exec-vcvtop) ([operator](op-relaxed_trunc_u)) |
+| `i32x4.relaxed_trunc_f64x2_s` | `0xFD 0x83 0x02` | `[v128] -> [v128]` | [validation](valid-vcvtop) | [execution](exec-vcvtop) ([operator](op-relaxed_trunc_s)) |
+| `i32x4.relaxed_trunc_f64x2_u` | `0xFD 0x84 0x02` | `[v128] -> [v128]` | [validation](valid-vcvtop) | [execution](exec-vcvtop) ([operator](op-relaxed_trunc_u)) |
+| `f32x4.relaxed_madd` | `0xFD 0x85 0x02` | `[v128 v128 v128] -> [v128]` | [validation](valid-vternop) | [execution](exec-vternop) ([operator](op-frelaxed_madd)) |
+| `f32x4.relaxed_nmadd` | `0xFD 0x86 0x02` | `[v128 v128 v128] -> [v128]` | [validation](valid-vternop) | [execution](exec-vternop) ([operator](op-frelaxed_nmadd)) |
+| `f64x2.relaxed_madd` | `0xFD 0x87 0x02` | `[v128 v128 v128] -> [v128]` | [validation](valid-vternop) | [execution](exec-vternop) ([operator](op-frelaxed_madd)) |
+| `f64x2.relaxed_nmadd` | `0xFD 0x88 0x02` | `[v128 v128 v128] -> [v128]` | [validation](valid-vternop) | [execution](exec-vternop) ([operator](op-frelaxed_nmadd)) |
+| `i8x16.relaxed_laneselect` | `0xFD 0x89 0x02` | `[v128 v128 v128] -> [v128]` | [validation](valid-vternop) | [execution](exec-vternop) ([operator](op-irelaxed_laneselect)) |
+| `i16x8.relaxed_laneselect` | `0xFD 0x8A 0x02` | `[v128 v128 v128] -> [v128]` | [validation](valid-vternop) | [execution](exec-vternop) ([operator](op-irelaxed_laneselect)) |
+| `i32x4.relaxed_laneselect` | `0xFD 0x8B 0x02` | `[v128 v128 v128] -> [v128]` | [validation](valid-vternop) | [execution](exec-vternop) ([operator](op-irelaxed_laneselect)) |
+| `i64x2.relaxed_laneselect` | `0xFD 0x8C 0x02` | `[v128 v128 v128] -> [v128]` | [validation](valid-vternop) | [execution](exec-vternop) ([operator](op-irelaxed_laneselect)) |
+| `f32x4.relaxed_min` | `0xFD 0x8D 0x02` | `[v128 v128] -> [v128]` | [validation](valid-vbinop) | [execution](exec-vbinop) ([operator](op-frelaxed_min)) |
+| `f32x4.relaxed_max` | `0xFD 0x8E 0x02` | `[v128 v128] -> [v128]` | [validation](valid-vbinop) | [execution](exec-vbinop) ([operator](op-frelaxed_max)) |
+| `f64x2.relaxed_min` | `0xFD 0x8F 0x02` | `[v128 v128] -> [v128]` | [validation](valid-vbinop) | [execution](exec-vbinop) ([operator](op-frelaxed_min)) |
+| `f64x2.relaxed_max` | `0xFD 0x90 0x02` | `[v128 v128] -> [v128]` | [validation](valid-vbinop) | [execution](exec-vbinop) ([operator](op-frelaxed_max)) |
+| `i16x8.relaxed_q15mulr_s` | `0xFD 0x91 0x02` | `[v128 v128] -> [v128]` | [validation](valid-vbinop) | [execution](exec-vbinop) ([operator](op-irelaxed_q15mulr_s)) |
+| `i16x8.relaxed_dot_i8x16_i7x16_s` | `0xFD 0x92 0x02` | `[v128 v128] -> [v128]` | [validation](valid-vextbinop) | [execution](exec-vextbinop) ([operator](op-vextbinop)) |
+| `i32x4.relaxed_dot_i8x16_i7x16_add_s` | `0xFD 0x93 0x02` | `[v128 v128 v128] -> [v128]` | [validation](valid-vextternop) | [execution](exec-vextternop) ([operator](op-vextternop)) |
+| (reserved) | `0xFD 0x94 0x02 ...` |  |  |  |
+| (reserved) | `0xFE` |  |  |  |
+| (reserved) | `0xFF` |  |  |  |
+
+> **Note:** Multi-byte opcodes are given with the shortest possible encoding in the table. However, what is following the first byte is actually a [u32](binary-uint) with variable-length encoding and consequently has multiple possible representations.

@@ -39,6 +39,10 @@ A type use may also be a *recursive type index*. Such an index refers to the `i`
 
 Both extensions affect occurrences of type uses in concrete heap types, in sub types and in instructions.
 
+> **Note:** It is an invariant of the semantics that sub types occur only in one of two forms: either as "syntactic" types as in a source module, where all supertypes are type indices, or as "semantic" types, where all supertypes are resolved to either defined types or recursive type indices.
+>
+> Recursive type indices are local to a recursive type. They are distinguished from regular type indices and represented such that two closed types are syntactically equal if and only if they have the same recursive structure.
+
 A type of any form is *closed* when it does not contain a heap type that is a type index or a recursive type index without a surrounding recursive type, i.e., all type indices have been substituted with their defined type and all free recursive type indices have been unrolled.
 
 #### Convention
@@ -226,6 +230,7 @@ The conclusion always is a judgment `C |- A : T`, and there usually is one respe
 > **Note:** For example, the typing rule for the `i32.add` instruction can be given as an axiom:
 >
 > ```text
+> ─────────────────────────────
 > C |- i32.add : i32 i32 -> i32
 > ```
 >

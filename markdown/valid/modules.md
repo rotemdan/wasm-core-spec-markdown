@@ -23,8 +23,10 @@ C |- type rectype : dt*
 
 ```text
 ────────────────
-{ } |- ε : ε
+C |- ε : ε
+```
 
+```text
 C |- type1 : dt1*
 C ⊕ { TYPES dt1* } |- type* : dt*
 ──────────────────────────────────
@@ -81,8 +83,10 @@ The global sequence `global*` is valid with the global type sequence `gt*` if:
 
 ```text
 ────────────────
-{ } |- ε : ε
+C |- ε : ε
+```
 
+```text
 C |- global1 : gt1
 C ⊕ { GLOBALS gt1 } |- global* : gt*
 ─────────────────────────────────
@@ -159,10 +163,12 @@ The local `(local t)` is valid with the local type `(init t)` if:
 
 ```text
 C |- t : OK
-default_t ≠ ε
+default_t != ε
 ──────────────────
 C |- local t : set t
+```
 
+```text
 C |- t : OK
 default_t = ε
 ──────────────────
@@ -175,17 +181,15 @@ C |- local t : unset t
 
 Data segments are classified by the singleton data type, which merely expresses well-formedness.
 
-The memory segment `(DATA b* datamode)` is valid if:
+The memory segment `(data b* datamode)` is valid if:
 
 * The data mode `datamode` is valid.
 
 ```text
 C |- datamode : OK
 ────────────────────
-C |- data DATA b* datamode : OK
+C |- data b* datamode : OK
 ```
-
-#### Data Mode
 
 The data mode `datamode` is valid if:
 
@@ -201,7 +205,9 @@ The data mode `datamode` is valid if:
 ```text
 ────────────────
 C |- passive : OK
+```
 
+```text
 C.MEMS[x] = at lim page
 C |- expr : at const
 ────────────────────────
@@ -212,7 +218,7 @@ C |- active x expr : OK
 
 Element segments are classified by their element type.
 
-The table segment `(ELEM elemtype expr* elemmode)` is valid with the element type `elemtype` if:
+The table segment `(elem elemtype expr* elemmode)` is valid with the element type `elemtype` if:
 
 * The reference type `elemtype` is valid.
 * For all `expr` in `expr*`:
@@ -225,10 +231,8 @@ C |- elemtype : OK
 (C |- expr : elemtype const)*
 C |- elemmode : elemtype
 ──────────────────────────────────
-C |- elem ELEM elemtype expr* elemmode : elemtype
+C |- elem elemtype expr* elemmode : elemtype
 ```
-
-#### Element Mode
 
 The element mode `elemmode` is valid with the element type `rt` if:
 
@@ -247,10 +251,14 @@ The element mode `elemmode` is valid with the element type `rt` if:
 ```text
 ────────────────
 C |- passive : rt
+```
 
+```text
 ────────────────
 C |- declare : rt
+```
 
+```text
 C.TABLES[x] = at lim rt'
 C |- rt <: rt'
 C |- expr : at const
@@ -300,7 +308,7 @@ C |- externidx : xt
 C |- export name externidx : name xt
 ```
 
-#### `XXTAG x`
+#### `tag x`
 
 The external index `(tag x)` is valid with the external type `(tag jt)` if:
 
@@ -313,7 +321,7 @@ C.TAGS[x] = jt
 C |- tag x : tag jt
 ```
 
-#### `XXGLOBAL x`
+#### `global x`
 
 The external index `(global x)` is valid with the external type `(global gt)` if:
 
@@ -326,7 +334,7 @@ C.GLOBALS[x] = gt
 C |- global x : global gt
 ```
 
-#### `XXMEM x`
+#### `mem x`
 
 The external index `(mem x)` is valid with the external type `(mem mt)` if:
 
@@ -339,7 +347,7 @@ C.MEMS[x] = mt
 C |- mem x : mem mt
 ```
 
-#### `XXTABLE x`
+#### `table x`
 
 The external index `(table x)` is valid with the external type `(table tt)` if:
 
@@ -352,7 +360,7 @@ C.TABLES[x] = tt
 C |- table x : table tt
 ```
 
-#### `XXFUNC x`
+#### `func x`
 
 The external index `(func x)` is valid with the external type `(func dt)` if:
 
@@ -415,9 +423,9 @@ The module `(module type* import* tag* global* mem* table* func* data* elem* sta
 
 ```text
 { } |- type* : dt'*
-(TYPES dt'* |- import : xt_i)*
+({ TYPES dt'* } |- import : xt_i)*
 (C' |- tag : jt)*
-C' |- globals global* : gt*
+C' |- global* : gt*
 (C' |- mem : mt)*
 (C' |- table : tt)*
 (C |- func : dt)*

@@ -46,7 +46,7 @@ null ::=
   | 'null'  => null
 
 reftype_I ::=
-  | '(' 'ref' null?^? ht : heaptype_I ')'  => ref null? ht
+  | '(' 'ref' null? : null? ht : heaptype_I ')'  => ref null? ht
 ```
 
 #### Abbreviations
@@ -145,7 +145,7 @@ typedef_I ::=
   | '(' 'type' id? : id? (st, I') : subtype_I ')'  => (st, I' ⊕ { TYPES (id?) })
 
 rectype_I ::=
-  | '(' 'rec' (st, I')^* : list(typedef_I) ')'  => (rec st*, ++ I'*)
+  | '(' 'rec' (st, I')^* : list(typedef_I) ')'  => (rec st*, ⋆ I'*)
 ```
 
 #### Abbreviations
@@ -231,24 +231,20 @@ externtype_I ::=
 
 ### Type Uses
 
-A *type use* is a reference to a type definition. Where it is required to reference a function type, it may optionally be augmented by explicit inlined parameter and result declarations.
-
-That allows binding symbolic identifiers to name the local indices of parameters.
-
-If inline declarations are given, then their types must match the referenced function type.
+A *type use* is a reference to a type definition. Where it is required to reference a function type, it may optionally be augmented by explicit inlined parameter and result declarations. That allows binding symbolic identifiers to name the local indices of parameters. If inline declarations are given, then their types must match the referenced function type.
 
 ```text
 typeuse_I ::=
   | '(' 'type' x : typeidx_I ')'  => (x, I')
         (if I.TYPEDEFS[x] = (rec st*) . i
-             && st*[i] = sub final (func t1* -> t2*)
-             && I' = { LOCALS (ε)^(|t1*|) })
+             ∧ st*[i] = sub final (func t1* -> t2*)
+             ∧ I' = { LOCALS (ε)^(|t1*|) })
   | '(' 'type' x : typeidx_I ')' (t1, id?)^* : param_I* t2* : result_I*
         => (x, I')
         (if I.TYPEDEFS[x] = (rec st*) . i
-             && st*[i] = sub final (func t1* -> t2*)
-             && I' = { LOCALS (id?)* }
-             && |- I' : ok )
+             ∧ st*[i] = sub final (func t1* -> t2*)
+             ∧ I' = { LOCALS (id?)* }
+             ∧ |- I' : ok )
 ```
 
 > **Note:** If inline declarations are given, their types must be *syntactically* equal to the types from the indexed definition; possible type substitutions from other definitions that might make them equal are not taken into account. This is to simplify syntactic pre-processing.
@@ -261,19 +257,15 @@ The synthesized attribute of a `typeuse` is a pair consisting of both the used t
 
 #### Abbreviations
 
-A type use may also be replaced entirely by inline parameter and result declarations.
-
-In that case, a type index is automatically inserted:
+A type use may also be replaced entirely by inline parameter and result declarations. In that case, a type index is automatically inserted:
 
 ```text
 typeuse_I ::=
   | ... | (t1, id?)^* : param_I* t2* : result_I*  ≡  '(' 'type' x : typeidx_I ')' param_I* result_I*
         (if I.TYPEDEFS[x] = (rec (sub final (func t1* -> t2*))) . 0
-             && (I.TYPEDEFS[i] != (rec (sub final (func t1* -> t2*))) . 0)^{i<x} )
+             ∧ (I.TYPEDEFS[i] != (rec (sub final (func t1* -> t2*))) . 0)^{i<x} )
 ```
 
-where `x` is the smallest existing type index whose recursive type definition parses into a singular, final function type with the same parameters and results.
-
-If no such index exists, then a new recursive type of the same form is inserted at the end of the module.
+where `x` is the smallest existing type index whose recursive type definition parses into a singular, final function type with the same parameters and results. If no such index exists, then a new recursive type of the same form is inserted at the end of the module.
 
 Abbreviations are expanded in the order they appear, such that previously inserted type definitions are reused by consecutive expansions.

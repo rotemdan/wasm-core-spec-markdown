@@ -7,6 +7,7 @@ On most types, a notion of *subtyping* is defined that is applicable in validati
 The number type `numtype` matches only itself.
 
 ```text
+───────────────────────
 C |- numtype <: numtype
 ```
 
@@ -15,6 +16,7 @@ C |- numtype <: numtype
 The vector type `vectype` matches only itself.
 
 ```text
+───────────────────────
 C |- vectype <: vectype
 ```
 
@@ -105,6 +107,7 @@ The heap type `heaptype1` matches the heap type `heaptype2` if:
   * The heap type `heaptype1` is of the form `bot`.
 
 ```text
+─────────────────────────
 C |- heaptype <: heaptype
 ```
 
@@ -117,18 +120,22 @@ C |- heaptype1 <: heaptype2
 ```
 
 ```text
+──────────────
 C |- eq <: any
 ```
 
 ```text
+──────────────
 C |- i31 <: eq
 ```
 
 ```text
+─────────────────
 C |- struct <: eq
 ```
 
 ```text
+────────────────
 C |- array <: eq
 ```
 
@@ -164,33 +171,34 @@ C |- heaptype <: typeidx
 
 ```text
 C |- heaptype <: any
-heaptype ≠ bot
+heaptype != bot
 ────────────────────
 C |- none <: heaptype
 ```
 
 ```text
 C |- heaptype <: func
-heaptype ≠ bot
+heaptype != bot
 ────────────────────
 C |- nofunc <: heaptype
 ```
 
 ```text
 C |- heaptype <: exn
-heaptype ≠ bot
+heaptype != bot
 ────────────────────
 C |- noexn <: heaptype
 ```
 
 ```text
 C |- heaptype <: extern
-heaptype ≠ bot
+heaptype != bot
 ──────────────────────
 C |- noextern <: heaptype
 ```
 
 ```text
+────────────────────
 C |- bot <: heaptype
 ```
 
@@ -238,6 +246,7 @@ The value type `valtype1` matches the value type `valtype2` if:
   * The value type `valtype1` is of the form `bot`.
 
 ```text
+───────────────────
 C |- bot <: valtype
 ```
 
@@ -335,7 +344,9 @@ The field type `(mut? zt1)` matches the field type `(mut? zt2)` if:
 C |- zt1 <: zt2
 ──────────────────
 C |- zt1 <: zt2
+```
 
+```text
 C |- zt1 <: zt2
 C |- zt2 <: zt1
 ──────────────────────
@@ -356,6 +367,7 @@ The storage type `storagetype1` matches the storage type `storagetype2` if:
 The packed type `packtype` matches only itself.
 
 ```text
+─────────────────────────
 C |- packtype <: packtype
 ```
 

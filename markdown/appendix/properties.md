@@ -72,7 +72,7 @@ The [sub type](syntax-subtype) `(sub final? typeuse* comptype)` is [valid](valid
 * The length of `typeuse*` is less than or equal to `1`.
 * For all `typeuse` in `typeuse*`:
   * The [type use](syntax-typeuse) `typeuse` is [valid](valid-typeuse).
-  * `typeuse <: i` is true.
+  * `typeuse ≺ i` is true.
   * The [sub type](syntax-subtype) `unrollht_C(typeuse)` is of the form `(sub typeuse'* comptype')`.
 * `comptype'*` is the concatenation of all such `comptype'`.
 * The [composite type](syntax-comptype) `comptype` is [valid](valid-comptype).
@@ -82,7 +82,7 @@ The [sub type](syntax-subtype) `(sub final? typeuse* comptype)` is [valid](valid
 ```text
 |typeuse*| <= 1
 (C |- typeuse : OK)*
-(typeuse <: i)*
+(typeuse ≺ i)*
 (unrollht_C(typeuse) = sub typeuse'* comptype')*
 C |- comptype : OK
 (C |- comptypematch comptype <: comptype')*
@@ -97,8 +97,8 @@ unrollht_C(deftype) = unrolldt(deftype)
 unrollht_C(typeidx) = unrolldt(C.TYPES[typeidx])
 unrollht_C(rec . i) = C.RECS[i]
 
-rec . j <: i = j < i
-typeuse <: i = true    (otherwise)
+rec . j ≺ i = j < i
+typeuse ≺ i = true    (otherwise)
 ```
 
 > **Note:** The new rules for [recursive types](syntax-rectype) and [sub types](syntax-subtype) complement the ones [previously given](valid-subtype), which only allowed regular [type indices](syntax-typeidx) as supertypes. They define validity of [rolled-up](aux-roll-rectype) recursive types, like they occur in [defined types](syntax-deftype), in turn needed to define [validity](valid-context) of [contexts](context). None of these rules are needed in the implementation of a validator.
@@ -336,10 +336,10 @@ S |- funcinst { TYPE deftype, MODULE moduleinst, CODE func } : deftype
 ```text
 |- deftype : OK
 deftype ≈ func [t1*] -> [t2*]
-∀ S1, val* , (|- store S1 : OK ∧ |- storeextends S extendsto S1 ∧ S1 |- result val* : [t1*]) =>
+∀ S1, val* , (|- store S1 : OK ∧ |- storeextends S extends S1 ∧ S1 |- result val* : [t1*]) =>
   hf(S1; val*) ⊃ ∅ ∧
   ∀ R ∈ hf(S1; val*), R = bot ∨ ∃ S2, result ,
-    (|- store S2 : OK ∧ |- storeextends S1 extendsto S2 ∧ S2 |- result result : [t2*]) ∧ R = (S2; result)
+    (|- store S2 : OK ∧ |- storeextends S1 extends S2 ∧ S2 |- result result : [t2*]) ∧ R = (S2; result)
 ─────────────────────────────
 S |- funcinst { TYPE deftype, HOSTFUNC hf } : deftype
 ```
@@ -802,15 +802,15 @@ mut = mut ∨ fieldval1* = fieldval2*
 
 Given the definition of [valid configurations](valid-config), the standard soundness theorems hold. [^cite-cpp2018][^cite-fm2021]
 
-**Theorem (Preservation).** If a [configuration](syntax-config) `S;T` is [valid](valid-config) with [result type](syntax-resulttype) `[t*]` (i.e., `|- config S;T : [t*]`), and steps to `S';T'` (i.e., `S;T stepto S';T'`), then `S';T'` is a valid configuration with the same result type (i.e., `|- config S';T' : [t*]`). Furthermore, `S'` is an [extension](extend-store) of `S` (i.e., `|- storeextends S extends S'`).
+**Theorem (Preservation).** If a [configuration](syntax-config) `S;T` is [valid](valid-config) with [result type](syntax-resulttype) `[t*]` (i.e., `|- config S;T : [t*]`), and steps to `S';T'` (i.e., `S;T -> S';T'`), then `S';T'` is a valid configuration with the same result type (i.e., `|- config S';T' : [t*]`). Furthermore, `S'` is an [extension](extend-store) of `S` (i.e., `|- storeextends S extends S'`).
 
 A *terminal* [thread](syntax-thread) is one whose sequence of [instructions](syntax-instr) is a [result](syntax-result). A terminal configuration is a configuration whose thread is terminal.
 
-**Theorem (Progress).** If a [configuration](syntax-config) `S;T` is [valid](valid-config) (i.e., `|- config S;T : [t*]` for some [result type](syntax-resulttype) `[t*]`), then either it is terminal, or it can step to some configuration `S';T'` (i.e., `S;T stepto S';T'`).
+**Theorem (Progress).** If a [configuration](syntax-config) `S;T` is [valid](valid-config) (i.e., `|- config S;T : [t*]` for some [result type](syntax-resulttype) `[t*]`), then either it is terminal, or it can step to some configuration `S';T'` (i.e., `S;T -> S';T'`).
 
 From Preservation and Progress the soundness of the WebAssembly type system follows directly.
 
-**Corollary (Soundness).** If a [configuration](syntax-config) `S;T` is [valid](valid-config) (i.e., `|- config S;T : [t*]` for some [result type](syntax-resulttype) `[t*]`), then it either diverges or takes a finite number of steps to reach a terminal configuration `S';T'` (i.e., `S;T stepto* S';T'`) that is valid with the same result type (i.e., `|- config S';T' : [t*]`) and where `S'` is an [extension](extend-store) of `S` (i.e., `|- storeextends S extends S'`).
+**Corollary (Soundness).** If a [configuration](syntax-config) `S;T` is [valid](valid-config) (i.e., `|- config S;T : [t*]` for some [result type](syntax-resulttype) `[t*]`), then it either diverges or takes a finite number of steps to reach a terminal configuration `S';T'` (i.e., `S;T ->* S';T'`) that is valid with the same result type (i.e., `|- config S';T' : [t*]`) and where `S'` is an [extension](extend-store) of `S` (i.e., `|- storeextends S extends S'`).
 
 In other words, every thread in a valid configuration either runs forever, traps, throws an exception, or terminates with a result that has the expected type. Consequently, given a [valid store](valid-store), no computation defined by [instantiation](exec-instantiation) or [invocation](exec-invocation) of a valid module can "crash" or otherwise (mis)behave in ways not covered by the [execution](exec) semantics given in this specification.
 
@@ -865,3 +865,31 @@ The [Principal Types](principality) property depends on the existence of a *grea
 **Theorem (Greatest Lower Bounds for Value Types).** For any two value types `t1` and `t2` that are [valid](valid-valtype) (i.e., `C |- valtype t1 : OK` and `C |- valtype t2 : OK`), there exists a valid value type `t` that is a subtype of both `t1` and `t2` (i.e., `C |- valtype t : OK` and `C |- valtypematch t <: t1` and `C |- valtypematch t <: t2`), such that *every* valid value type `t'` that also is a subtype of both `t1` and `t2` (i.e., for all `C |- valtype t' : OK` and `C |- valtypematch t' <: t1` and `C |- valtypematch t' <: t2`), is a subtype of `t` (i.e., `C |- valtypematch t' <: t`).
 
 > **Note:** The greatest lower bound of two types may be BOT.
+
+**Theorem (Conditional Least Upper Bounds for Value Types).** Any two value types `t1` and `t2` that are [valid](valid-valtype) (i.e., `C |- valtype t1 : OK` and `C |- valtype t2 : OK`) either have no common supertype, or there exists a valid value type `t` that is a supertype of both `t1` and `t2` (i.e., `C |- valtype t : OK` and `C |- valtypematch t1 <: t` and `C |- valtypematch t2 <: t`), such that *every* valid value type `t'` that also is a supertype of both `t1` and `t2` (i.e., for all `C |- valtype t' : OK` and `C |- valtypematch t1 <: t'` and `C |- valtypematch t2 <: t'`), is a supertype of `t` (i.e., `C |- valtypematch t <: t'`).
+
+> **Note:** If a top type was added to the type system, a least upper bound would exist for any two types.
+
+**Corollary (Type Lattice).** Assuming the addition of a provisional top type, [value types](syntax-valtype) form a lattice with respect to their [subtype](match-valtype) relation.
+
+Finally, value types can be partitioned into multiple disjoint hierarchies that are not related by subtyping, except through BOT.
+
+**Theorem (Disjoint Subtype Hierarchies).** The greatest lower bound of two [value types](syntax-valtype) is `bot` or `ref bot` if and only if they do not have a least upper bound.
+
+In other words, types that do not have common supertypes, do not have common subtypes either (other than `bot` or `ref bot`), and vice versa.
+
+> **Note:** Types from disjoint hierarchies can safely be represented in mutually incompatible ways in an implementation, because their values can never flow to the same place.
+
+### Compositionality
+
+[Valid](valid-instrs) [instruction sequences](syntax-instr) can be freely *composed*, as long as their types match up.
+
+**Theorem (Composition).** If two instruction sequences `instr1*` and `instr2*` are valid with types `[t1*] ->_{x1*} [t*]` and `[t*] ->_{x2*} [t2*]`, respectively (i.e., `C |- instrs instr1* : [t1*] ->_{x1*} [t*]` and `C |- instrs instr1* : [t*] ->_{x2*} [t2*]`), then the concatenated instruction sequence `(instr1* instr2*)` is valid with type `[t1*] ->_{x1* x2*} [t2*]` (i.e., `C |- instrs instr1* instr2* : [t1*] ->_{x1* x2*} [t2*]`).
+
+> **Note:** More generally, instead of a shared type `[t*]`, it suffices if the output type of `instr1*` is a [subtype](match-resulttype) of the input type of `instr1*`, since the subtype can always be weakened to its supertype by subsumption.
+
+Inversely, valid instruction sequences can also freely be *decomposed*, that is, splitting them anywhere produces two instruction sequences that are both [valid](valid-instrs).
+
+**Theorem (Decomposition).** If an instruction sequence `instr*` that is valid with type `[t1*] ->_{x*} [t2*]` (i.e., `C |- instrs instr* : [t1*] ->_{x*} [t2*]`) is split into two instruction sequences `instr1*` and `instr2*` at any point (i.e., `instr* = instr1* instr2*`), then these are separately valid with some types `[t1*] ->_{x1*} [t*]` and `[t*] ->_{x2*} [t2*]`, respectively (i.e., `C |- instrs instr1* : [t1*] ->_{x1*} [t*]` and `C |- instrs instr1* : [t*] ->_{x2*} [t2*]`), where `x* = x1* x2*`.
+
+> **Note:** This property holds because validation is required even for unreachable code. Without that, `instr2*` might not be valid in isolation.

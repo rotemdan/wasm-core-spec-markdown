@@ -17,7 +17,7 @@ There are two ways of subsetting the language in a profile:
 * *Syntactic*, by *omitting* a feature, in which case certain constructs are removed from the syntax altogether.
 * *Semantic*, by *restricting* a feature, in which case certain constructs are still present but some behaviours are ruled out.
 
-### Syntax Annotations
+#### Syntax Annotations
 
 To omit a construct from a profile syntactically, respective productions in the grammar of the [abstract syntax](syntax) are annotated with an associated profile marker.
 
@@ -39,7 +39,7 @@ The overall effect is that the respective construct is no longer part of the lan
 >
 > A rule may be annotated by multiple markers, which could be the case if a construct is in the intersection of multiple features.
 
-### Semantics Annotations
+#### Semantics Annotations
 
 To restrict certain behaviours in a profile, individual [validation](valid) or [reduction](exec) rules or auxiliary definitions are annotated with an associated marker.
 
@@ -48,16 +48,16 @@ This has the consequence that the respective rule is no longer applicable under 
 > **Note:** For example, an "infinite" profile marked `INF` could define that growing memory never fails:
 >
 > ```text
-> S; F; (i32.const n) memory.grow x stepto S'; F; (i32.const sz)
->   (if F.MODULE.MIMEMS[x] = a
->    ∧ sz = |S.MEMS[a].MIDATAS|/64 Ki
+> S; F; (i32.const n) memory.grow x -> S'; F; (i32.const sz)
+>   (if F.MODULE.MEMS[x] = a
+>    ∧ sz = |S.MEMS[a].DATAS|/64 Ki
 >    ∧ S' = S with MEMS[a] = growmem(S.MEMS[a], n))
 >
 > exprofiles INF
-> S; F; (i32.const n) memory.grow x stepto S; F; (i32.const signed_32^{-1}(-1))
+> S; F; (i32.const n) memory.grow x -> S; F; (i32.const signed_32^{-1}(-1))
 > ```
 
-### Properties
+#### Properties
 
 All profiles are defined such that the following properties are preserved:
 
@@ -75,7 +75,7 @@ All profiles are defined such that the following properties are preserved:
 
 > **Note:** The number of defined profiles is expected to remain small in the future. Profiles are intended for broad and permanent use cases only. In particular, profiles are not intended for language versioning.
 
-### Full Profile (FUL)
+#### Full Profile (FUL)
 
 The *full* profile contains the complete language and all possible behaviours.
 
@@ -83,7 +83,7 @@ It imposes no restrictions, i.e., all rules and definitions are active.
 
 All other profiles define sub-languages of this profile.
 
-### Deterministic Profile (DET)
+#### Deterministic Profile (DET)
 
 The *deterministic* profile excludes all rules marked `exprofiles DET`.
 

@@ -8,7 +8,7 @@ New instances of tags, globals, memories, tables, functions, data segments, and 
 
 #### Tags
 
-#### `alloc_tag(s, tagtype)`
+#### `alloctag(s, tagtype)`
 
 1. Let `taginst` be the tag instance `{ ITYPE tagtype }`.
 2. Let `a` be the length of `s.TAGS`.
@@ -22,7 +22,7 @@ alloctag(s, tagtype) = (s ⊕ { TAGS taginst }, |s.TAGS|)
 
 #### Globals
 
-#### `alloc_global(s, globaltype, val)`
+#### `allocglobal(s, globaltype, val)`
 
 1. Let `globalinst` be the global instance `{ ITYPE globaltype, IVALUE val }`.
 2. Let `a` be the length of `s.GLOBALS`.
@@ -36,7 +36,7 @@ allocglobal(s, globaltype, val) = (s ⊕ { GLOBALS globalinst }, |s.GLOBALS|)
 
 #### Memories
 
-#### `alloc_mem(s, at [ i .. j? ] page)`
+#### `allocmem(s, at [ i .. j? ] page)`
 
 1. Let `meminst` be the memory instance `{ ITYPE (at [ i .. j? ] page), IBYTES (0x00)^(i * 64 Ki) }`.
 2. Let `a` be the length of `s.MEMS`.
@@ -50,7 +50,7 @@ allocmem(s, at [ i .. j? ] page) = (s ⊕ { MEMS meminst }, |s.MEMS|)
 
 #### Tables
 
-#### `alloc_table(s, at [ i .. j? ] rt, reff)`
+#### `alloctable(s, at [ i .. j? ] rt, reff)`
 
 1. Let `tableinst` be the table instance `{ ITYPE (at [ i .. j? ] rt), IREFS reff^i }`.
 2. Let `a` be the length of `s.TABLES`.
@@ -64,7 +64,7 @@ alloctable(s, at [ i .. j? ] rt, reff) = (s ⊕ { TABLES tableinst }, |s.TABLES|
 
 #### Functions
 
-#### `alloc_func(s, deftype, funccode, moduleinst)`
+#### `allocfunc(s, deftype, funccode, moduleinst)`
 
 1. Let `funcinst` be the function instance `{ ITYPE deftype, IMODULE moduleinst, ICODE funccode }`.
 2. Let `a` be the length of `s.FUNCS`.
@@ -78,7 +78,7 @@ allocfunc(s, deftype, funccode, moduleinst) = (s ⊕ { FUNCS funcinst }, |s.FUNC
 
 #### Data segments
 
-#### `alloc_data(s, ok, byte*)`
+#### `allocdata(s, ok, byte*)`
 
 1. Let `datainst` be the data instance `{ IBYTES byte* }`.
 2. Let `a` be the length of `s.DATAS`.
@@ -92,7 +92,7 @@ allocdata(s, ok, byte*) = (s ⊕ { DATAS datainst }, |s.DATAS|)
 
 #### Element segments
 
-#### `alloc_elem(s, elemtype, reff*)`
+#### `allocelem(s, elemtype, reff*)`
 
 1. Let `eleminst` be the element instance `{ ITYPE elemtype, IREFS reff* }`.
 2. Let `a` be the length of `s.ELEMS`.
@@ -106,7 +106,7 @@ allocelem(s, elemtype, reff*) = (s ⊕ { ELEMS eleminst }, |s.ELEMS|)
 
 #### Growing memories
 
-#### `grow_mem(meminst, n)`
+#### `growmem(meminst, n)`
 
 1. Let `{ ITYPE (at [ i .. j? ] page), IBYTES b* }` be the destructuring of `meminst`.
 2. Let `i'` be `|b*| / (64 Ki) + n`.
@@ -128,7 +128,7 @@ growmem(meminst, n) = meminst'
 
 #### Growing tables
 
-#### `grow_table(tableinst, n, r)`
+#### `growtable(tableinst, n, r)`
 
 1. Let `{ ITYPE (at [ i .. j? ] rt), IREFS r'* }` be the destructuring of `tableinst`.
 2. Let `i'` be `|r'*| + n`.
@@ -150,7 +150,7 @@ growtable(tableinst, n, r) = tableinst'
 
 #### Modules
 
-#### `alloc_module(s, module, externaddr*, val_g*, reff_t*, (reff_e*)*)`
+#### `allocmodule(s, module, externaddr*, val_g*, reff_t*, (reff_e*)*)`
 
 1. Let `(MODULE type* import* tag* global* mem* table* func* data* elem* start? export*)` be the destructuring of `module`.
 2. Let `aa_i*` be `tagsxa(externaddr*)`.
@@ -194,19 +194,19 @@ growtable(tableinst, n, r) = tableinst'
     4. Append `x` to `x*`.
 25. Let `aa*` be `ε`.
 26. For each `tagtype` in `tagtype*`, do:
-    1. Let `aa` be the tag address `alloctag(s, tagtype[assignsubst dt*])`.
+    1. Let `aa` be the tag address `alloctag(s, tagtype[[:=] dt*])`.
     2. Append `aa` to `aa*`.
 27. Let `ga*` be `ε`.
 28. For each `globaltype` in `globaltype*` and `val_g` in `val_g*`, do:
-    1. Let `ga` be the global address `allocglobal(s, globaltype[assignsubst dt*], val_g)`.
+    1. Let `ga` be the global address `allocglobal(s, globaltype[[:=] dt*], val_g)`.
     2. Append `ga` to `ga*`.
 29. Let `ma*` be `ε`.
 30. For each `memtype` in `memtype*`, do:
-    1. Let `ma` be the memory address `allocmem(s, memtype[assignsubst dt*])`.
+    1. Let `ma` be the memory address `allocmem(s, memtype[[:=] dt*])`.
     2. Append `ma` to `ma*`.
 31. Let `ta*` be `ε`.
 32. For each `tabletype` in `tabletype*` and `reff_t` in `reff_t*`, do:
-    1. Let `ta` be the table address `alloctable(s, tabletype[assignsubst dt*], reff_t)`.
+    1. Let `ta` be the table address `alloctable(s, tabletype[[:=] dt*], reff_t)`.
     2. Append `ta` to `ta*`.
 33. Let `xi*` be `ε`.
 34. For each `export` in `export*`, do:
@@ -218,7 +218,7 @@ growtable(tableinst, n, r) = tableinst'
     2. Append `da` to `da*`.
 37. Let `ea*` be `ε`.
 38. For each `elemtype` in `elemtype*` and `reff_e*` in `reff_e**`, do:
-    1. Let `ea` be the elem address `allocelem(s, elemtype[assignsubst dt*], reff_e*)`.
+    1. Let `ea` be the elem address `allocelem(s, elemtype[[:=] dt*], reff_e*)`.
     2. Append `ea` to `ea*`.
 39. Let `moduleinst` be the module instance `{ ITYPES dt*, IGLOBALS ga_i* ga*, IMEMS ma_i* ma*, ITABLES ta_i* ta*, IFUNCS fa_i* fa*, IDATAS da*, IELEMS ea*, IEXPORTS xi* }`.
 40. Let `funcaddr_0*` be `ε`.
@@ -243,16 +243,16 @@ allocmodule(s, module, externaddr*, val_g*, reff_t*, (reff_e*)*) = (s_7, modulei
    ∧ ma_i* = memsxa(externaddr*)
    ∧ ta_i* = tablesxa(externaddr*)
    ∧ fa_i* = funcsxa(externaddr*)
-   ∧ dt* = alloc_type*(type*)
+   ∧ dt* = alloctype*(type*)
    ∧ fa* = (|s.FUNCS| + i_f)^(i_f<|func*|)
-   ∧ (s_1, aa*) = alloc_tag*(s, (tagtype[assignsubst dt*])*)
-   ∧ (s_2, ga*) = alloc_global*(s_1, (globaltype[assignsubst dt*])*, val_g*)
-   ∧ (s_3, ma*) = alloc_mem*(s_2, (memtype[assignsubst dt*])*)
-   ∧ (s_4, ta*) = alloc_table*(s_3, (tabletype[assignsubst dt*])*, reff_t*)
-   ∧ (s_5, da*) = alloc_data*(s_4, ok^(|data*|), (byte*)*)
-   ∧ (s_6, ea*) = alloc_elem*(s_5, (elemtype[assignsubst dt*])*, (reff_e*)*)
-   ∧ (s_7, fa*) = alloc_func*(s_6, (dt*[x])*, (FUNC x local* expr_f)*, moduleinst^(|func*|))
-   ∧ xi* = alloc_export*({ ITAGS aa_i* aa*, IGLOBALS ga_i* ga*, IMEMS ma_i* ma*, ITABLES ta_i* ta*, IFUNCS fa_i* fa* }, export*)
+   ∧ (s_1, aa*) = alloctag*(s, (tagtype[[:=] dt*])*)
+   ∧ (s_2, ga*) = allocglobal*(s_1, (globaltype[[:=] dt*])*, val_g*)
+   ∧ (s_3, ma*) = allocmem*(s_2, (memtype[[:=] dt*])*)
+   ∧ (s_4, ta*) = alloctable*(s_3, (tabletype[[:=] dt*])*, reff_t*)
+   ∧ (s_5, da*) = allocdata*(s_4, ok^(|data*|), (byte*)*)
+   ∧ (s_6, ea*) = allocelem*(s_5, (elemtype[[:=] dt*])*, (reff_e*)*)
+   ∧ (s_7, fa*) = allocfunc*(s_6, (dt*[x])*, (FUNC x local* expr_f)*, moduleinst^(|func*|))
+   ∧ xi* = allocexport*({ ITAGS aa_i* aa*, IGLOBALS ga_i* ga*, IMEMS ma_i* ma*, ITABLES ta_i* ta*, IFUNCS fa_i* fa* }, export*)
    ∧ moduleinst = { ITYPES dt*, IGLOBALS ga_i* ga*, IMEMS ma_i* ma*, ITABLES ta_i* ta*, IFUNCS fa_i* fa*, IDATAS da*, IELEMS ea*, IEXPORTS xi* })
 ```
 
@@ -267,29 +267,29 @@ allocX*(s, X X'*, Y Y'*) = (s_2, a a'*)
 
 For types, however, allocation is defined in terms of rolling and substitution of all preceding types to produce a list of closed defined types:
 
-#### `alloc_type*(type''*)`
+#### `alloctype*(type''*)`
 
 1. If `type''* = ε`, then:
    1. Return `ε`.
 2. Let `type'* type` be `type''*`.
 3. Let `(TYPE rectype)` be the destructuring of `type`.
-4. Let `deftype'*` be `alloc_type*(type'*)`.
+4. Let `deftype'*` be `alloctype*(type'*)`.
 5. Let `x` be the length of `deftype'*`.
-6. Let `deftype*` be `rolldt_x*(rectype)[assignsubst deftype'*]`.
+6. Let `deftype*` be `rolldt_x*(rectype)[[:=] deftype'*]`.
 7. Return `deftype'* deftype*`.
 
 ```text
-alloc_type*(ε) = ε
-alloc_type*(type'* type) = deftype'* deftype*
-  (if deftype'* = alloc_type*(type'*)
+alloctype*(ε) = ε
+alloctype*(type'* type) = deftype'* deftype*
+  (if deftype'* = alloctype*(type'*)
    ∧ type = TYPE rectype
-   ∧ deftype* = rolldt_x*(rectype)[assignsubst deftype'*]
+   ∧ deftype* = rolldt_x*(rectype)[[:=] deftype'*]
    ∧ x = |deftype'*|)
 ```
 
 Finally, export instances are produced with the help of the following definition:
 
-#### `alloc_export(moduleinst, EXPORT name externidx)`
+#### `allocexport(moduleinst, EXPORT name externidx)`
 
 1. If `externidx` is some `tag tagidx`, then:
    1. Let `(tag x)` be the destructuring of `externidx`.
@@ -338,7 +338,7 @@ Instantiation checks that the module is valid and the provided imports match the
       1. Fail.
 6. Let `instr_d*` be the concatenation of `rundata_i_d(data*[i_d])^(i_d<|data*|)`.
 7. Let `instr_e*` be the concatenation of `runelem_i_e(elem*[i_e])^(i_e<|elem*|)`.
-8. Let `moduleinst_0` be the module instance `{ ITYPES alloc_type*(type*), IGLOBALS globalsxa(externaddr*), IFUNCS funcsxa(externaddr*) (|s.FUNCS| + i_f)^(i_f<|func*|) }`.
+8. Let `moduleinst_0` be the module instance `{ ITYPES alloctype*(type*), IGLOBALS globalsxa(externaddr*), IFUNCS funcsxa(externaddr*) (|s.FUNCS| + i_f)^(i_f<|func*|) }`.
 9. Let `expr_t*` be the expression sequence `ε`.
 10. For each `table` in `table*`, do:
     1. Let `(TABLE tabletype expr_t)` be the destructuring of `table`.
@@ -353,8 +353,8 @@ Instantiation checks that the module is valid and the provided imports match the
 15. For each `elem` in `elem*`, do:
     1. Let `(ELEM reftype expr_e* elemmode)` be the destructuring of `elem`.
     2. Append `expr_e*` to `expr_e**`.
-16. Let `z` be the state `(s, { AMODULE moduleinst_0 })`.
-17. Let `F` be the frame `z.ZFRAME`.
+16. Let `z` be the state `(s, { MODULE moduleinst_0 })`.
+17. Let `F` be the frame `z.FRAME`.
 18. Push the frame `F`.
 19. Let `val_g*` be `evalglobal*(z, globaltype*, expr_g*)`.
 20. Let `reff_t*` be `evalexpr*(z, expr_t*)`.
@@ -362,7 +362,7 @@ Instantiation checks that the module is valid and the provided imports match the
 22. Pop the frame from the stack.
 23. Let `(s, f)` be the destructuring of `z`.
 24. Let `moduleinst` be `allocmodule(s, module, externaddr*, val_g*, reff_t*, reff_e**)`.
-25. Let `F'` be the frame `{ AMODULE moduleinst }`.
+25. Let `F'` be the frame `{ MODULE moduleinst }`.
 26. Push the frame `F'`.
 27. Execute the sequence `instr_e*`.
 28. Execute the sequence `instr_d*`.
@@ -374,7 +374,7 @@ Instantiation checks that the module is valid and the provided imports match the
 31. Return `moduleinst`.
 
 ```text
-instantiate(s, module, externaddr*) = s'''' ; { AMODULE moduleinst } ; instr_e* instr_d* instr_s?
+instantiate(s, module, externaddr*) = s'''' ; { MODULE moduleinst } ; instr_e* instr_d* instr_s?
   (if |- module : xt_i* ->M xt_e*
    ∧ (s |- externaddr : xt_i)*
    ∧ module = MODULE type* import* tag* global* mem* table* func* data* elem* start? export*
@@ -383,8 +383,8 @@ instantiate(s, module, externaddr*) = s'''' ; { AMODULE moduleinst } ; instr_e* 
    ∧ data* = (DATA byte* datamode)*
    ∧ elem* = (ELEM reftype expr_e* elemmode)*
    ∧ start? = (START x)?
-   ∧ moduleinst_0 = { ITYPES alloc_type*(type*), IGLOBALS globalsxa(externaddr*), IFUNCS funcsxa(externaddr*) (|s.FUNCS| + i_f)^(i_f<|func*|) }
-   ∧ z = s ; { AMODULE moduleinst_0 }
+   ∧ moduleinst_0 = { ITYPES alloctype*(type*), IGLOBALS globalsxa(externaddr*), IFUNCS funcsxa(externaddr*) (|s.FUNCS| + i_f)^(i_f<|func*|) }
+   ∧ z = s ; { MODULE moduleinst_0 }
    ∧ (z', val_g*) = evalglobal*(z, globaltype*, expr_g*)
    ∧ (z'', reff_t*) = evalexpr*(z', expr_t*)
    ∧ (z''', reff_e**) = evalexpr**(z'', expr_e**)
@@ -425,7 +425,7 @@ evalexpr*(z, expr expr'*) = (z'', reff reff'*)
    4. Let `val` be the result of evaluating `expr` with state `z`.
    5. Let `(s, f)` be the destructuring of `z`.
    6. Let `a` be `allocglobal(s, gt, val)`.
-   7. Append `a` to `f.AMODULE.IGLOBALS`.
+   7. Append `a` to `f.MODULE.IGLOBALS`.
    8. Let `val'*` be `evalglobal*((s, f), gt'*, expr'*)`.
    9. Return `val val'*`.
 
@@ -435,7 +435,7 @@ evalglobal*(z, gt gt'*, expr expr'*) = (z'', val val'*)
   (if z ; expr ->* z' ; val
    ∧ z' = s ; f
    ∧ (s', a) = allocglobal(s, gt, val)
-   ∧ (z'', val'*) = evalglobal*((s' ; f[.AMODULE.IGLOBALS =⊕ a]), gt'*, expr'*))
+   ∧ (z'', val'*) = evalglobal*((s' ; f[.MODULE.IGLOBALS =⊕ a]), gt'*, expr'*))
 ```
 
 #### `rundata_x(DATA b^n datamode)`
@@ -493,25 +493,25 @@ Invocation may fail with an error if the arguments do not fit the function type.
 
 #### `invoke(s, funcaddr, val*)`
 
-1. Assert: Due to validation, the expansion of `s.FUNCS[funcaddr].FITYPE` is some `func t1* -> t2*`.
-2. Let `(func t1* -> t2*)` be the destructuring of the expansion of `s.FUNCS[funcaddr].FITYPE`.
+1. Assert: Due to validation, the expansion of `s.FUNCS[funcaddr].ITYPE` is some `func t1* -> t2*`.
+2. Let `(func t1* -> t2*)` be the destructuring of the expansion of `s.FUNCS[funcaddr].ITYPE`.
 3. If `|t1*| != |val*|`, then:
    1. Fail.
 4. For all `t1` in `t1*`, and corresponding `val` in `val*`:
    1. If `val` is not valid with type `t1`, then:
       1. Fail.
 5. Let `k` be the length of `t2*`.
-6. Let `F` be the frame `{ AMODULE { } }` whose arity is `k`.
+6. Let `F` be the frame `{ MODULE { } }` whose arity is `k`.
 7. Push the frame `F`.
 8. Push the values `val*` to the stack.
 9. Push the value `(ref.func funcaddr)` to the stack.
-10. Execute the instruction `(call_ref s.FUNCS[funcaddr].FITYPE)`.
+10. Execute the instruction `(call_ref s.FUNCS[funcaddr].ITYPE)`.
 11. Pop the values `val'^k` from the stack.
 12. Pop the frame from the stack.
 13. Return `val'^k`.
 
 ```text
-invoke(s, funcaddr, val*) = s ; { AMODULE { } } ; val* (ref.func funcaddr) (call_ref s.FUNCS[funcaddr].FITYPE)
-  (if s.FUNCS[funcaddr].FITYPE ≈ func t1* -> t2*
+invoke(s, funcaddr, val*) = s ; { MODULE { } } ; val* (ref.func funcaddr) (call_ref s.FUNCS[funcaddr].ITYPE)
+  (if s.FUNCS[funcaddr].ITYPE ≈ func t1* -> t2*
    ∧ (s |- val : t1)*)
 ```

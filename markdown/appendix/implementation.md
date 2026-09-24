@@ -80,7 +80,7 @@ For a module given in [text format](text), additional limitations may be imposed
 * the length of symbolic [identifiers](text-id)
 * the range of literal [characters](text-char) allowed in the [source text](source)
 
-#### Validation
+### Validation
 
 An implementation may defer [validation](valid) of individual [functions](syntax-func) until they are first [invoked](exec-invoke).
 

@@ -1,14 +1,10 @@
 ## Modules
 
-Modules consist of a sequence of declarations.
-
-The grammar rules for each declaration construct produce a pair, consisting of not just the abstract syntax representing the respective declaration, but also an identifier context recording the new symbolic identifiers bound by the construct, for use in the remainder of the module.
+Modules consist of a sequence of declarations. The grammar rules for each declaration construct produce a pair, consisting of not just the abstract syntax representing the respective declaration, but also an identifier context recording the new symbolic identifiers bound by the construct, for use in the remainder of the module.
 
 ### Indices
 
-Indices can be given either in raw numeric form or as symbolic identifiers when bound by a respective construct.
-
-Such identifiers are looked up in the suitable space of the identifier context `I`.
+Indices can be given either in raw numeric form or as symbolic identifiers when bound by a respective construct. Such identifiers are looked up in the suitable space of the identifier context `I`.
 
 ```text
 idx_ids ::=
@@ -40,15 +36,13 @@ fieldidx_{I,x} ::= idx_{I.FIELDS[x]}
 
 ### Types
 
-A type definition consists of a recursive type.
-
-The identifier context produced for the local bindings is further extended with the respective sequence of defined types that the recursive type generates.
+A type definition consists of a recursive type. The identifier context produced for the local bindings is further extended with the respective sequence of defined types that the recursive type generates.
 
 ```text
 type_I ::=
   | (qt, I') : rectype_I  =>  (type qt, I' ⊕ I'')
         (if qt = rec st^n
-         && I'' = { TYPEDEFS (qt . i)^{i<n} })
+         ∧ I'' = { TYPEDEFS (qt . i)^{i<n} })
 ```
 
 ### Tags
@@ -74,7 +68,7 @@ export_I ::=
   | '(' 'tag' id^? : id^? '(' 'export' name ')' ... ')'
         ≡  '(' 'tag' id' : id '...' ')'
             '(' 'export' name '(' 'tag' id ')' ')'
-        (if id^? = id' || id^? = ε && id' ∉ I.TAGS)
+        (if id^? = id' ∨ id^? = ε ∧ id' ∉ I.TAGS)
 ```
 
 > **Note:** The latter abbreviation can be applied repeatedly, if "`...`" contains additional export clauses. Consequently, a memory declaration can contain any number of exports, possibly followed by an import.
@@ -102,10 +96,10 @@ export_I ::=
   | '(' 'global' id^? : id^? '(' 'export' name ')' ... ')'
         ≡  '(' 'global' id' : id '...' ')'
             '(' 'export' name '(' 'global' id ')' ')'
-        (if id^? = id' || id^? = ε && id' ∉ I.GLOBALS)
+        (if id^? = id' ∨ id^? = ε ∧ id' ∉ I.GLOBALS)
 ```
 
-> **Note:** The latter abbreviation can be applied repeatedly, if "`...`" contains additional export clauses.Consequently, a global declaration can contain any number of exports, possibly followed by an import.
+> **Note:** The latter abbreviation can be applied repeatedly, if "`...`" contains additional export clauses. Consequently, a global declaration can contain any number of exports, possibly followed by an import.
 
 ### Memories
 
@@ -125,9 +119,9 @@ mem_I ::=
   | '(' 'memory' id^? : id^? at^? : addrtype^? '(' 'data' b* : datastring ')' ')'
         ≡  '(' 'memory' id' : id at^? : addrtype^? n : u64 n : u64 ')'
             '(' 'data' '(' 'memory' id' : id ')' '(' at' : addrtype '.const' '0' ')' datastring ')'
-        (if id^? = id' || id^? = ε && id' ∉ I.MEMS
-         && at^? = at' || at^? = ε && at' = I32
-         && n = ceil(|b*| / 64 * Ki))
+        (if id^? = id' ∨ id^? = ε ∧ id' ∉ I.MEMS
+         ∧ at^? = at' ∨ at^? = ε ∧ at' = I32
+         ∧ n = ceil(|b*| / 64 · Ki))
 ```
 
 Memories can be defined as imports or exports inline:
@@ -142,7 +136,7 @@ export_I ::=
   | '(' 'memory' id^? : id^? '(' 'export' name ')' ... ')'
         ≡  '(' 'memory' id' : id '...' ')'
             '(' 'export' name '(' 'memory' id ')' ')'
-        (if id^? = id' || id^? = ε && id' ∉ I.MEMS)
+        (if id^? = id' ∨ id^? = ε ∧ id' ∉ I.MEMS)
 ```
 
 > **Note:** The latter abbreviation can be applied repeatedly, if "`...`" contains additional export clauses. Consequently, a memory declaration can contain any number of exports, possibly followed by an import.
@@ -175,9 +169,9 @@ table_I ::=
   | '(' 'table' id^? : id^? at^? : addrtype^? reftype_I '(' 'elem' (rt, e*) : elemlist_I ')' ')'
         ≡  '(' 'table' id' : id at^? : addrtype^? n : u64 n : u64 reftype_I ')'
             '(' 'elem' '(' 'table' id' : id ')' '(' at' : addrtype '.const' '0' ')' elemlist_I ')'
-        (if id^? = id' || id^? = ε && id' ∉ I.TABLES
-         && at^? = at' || at^? = ε && at' = I32
-         && n = |e*|)
+        (if id^? = id' ∨ id^? = ε ∧ id' ∉ I.TABLES
+         ∧ at^? = at' ∨ at^? = ε ∧ at' = I32
+         ∧ n = |e*|)
 ```
 
 Tables can be defined as imports or exports inline:
@@ -192,7 +186,7 @@ export_I ::=
   | '(' 'table' id^? : id^? '(' 'export' name ')' ... ')'
         ≡  '(' 'table' id' : id '...' ')'
             '(' 'export' name '(' 'table' id ')' ')'
-        (if id^? = id' || id^? = ε && id' ∉ I.TABLES)
+        (if id^? = id' ∨ id^? = ε ∧ id' ∉ I.TABLES)
 ```
 
 > **Note:** The latter abbreviation can be applied repeatedly, if "`...`" contains additional export clauses. Consequently, a table declaration can contain any number of exports, possibly followed by an import.
@@ -204,10 +198,12 @@ Function definitions can bind a symbolic function identifier, and local identifi
 ```text
 func_I ::=
   | '(' 'func' id^? : id^? (x, I_1) : typeuse_I ((loc*, I_2) : local_I)* e : expr_I' ')'
-        =>  (func x (++ (loc*)*) e, { FUNCS (id^?) })
-        (if I' = I ⊕ I_1 ⊕ (++ I_2*)
-         && |- I' : ok)
+        =>  (func x (⋆ (loc*)*) e, { FUNCS (id^?) })
+        (if I' = I ⊕ I_1 ⊕ (⋆ I_2*)
+         ∧ |- I' : ok)
+```
 
+```text
 local_I ::=
   | '(' 'local' id^? : id^? t : valtype_I ')'  =>  (local t, { LOCALS (id^?) })
 ```
@@ -235,7 +231,7 @@ export_I ::=
   | '(' 'func' id^? : id^? '(' 'export' name ')' ... ')'
         ≡  '(' 'func' id' : id '...' ')'
             '(' 'export' name '(' 'func' id ')' ')'
-        (if id^? = id' || id^? = ε && id' ∉ I.FUNCS)
+        (if id^? = id' ∨ id^? = ε ∧ id' ∉ I.FUNCS)
 ```
 
 > **Note:** The latter abbreviation can be applied repeatedly, if "`...`" contains additional export clauses. Consequently, a function declaration can contain any number of exports, possibly followed by an import.
@@ -251,7 +247,7 @@ data_I ::=
         =>  (data b* (active x e), { DATAS (id^?) })
 
 datastring ::=
-  | b** : string*  =>  ++ b**
+  | b** : string*  =>  ⋆ b**
 
 memuse_I ::=
   | '(' 'memory' x : memidx_I ')'  =>  x
@@ -385,11 +381,7 @@ A module consists of a sequence of *declarations* that can occur in any order.
 decl ::= type | import | tag | global | mem | table | func | data | elem | start | export
 ```
 
-All declarations and their respective bound identifiers scope over the entire module, including the text preceding them.
-
-A module itself may optionally bind an identifier that names the module.
-
-The name serves a documentary role only.
+All declarations and their respective bound identifiers scope over the entire module, including the text preceding them. A module itself may optionally bind an identifier that names the module. The name serves a documentary role only.
 
 > **Note:** Tools may include the module name in the name section of the binary format.
 
@@ -403,20 +395,20 @@ decl_I ::=
 module ::=
   | '(' 'module' id^? (decl, I)* : decl_I'* ')'
         =>  module type* import* tag* global* mem* table* func* data* elem* start^? export*
-        (if I' = ++ I*
-         && |- I' : ok
-         && type* = typesd(decl*)
-         && import* = importsd(decl*)
-         && tag* = tagsd(decl*)
-         && global* = globalsd(decl*)
-         && mem* = memsd(decl*)
-         && table* = tablesd(decl*)
-         && func* = funcsd(decl*)
-         && data* = datasd(decl*)
-         && elem* = elemsd(decl*)
-         && start^? = startsd(decl*)
-         && export* = exportsd(decl*)
-         && ordered(decl*))
+        (if I' = ⋆ I*
+         ∧ |- I' : ok
+         ∧ type* = typesd(decl*)
+         ∧ import* = importsd(decl*)
+         ∧ tag* = tagsd(decl*)
+         ∧ global* = globalsd(decl*)
+         ∧ mem* = memsd(decl*)
+         ∧ table* = tablesd(decl*)
+         ∧ func* = funcsd(decl*)
+         ∧ data* = datasd(decl*)
+         ∧ elem* = elemsd(decl*)
+         ∧ start^? = startsd(decl*)
+         ∧ export* = exportsd(decl*)
+         ∧ ordered(decl*))
 ```
 
 where `types(decl*)`, `imports(decl*)`, `tags(decl*)`, etc., extract the sequence of types, imports, tags, etc., contained in `decl*`, respectively.
@@ -426,8 +418,8 @@ The auxiliary predicate `ordered` checks that no imports occur after the first d
 ```text
 ordered(decl*) = true   (if importsd(decl*) = ε)
 ordered(decl1* import decl2*) =
-    importsd(decl1*) = ε && tagsd(decl1*) = ε && globalsd(decl1*) = ε
-    && memsd(decl1*) = ε && tablesd(decl1*) = ε && funcsd(decl1*) = ε
+    importsd(decl1*) = ε ∧ tagsd(decl1*) = ε ∧ globalsd(decl1*) = ε
+    ∧ memsd(decl1*) = ε ∧ tablesd(decl1*) = ε ∧ funcsd(decl1*) = ε
 ```
 
 #### Abbreviations

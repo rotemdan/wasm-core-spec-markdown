@@ -62,7 +62,7 @@ C |- drop : t -> ε
 
 > **Note:** Both `drop` and `select` without annotation are value-polymorphic instructions.
 
-#### `SELECT (t*)^?`
+#### `SELECT (t*)?`
 
 The instruction `(select valtype?)` is valid with the instruction type `t t i32 -> t` if:
 
@@ -78,7 +78,9 @@ The instruction `(select valtype?)` is valid with the instruction type `t t i32 
 C |- t : OK
 ──────────────────────────
 C |- select t : t t i32 -> t
+```
 
+```text
 C |- t : OK
 C |- t <: t'
 t' = numtype ∨ t' = vectype
@@ -214,10 +216,10 @@ C |- br_on_null l : t* (ref null ht) -> t* (ref ht)
 The instruction `(br_on_non_null l)` is valid with the instruction type `t* (ref null ht) -> t*` if:
 
 * The label `C.LABELS[l]` exists.
-* The label `C.LABELS[l]` is of the form `t* (ref null^? ht)`.
+* The label `C.LABELS[l]` is of the form `t* (ref null? ht)`.
 
 ```text
-C.LABELS[l] = t* (ref null^? ht)
+C.LABELS[l] = t* (ref null? ht)
 ────────────────────────────────────
 C |- br_on_non_null l : t* (ref null ht) -> t*
 ```
@@ -697,7 +699,7 @@ Memory instructions use memory arguments, which are classified by the address ty
 * `m` is less than `2^|at|`.
 
 ```text
-2^n ≤ N / 8
+2^n <= N / 8
 m < 2^|at|
 ──────────────────────────
 |- { align n, offset m } : at -> N
@@ -1082,28 +1084,28 @@ The instruction `(struct.new_default x)` is valid with the instruction type `ε 
 
 ```text
 C.TYPES[x] ≈ struct (mut? zt)*
-(default_unpack(zt) ≠ ε)*
+(default_unpack(zt) != ε)*
 ──────────────────────────────────────────
 C |- struct.new_default x : ε -> (ref x)
 ```
 
-#### `STRUCTGET _sx^? x y`
+#### `STRUCTGET _sx? x y`
 
-The instruction `(struct.get_sx^? x i)` is valid with the instruction type `(ref null x) -> t` if:
+The instruction `(struct.get_sx? x i)` is valid with the instruction type `(ref null x) -> t` if:
 
 * The type `C.TYPES[x]` exists.
 * The expansion of `C.TYPES[x]` is `(struct ft*)`.
 * The length of `ft*` is greater than `i`.
 * The field type `ft*[i]` is of the form `(mut? zt)`.
-* The signedness `sx^?` is present if and only if `zt` is a packed type.
+* The signedness `sx?` is present if and only if `zt` is a packed type.
 * The value type `t` is `unpack(zt)`.
 
 ```text
 C.TYPES[x] ≈ struct ft*
 ft*[i] = mut? zt
-sx^? ≠ ε ⇔ zt ≠ unpack(zt)
+sx? != ε ⇔ zt != unpack(zt)
 ──────────────────────────────────────────────
-C |- struct.get_sx^? x i : (ref null x) -> unpack(zt)
+C |- struct.get_sx? x i : (ref null x) -> unpack(zt)
 ```
 
 #### `STRUCTSET x y`
@@ -1147,7 +1149,7 @@ The instruction `(array.new_default x)` is valid with the instruction type `i32 
 
 ```text
 C.TYPES[x] ≈ array (mut? zt)
-default_unpack(zt) ≠ ε
+default_unpack(zt) != ε
 ──────────────────────────────────────────
 C |- array.new_default x : i32 -> (ref x)
 ```
@@ -1200,20 +1202,20 @@ C.DATAS[y] = OK
 C |- array.new_data x y : i32 i32 -> (ref x)
 ```
 
-#### `ARRAYGET _sx^? x`
+#### `ARRAYGET _sx? x`
 
-The instruction `(array.get_sx^? x)` is valid with the instruction type `(ref null x) i32 -> t` if:
+The instruction `(array.get_sx? x)` is valid with the instruction type `(ref null x) i32 -> t` if:
 
 * The type `C.TYPES[x]` exists.
 * The expansion of `C.TYPES[x]` is `(array (mut? zt))`.
-* The signedness `sx^?` is present if and only if `zt` is a packed type.
+* The signedness `sx?` is present if and only if `zt` is a packed type.
 * The value type `t` is `unpack(zt)`.
 
 ```text
 C.TYPES[x] ≈ array (mut? zt)
-sx^? ≠ ε ⇔ zt ≠ unpack(zt)
+sx? != ε ⇔ zt != unpack(zt)
 ──────────────────────────────────────────────
-C |- array.get_sx^? x : (ref null x) i32 -> unpack(zt)
+C |- array.get_sx? x : (ref null x) i32 -> unpack(zt)
 ```
 
 #### `ARRAYSET x`
@@ -1398,7 +1400,7 @@ The instruction `(nt.relop_nt)` is valid with the instruction type `nt nt -> i32
 C |- nt.relop_nt : nt nt -> i32
 ```
 
-#### `t1.cvtop_t2_sx^?`
+#### `t1.cvtop_t2_sx?`
 
 The instruction `(nt1.cvtop_nt2)` is valid with the instruction type `nt2 -> nt1`.
 
@@ -1412,7 +1414,7 @@ C |- nt1.cvtop_nt2 : nt2 -> nt1
 Vector instructions can have a prefix to describe the shape of the operand. Packed numeric types, `i8` and `i16`, are not value types. An auxiliary function maps such packed type shapes to value types:
 
 ```text
-unpack(ntN shape M) = unpack(ntN)
+unpack(ntI ntN shape M) = unpack(ntI ntN)
 ```
 
 #### `V128.VCONST c`
@@ -1547,9 +1549,9 @@ The instruction `(sh.splat)` is valid with the instruction type `numtype -> v128
 C |- sh.splat : unpack(sh) -> v128
 ```
 
-#### `shape.VEXTRACTLANE _sx^? laneidx`
+#### `shape.VEXTRACTLANE _sx? laneidx`
 
-The instruction `(sh.extract_lane_sx^? i)` is valid with the instruction type `v128 -> numtype` if:
+The instruction `(sh.extract_lane_sx? i)` is valid with the instruction type `v128 -> numtype` if:
 
 * The lane index `i` is less than `shdim(sh)`.
 * The number type `numtype` is `unpack(sh)`.
@@ -1557,7 +1559,7 @@ The instruction `(sh.extract_lane_sx^? i)` is valid with the instruction type `v
 ```text
 i < shdim(sh)
 ──────────────────────────────────────────
-C |- sh.extract_lane_sx^? i : v128 -> unpack(sh)
+C |- sh.extract_lane_sx? i : v128 -> unpack(sh)
 ```
 
 #### `shape.VREPLACELANE laneidx`
@@ -1609,7 +1611,7 @@ The instruction `(sh1.narrow_sh2_sx)` is valid with the instruction type `v128 v
 C |- sh1.narrow_sh2_sx : v128 v128 -> v128
 ```
 
-#### `shape.vcvtop_half^?_shape_sx^?_zero^?`
+#### `shape.vcvtop_half?_shape_sx?_zero?`
 
 The instruction `(sh1.vcvtop_sh2)` is valid with the instruction type `v128 -> v128`.
 
@@ -1751,34 +1753,84 @@ In a *constant* expression, all instructions must be constant.
     * `binop` is contained in `[add; sub; mul]`.
 
 ```text
-(C |- instrconst instr const)*
+(C |- instr const)*
 ──────────────────────────────────
-C |- exprconst instr* const
-
-C |- instrconst (nt.CONST c_nt) const
-C |- instrconst (vt.CONST c_vt) const
-C |- instrconst (ref.null ht) const
-C |- instrconst (ref.i31) const
-C |- instrconst (ref.func x) const
-C |- instrconst (struct.new x) const
-C |- instrconst (struct.new_default x) const
-C |- instrconst (array.new x) const
-C |- instrconst (array.new_default x) const
-C |- instrconst (array.new_fixed x n) const
-C |- instrconst (any.convert_extern) const
-C |- instrconst (extern.convert_any) const
-
-ntI ntN ∈ i32 i64      binop ∈ add sub mul
-────────────────────────────────────────────
-C |- instrconst (ntI ntN.binop) const
-
-C.GLOBALS[x] = t
-──────────────────────
-C |- instrconst (global.get x) const
+C |- instr* const
 ```
 
-> **Note:** Currently, constant expressions occurring in globals are further constrained in that contained `global.get` instructions are only allowed to refer to *imported* or *previously defined* globals. Constant expressions occurring in tables may only have `global.get` instructions that refer to *imported* globals.
->
-> This is enforced in the validation rule for modules by constraining the context `C` accordingly.
+```text
+──────────────────────────────
+C |- (nt.CONST c_nt) const
+```
+
+```text
+──────────────────────────────
+C |- (vt.CONST c_vt) const
+```
+
+```text
+ntI ntN ∈ i32 i64
+binop ∈ add sub mul
+────────────────────────────────────────────
+C |- (ntI ntN.binop) const
+```
+
+```text
+──────────────────────────────
+C |- (ref.null ht) const
+```
+
+```text
+──────────────────────────────
+C |- (ref.i31) const
+```
+
+```text
+──────────────────────────────
+C |- (ref.func x) const
+```
+
+```text
+──────────────────────────────
+C |- (struct.new x) const
+```
+
+```text
+──────────────────────────────
+C |- (struct.new_default x) const
+```
+
+```text
+──────────────────────────────
+C |- (array.new x) const
+```
+
+```text
+──────────────────────────────
+C |- (array.new_default x) const
+```
+
+```text
+──────────────────────────────
+C |- (array.new_fixed x n) const
+```
+
+```text
+──────────────────────────────
+C |- (any.convert_extern) const
+```
+
+```text
+──────────────────────────────
+C |- (extern.convert_any) const
+```
+
+```text
+C.GLOBALS[x] = t
+──────────────────────
+C |- (global.get x) const
+```
+
+> **Note:** Currently, constant expressions occurring in globals are further constrained in that contained `global.get` instructions are only allowed to refer to *imported* or *previously defined* globals. Constant expressions occurring in tables may only have `global.get` instructions that refer to *imported* globals. This is enforced in the validation rule for modules by constraining the context `C` accordingly.
 >
 > The definition of constant expression may be extended in future versions of WebAssembly.

@@ -82,16 +82,19 @@ Every alternative, byte, constructor, and condition MUST be preserved.
 
 ### 4.1 General macro rule
 
-Every TeX macro `\NAME` denotes a single token. The converted markdown shows the **plain** nonterminal name with **no organizational category prefix** — strip the leading `B`, `T`, `S`, `H`, `C`, `M`, `XI`, `XA`, or `X`/`XX` from every macro and keep the remainder. (The human-visible specification renders these without the prefixes.)
+Every TeX macro `\NAME` denotes a single token. The converted markdown shows the **plain** nonterminal name with **no organizational category prefix** — strip the leading `B`, `T`, `S`, `H`, `C`, `M`, `Z`, `A`, `XI`, `XA`, or `X`/`XX` from every macro and keep the remainder. (The human-visible specification renders these without the prefixes.)
 
 * `B` (binary) and `T` (text syntax) → strip the prefix; keep the rest. E.g. `\Bnumtype`→`numtype`, `\Tsource`→`source`.
 * `S` / `H` / `C` / `M` / `XI` / `XA` (store / heap / context / module-instance / export / address **field labels**) → strip the prefix; keep the remainder. E.g. `\STAGS`→`TAGS`, `\CTYPES`→`TYPES`, `\HITYPE`→`TYPE`, `\XINAME`→`NAME`.
+  * The rule text strips **one** letter, so `\MIFUNCS`→`IFUNCS`, `\MITYPES`→`ITYPES`, `\MITAGS`→`ITAGS`, `\MIBYTES`→`IBYTES`, `\GITYPE`/`\MITYPE`/`\TITYPE`/`\HITYPE`→`ITYPE`. Several examples above and below, and in §4.2 and §8.3, strip **two** letters and leave `FUNCS`/`TAGS`/`TYPE` instead. `markdown/**` follows the rule text. See §10, *Field-label prefixes*.
+* `Z` (store-update path of a state accessor) → strip the `Z` and keep the remaining letters, **including a doubled sort letter**: `\ZGLOBALS`→`GLOBALS` but `\ZGGLOBALS`→`GGLOBALS`, `\ZTABLES`→`TABLES` but `\ZTTABLES`→`TTABLES`, `\ZMEMS`→`MEMS` but `\ZMMEMS`→`MMEMS`. Also `\ZTYPES`→`TYPES`, `\ZMODULE`→`MODULE`, `\ZFUNCS`→`FUNCS`, `\ZEXNS`→`EXNS`, `\ZELEMS`→`ELEMS`, `\ZLOCALS`→`LOCALS`, `\ZFRAME`→`FRAME`, `\ZGVALUE`→`GVALUE`, `\ZTREFS`→`TREFS`, `\ZMBYTES`→`MBYTES`, `\ZDDATAS`→`DDATAS`, `\ZDBYTES`→`DBYTES`, `\ZSSTRUCTS`→`SSTRUCTS`, `\ZSFIELDS`→`SFIELDS`, `\ZAARRAYS`→`AARRAYS`, `\ZAFIELDS`→`AFIELDS`. The doubled letter is significant: `z[.GGLOBALS[x].GVALUE = v]` is not the same field as `z[.GLOBALS[x]]`, and `z[.ZTABLES[x]]` does not occur.
+* `A` (a module instance reached through a frame) → strip the `A`. E.g. `\AMODULE`→`MODULE`, `\ALOCALS`→`LOCALS`.
 * `X` or `XX` followed by a kind → the kind name lowercased (`func`, `table`, `mem`, `global`, `tag`). E.g. `\XXFUNC`→`func`, `\XTFUNC`→`func`. Everything else (value/heap constructors, opcodes, instance nonterminals, judgments) → lowercase word, e.g. `\F64`→`f64`, `\NOP`→`nop`, `\CONST`→`const`, `\moduleinst`→`moduleinst`, `\EXPORT`→`export`.
 
 ### 4.2 Category-prefixed nonterminals (strip the prefix)
 
 * **Binary nonterminals** (strip `B`): `\Babsheaptype`→`absheaptype`, `\Bheaptype`→`heaptype`, `\Bnumtype`→`numtype`, `\Bvectype`→`vectype`, `\Breftype`→`reftype`, `\Bvaltype`→`valtype`, `\Bresulttype`→`resulttype`, `\Bcomptype`→`comptype`, `\Bfieldtype`→`fieldtype`, `\Bstoragetype`→`storagetype`, `\Bpacktype`→`packtype`, `\Brectype`→`rectype`, `\Bsubtype`→`subtype`, `\Blimits`→`limits`, `\Btagtype`→`tagtype`, `\Bglobaltype`→`globaltype`, `\Bmemtype`→`memtype`, `\Btabletype`→`tabletype`, `\Bexterntype`→`externtype`, `\Bsection`→`section`, `\Bbyte`→`byte`, `\Bblocktype`→`blocktype`, `\Bcatch`→`catch`, `\Bcustom`→`custom`, `\Bname`→`name`, `\Btype`→`type`, `\Bimport`→`import`, `\Bfuncsec`→`funcsec`. (The bottom type `\BOT`renders as `bot` per §4.6.)
-* __Index / integer / list *sorts*__ (also strip `B`): `\Btypeidx`→`typeidx`, `\Bfuncidx`→`funcidx`, `\Btableidx`→`tableidx`, `\Bmemidx`→`memidx`, `\Bglobalidx`→`globalidx`, `\Btagidx`→`tagidx`, `\Belemidx`→`elemidx`, `\Bdataidx`→`dataidx`, `\Bfieldidx`→`fieldidx`, `\Bexternidx`→`externidx`, `\Blocalidx`→`localidx`, `\Blabelidx`→`labelidx`, `\BuN`/`\BsN`→`uN`/`sN` (e.g. `u32`, `s33`), `\Blist(X)`→`list(X)` (or `X*`).
+* __Index / integer / list *sorts*__ (also strip `B`): `\Btypeidx`→`typeidx`, `\Bfuncidx`→`funcidx`, `\Btableidx`→`tableidx`, `\Bmemidx`→`memidx`, `\Bglobalidx`→`globalidx`, `\Btagidx`→`tagidx`, `\Belemidx`→`elemidx`, `\Bdataidx`→`dataidx`, `\Bfieldidx`→`fieldidx`, `\Bexternidx`→`externidx`, `\Blocalidx`→`localidx`, `\Blabelidx`→`labelidx`, `\BuN`/`\BsN`→`uN`/`sN` (e.g. `u32`, `s33`), `\Blist(X)`→`list(X)` (or `X*`). The macros that carry the `X` marker hold no width of their own and take it as an explicit argument, so `{{\BuNX}}{N}`, `{{\BsNX}}{N}`, `{{\uNX}}{N}`, `{{\sNX}}{N}`, `{{\iNX}}{N}` and `{{\fNX}}{N}` render as the letter **plus that argument** — `{{\BuNX}}{32}`→`u32`, `{{\uNX}}{N}`→`uN`. Never append a width that the macro does not carry: `{{\BuNX}}{N}` is **not** `uN N`.
 * **Text syntax nonterminals** (strip `T`):
   * lexical: `\Tsource`→`source`, `\Tchar`→`char`, `\Ttoken`→`token`, `\Tkeyword`→`keyword`, `\Tstring`→`string`, `\Tid`→`id`, `\Tidchar`→`idchar`, `\Treserved`→`reserved`
   * numeric: `\TuNX`→`uN`, `\TsNX`→`sN`, `\TfNX`→`fN`
@@ -131,6 +134,7 @@ Mixed-case / lowercase single-word macros are nonterminals or meta-variables. Re
 ### 4.6 Judgment & relation symbols
 
 * `\vdash` and all `\vdash⟨X⟩` (e.g. `\vdashinstr`, `\vdashinstrtype`, `\vdashcomptype`, `\vdashheaptype`, `\vdashtype`) → `|-` (drop the ⟨X⟩ qualifier word. It is recoverable from the section heading).
+* `\CONST` / `\CONST⟨X⟩` → `const` (lowercase; the ⟨X⟩ qualifier word is dropped as above, e.g. `C |- expr : t const`)
 * Matching / subtyping infix `\sub⟨X⟩match` (e.g. `\subheaptymatch`, `\subnumtypematch`) → `<:`
 * `|-` (already in source as text in some rules) → `|-`
 * `~>` → reduction (keep as `~>`)
@@ -138,11 +142,23 @@ Mixed-case / lowercase single-word macros are nonterminals or meta-variables. Re
 * `\quad\Rightarrow\quad` → `=>`
 * `\approx` → `≈` (e.g. `\approxexpanddt` → `≈`)
 * `\oplus` → `⊕`
+* `\compose` → `⊕` (store composition, e.g. `S ⊕ { EXNS exninst }`)
+* `\stepto` / `\stepto^\ast` → `->` / `->*` (reduction, the only arrow form, as for `\rightarrow`. Never the macro name `stepto`)
+* `\extendsto` → `extends` (store extension; never the macro name `extendsto`)
+* `\hookrightarrow` → `->` (the top-level step relation of the conventions chapter; the only arrow form, as for `\rightarrow`. Never the macro name `hookrightarrow`)
+* `\assignsubst` → `[:=]` (the type-substitution bracket of `notation-subst`, e.g. `t [ [:=] moduleinst.ITYPES ]`. Never the macro name `assignsubst`)
+* `\slice` → `:` (sequence slice, e.g. `b*[i·w : w]`, `lanes_{t x M}(c)[h : k]`. Never the macro name `slice`)
+* `\veebar` → `⊻` (exclusive or, alongside `\wedge`→`∧` and `\vee`→`∨`)
+* `\CRETURN` → `RETURN` (the empty return result of a context, e.g. `{ RETURN ε }`; the `C` prefix is stripped as for `\CTYPES`)
+* `\K{…}` → the argument as plain text (`\mathsf` dropped, as in §4.7): `t\K{x}M`→`t x M`, `lanes_{t\K{x}M}`→`lanes_{t x M}`, `\vcvtop{\K\_}`→`vcvtop_`. The published document renders it as a sans-serif separator
 * `\Ldotdot` → `..` (range, e.g. `[n .. m]`)
 * `\epsilon` → `ε`
 * `\BOT` → `bot`
 * `\geq` → `>=` (never `≥`), `\leq` → `<=` (never `≤`), `\neq` → `!=` (never `≠`). The whole relation family stays in ASCII: `<=`, `>=`, `!=`, `=`
 * `\land` / `\wedge` → `∧`, `\lor` / `\vee` → `∨`, `\cdot` → `·`, `\bigcat` → `⋆`, `\mod` → `mod` (these keep their symbol, as in the rendered HTML)
+* `\prec` → `≺` (the precedence ordering on type uses, e.g. `rec . j ≺ i = j < i`. Never the subtype operator `<:`)
+* `\gg` → `≫` (e.g. `\gg_S` → `≫_S`)
+* `\iff` → `iff` (the macro is `\mathrel{\mbox{if}}` upstream; the tree spells it `iff`), `\Leftrightarrow` → `⇔` (never `<=>`)
 * `{\mathit{x}}` → `x`, `x^\ast` → `x*`, `X^?` → `X?`
 * `\sNX` / `\sN` → signed-N representation (e.g. `s33`). Inline form reads as "N-bit signed"
 
@@ -479,16 +495,20 @@ C |- ht1 <: ht2
 * [ ] Prose paragraphs are single blocks — no one-sentence-per-line breaks, and notes joined into one `>` paragraph (§5.6). Prose copied verbatim, including source misspellings.
 * [ ] No double (or more) blank lines anywhere — collapse runs of blank lines to a single one (§5.7).
 * [ ] Every production block has one arrow column, four spaces after the widest left-hand side (§2a).
-* [ ] Relation symbols in ASCII (`<=`, `>=`, `!=`), other symbols in Unicode (`∧`, `∨`, `·`, `⋆`, `≈`, `⊕`, `ε`) (§4.6).
+* [ ] Relation symbols in ASCII (`<=`, `>=`, `!=`), other symbols in Unicode (`∧`, `∨`, `·`, `⋆`, `≈`, `⊕`, `ε`, `≺`, `≫`) (§4.6).
+* [ ] A judgement that sits in a table cell escapes the pipe (`\|`) (§10).
 * [ ] No footnote continuation line begins at column 0 (§5.4).
 * [ ] Substitution refs rendered as plain name text. No invented URLs.
 * [ ] No information dropped: every alternative, byte, constructor, premise, and side condition preserved.
 
 ## 10. Known open questions
 
-These four cases are not settled by the rules above. Where one occurs, follow the form already used in the file, and record the instance in that chapter's verification work document instead of inventing a new rendering.
+These seven cases are not settled by the rules above. Where one occurs, follow the form already used in the file, and record the instance in that chapter's verification work document instead of inventing a new rendering. Where a notation macro occurs in more than one chapter, the form used by the chapter with the most occurrences of it is the rule and the other chapters are corrected to it; only a rendering that occurs in a single chapter follows the form used in that file.
 
 * **Substitution expansions.** The `|Name|` definitions live outside `reference/`, so the substituted words are not observable from the tree. §5.5 therefore renders the name text.
 * **Reference anchors.** §1 permits either `Text` or `[Text](#t)`. No anchored link occurs anywhere in `markdown/**`, so keep the plain-text form in a file that already uses it.
 * **`--` and the other Sphinx typographic transforms.** The source writes `--` where the published document shows an em-dash, so whether to keep `--` depends on the renderer configuration, which the conversion does not observe.
 * **Source misspellings.** Prose is copied verbatim (§5.6), so a misspelling in `reference/` is reproduced. Any correction already present in the tree is recorded in the chapter's verification work document.
+* **Judgements inside table cells.** A judgement that sits in a table cell has to escape the pipe (`` `C \|- numtype : OK` ``), because GFM splits cells on an unescaped `|`. This is the only situation in which `\|` occurs in `markdown/**`, and the appendix's `index-rules.md` is the only site that has it.
+* **Macros without a row.** Where neither §4 nor this section covers a macro, keep the macro name as a placeholder (`EITAG`, `EIFIELDS`, `ITYPE`, `MIEXPORTS`, `K{}`, `LOW`, `exprofiles`, `exprops`), and record the instance in the chapter's verification work document. (`K{}` gained a row in §4.6 with the `exec` pass.)
+* **Field-label prefixes.** §4.1's rule text strips one letter (`\MIFUNCS`→`IFUNCS`, `\HITYPE`→`ITYPE`, `\TIREFS`→`IREFS`), and `markdown/**` follows it throughout. The examples of §4.1, §4.2 (`\MITAGS`→`TAGS`, `\MIGLOBALS`→`GLOBALS`, `\MIMEMS`→`MEMS`, `\HITYPE`→`TYPE`) and §8.3 (`{ TYPE tagtype }`) strip two, which agrees with the published document's lowercase field names (`f.module.funcs`). The `exec` pass corrected 28 sites towards the rule text (`exec/instructions.md`, `exec/values.md`, `exec/modules.md`) rather than towards the examples. Deciding the other way is a tree-wide sweep that also covers `valid` and `appendix`, so it is left open until then.

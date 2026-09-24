@@ -54,10 +54,10 @@ s |- ref.struct a : ref dt
 The reference value `(ref.array a)` is valid with the reference type `(ref dt)` if:
 
 * The array instance `s.ARRAYS[a]` exists.
-* The defined type `s.ARRAYS[a].AITYPE` is of the form `dt`.
+* The defined type `s.ARRAYS[a].ITYPE` is of the form `dt`.
 
 ```text
-s.ARRAYS[a].AITYPE = dt
+s.ARRAYS[a].ITYPE = dt
 ─────────────────────────────
 s |- ref.array a : ref dt
 ```
@@ -79,10 +79,10 @@ s |- ref.exn a : ref exn
 The reference value `(ref.func a)` is valid with the reference type `(ref dt)` if:
 
 * The function instance `s.FUNCS[a]` exists.
-* The defined type `s.FUNCS[a].FITYPE` is of the form `dt`.
+* The defined type `s.FUNCS[a].ITYPE` is of the form `dt`.
 
 ```text
-s.FUNCS[a].FITYPE = dt
+s.FUNCS[a].ITYPE = dt
 ─────────────────────────────
 s |- ref.func a : ref dt
 ```
@@ -94,6 +94,8 @@ The reference value `(ref.host a)` is valid with the reference type `(ref any)`.
 ```text
 s |- ref.host a : ref any
 ```
+
+> **Note:** A bare host reference is considered internalized.
 
 #### External References
 
@@ -114,7 +116,7 @@ s |- ref.extern reff : ref extern
 The reference value `reff` is valid with the reference type `rt` if:
 
 * The reference value `reff` is valid with the reference type `rt'`.
-* Under the context `{ }`, the reference type `rt` is valid.
+* Under the context `{ RETURN ε }`, the reference type `rt` is valid.
 * The reference type `rt'` matches the reference type `rt`.
 
 ```text
@@ -131,7 +133,7 @@ For the purpose of checking external addresses against imports, such values are 
 
 #### Functions
 
-The external address `(func a)` is valid with the external type `(func funcinst.FITYPE)` if:
+The external address `(func a)` is valid with the external type `(func funcinst.ITYPE)` if:
 
 * The function instance `s.FUNCS[a]` exists.
 * The function instance `s.FUNCS[a]` is of the form `funcinst`.
@@ -139,12 +141,12 @@ The external address `(func a)` is valid with the external type `(func funcinst.
 ```text
 s.FUNCS[a] = funcinst
 ─────────────────────────────
-s |- func a : func funcinst.FITYPE
+s |- func a : func funcinst.ITYPE
 ```
 
 #### Tables
 
-The external address `(table a)` is valid with the external type `(table tableinst.TITYPE)` if:
+The external address `(table a)` is valid with the external type `(table tableinst.ITYPE)` if:
 
 * The table instance `s.TABLES[a]` exists.
 * The table instance `s.TABLES[a]` is of the form `tableinst`.
@@ -152,12 +154,12 @@ The external address `(table a)` is valid with the external type `(table tablein
 ```text
 s.TABLES[a] = tableinst
 ─────────────────────────────
-s |- table a : table tableinst.TITYPE
+s |- table a : table tableinst.ITYPE
 ```
 
 #### Memories
 
-The external address `(mem a)` is valid with the external type `(mem meminst.MITYPE)` if:
+The external address `(mem a)` is valid with the external type `(mem meminst.ITYPE)` if:
 
 * The memory instance `s.MEMS[a]` exists.
 * The memory instance `s.MEMS[a]` is of the form `meminst`.
@@ -165,12 +167,12 @@ The external address `(mem a)` is valid with the external type `(mem meminst.MIT
 ```text
 s.MEMS[a] = meminst
 ─────────────────────────────
-s |- mem a : mem meminst.MITYPE
+s |- mem a : mem meminst.ITYPE
 ```
 
 #### Globals
 
-The external address `(global a)` is valid with the external type `(global globalinst.GITYPE)` if:
+The external address `(global a)` is valid with the external type `(global globalinst.ITYPE)` if:
 
 * The global instance `s.GLOBALS[a]` exists.
 * The global instance `s.GLOBALS[a]` is of the form `globalinst`.
@@ -178,12 +180,12 @@ The external address `(global a)` is valid with the external type `(global globa
 ```text
 s.GLOBALS[a] = globalinst
 ─────────────────────────────
-s |- global a : global globalinst.GITYPE
+s |- global a : global globalinst.ITYPE
 ```
 
 #### Tags
 
-The external address `(tag a)` is valid with the external type `(tag taginst.HITYPE)` if:
+The external address `(tag a)` is valid with the external type `(tag taginst.ITYPE)` if:
 
 * The tag instance `s.TAGS[a]` exists.
 * The tag instance `s.TAGS[a]` is of the form `taginst`.
@@ -191,7 +193,7 @@ The external address `(tag a)` is valid with the external type `(tag taginst.HIT
 ```text
 s.TAGS[a] = taginst
 ─────────────────────────────
-s |- tag a : tag taginst.HITYPE
+s |- tag a : tag taginst.ITYPE
 ```
 
 #### Subsumption
@@ -199,7 +201,7 @@ s |- tag a : tag taginst.HITYPE
 The external address `externaddr` is valid with the external type `xt` if:
 
 * The external address `externaddr` is valid with the external type `xt'`.
-* Under the context `{ }`, the external type `xt` is valid.
+* Under the context `{ RETURN ε }`, the external type `xt` is valid.
 * The external type `xt'` matches the external type `xt`.
 
 ```text

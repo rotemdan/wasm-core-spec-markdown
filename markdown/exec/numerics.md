@@ -51,7 +51,7 @@ op(c1^n, ..., c_k^n) = op(c1^n[0], ..., c_k^n[0]) ... op(c1^n[n-1], ..., c_k^n[n
 * Truncation of rational values is written `truncz(± q)`, with the usual mathematical definition:
 
   ```text
-  truncz(± q) = ± i  (iff i ∈ ℕ ∧ +q - 1 < i ≤ +q)
+  truncz(± q) = ± i  (iff i ∈ ℕ ∧ +q - 1 < i <= +q)
   ```
 
 * Saturation of integers is written `satu_N(i)` and `sats_N(i)`. The arguments to these two functions range over arbitrary signed integers.
@@ -93,7 +93,7 @@ Each of these functions is a bijection, hence they are invertible.
 ibits_N(i) = d_{N-1} ... d_0   (i = 2^{N-1}·d_{N-1} + ... + 2^0·d_0)
 ```
 
-Boolean operators like `and`, `or`, or `xor` are lifted to bit sequences of equal length by applying them pointwise.
+Boolean operators like `∧`, `∨`, or `⊻` are lifted to bit sequences of equal length by applying them pointwise.
 
 #### Floating-Point
 
@@ -120,7 +120,7 @@ Numeric vectors of type VN have the same underlying representation as an iN. The
 lanes_{t x M}(c) = c_0 ... c_{M-1}
   (where w   = |t| / 8
    ∧ b*      = bytes_iN(c)
-   ∧ c_i     = bytes_t^{-1}(b*[i·w slice w]))
+   ∧ c_i     = bytes_t^{-1}(b*[i·w : w]))
 ```
 
 This function is a bijection on iN, hence it is invertible.
@@ -155,8 +155,8 @@ Again these functions are invertible bijections.
 Integer operators are defined on iN values. Operators that use a signed interpretation convert the value using the following definition, which takes the two's complement when the value lies in the upper half of the value range (i.e., its most significant bit is `1`):
 
 ```text
-signed_N(i) = i        (0 ≤ i < 2^{N-1})
-signed_N(i) = i - 2^N  (2^{N-1} ≤ i < 2^N)
+signed_N(i) = i        (0 <= i < 2^{N-1})
+signed_N(i) = i - 2^N  (2^{N-1} <= i < 2^N)
 ```
 
 This function is bijective, and hence invertible.
@@ -254,7 +254,7 @@ irems_N(i1, i2) = signed_N^{-1}(j1 - j2·truncz(j1 / j2))
 * Return the bitwise negation of `i`.
 
 ```text
-inot_N(i) = ibits_N^{-1}(ibits_N(i) xor ibits_N(2^N-1))
+inot_N(i) = ibits_N^{-1}(ibits_N(i) ⊻ ibits_N(2^N-1))
 ```
 
 #### `irev_N(i)`
@@ -262,7 +262,7 @@ inot_N(i) = ibits_N^{-1}(ibits_N(i) xor ibits_N(2^N-1))
 * Return the bitwise reversal of `i`.
 
 ```text
-irev_N(i) = ibits_N^{-1}((d^N[N-i])^{i ≤ N})   (iff d^N = ibits_N(i))
+irev_N(i) = ibits_N^{-1}((d^N[N-i])^{i <= N})   (iff d^N = ibits_N(i))
 ```
 
 #### `iand_N(i1, i2)`
@@ -270,7 +270,7 @@ irev_N(i) = ibits_N^{-1}((d^N[N-i])^{i ≤ N})   (iff d^N = ibits_N(i))
 * Return the bitwise conjunction of `i1` and `i2`.
 
 ```text
-iand_N(i1, i2) = ibits_N^{-1}(ibits_N(i1) and ibits_N(i2))
+iand_N(i1, i2) = ibits_N^{-1}(ibits_N(i1) ∧ ibits_N(i2))
 ```
 
 #### `iandnot_N(i1, i2)`
@@ -286,7 +286,7 @@ iandnot_N(i1, i2) = iand_N(i1, inot_N(i2))
 * Return the bitwise disjunction of `i1` and `i2`.
 
 ```text
-ior_N(i1, i2) = ibits_N^{-1}(ibits_N(i1) or ibits_N(i2))
+ior_N(i1, i2) = ibits_N^{-1}(ibits_N(i1) ∨ ibits_N(i2))
 ```
 
 #### `ixor_N(i1, i2)`
@@ -294,7 +294,7 @@ ior_N(i1, i2) = ibits_N^{-1}(ibits_N(i1) or ibits_N(i2))
 * Return the bitwise exclusive disjunction of `i1` and `i2`.
 
 ```text
-ixor_N(i1, i2) = ibits_N^{-1}(ibits_N(i1) xor ibits_N(i2))
+ixor_N(i1, i2) = ibits_N^{-1}(ibits_N(i1) ⊻ ibits_N(i2))
 ```
 
 #### `ishl_N(i1, i2)`
@@ -384,7 +384,7 @@ ieqz_N(i) = tobool(i = 0)
 * Return `0` if `i` is zero, `1` otherwise.
 
 ```text
-inez_N(i) = tobool(i ≠ 0)
+inez_N(i) = tobool(i != 0)
 ```
 
 #### `ieq_N(i1, i2)`
@@ -400,7 +400,7 @@ ieq_N(i1, i2) = tobool(i1 = i2)
 * Return `1` if `i1` does not equal `i2`, `0` otherwise.
 
 ```text
-ine_N(i1, i2) = tobool(i1 ≠ i2)
+ine_N(i1, i2) = tobool(i1 != i2)
 ```
 
 #### `iltu_N(i1, i2)`
@@ -444,7 +444,7 @@ igts_N(i1, i2) = tobool(signed_N(i1) > signed_N(i2))
 * Return `1` if `i1` is less than or equal to `i2`, `0` otherwise.
 
 ```text
-ileu_N(i1, i2) = tobool(i1 ≤ i2)
+ileu_N(i1, i2) = tobool(i1 <= i2)
 ```
 
 #### `iles_N(i1, i2)`
@@ -454,7 +454,7 @@ ileu_N(i1, i2) = tobool(i1 ≤ i2)
 * Return `1` if `j1` is less than or equal to `j2`, `0` otherwise.
 
 ```text
-iles_N(i1, i2) = tobool(signed_N(i1) ≤ signed_N(i2))
+iles_N(i1, i2) = tobool(signed_N(i1) <= signed_N(i2))
 ```
 
 #### `igeu_N(i1, i2)`
@@ -462,7 +462,7 @@ iles_N(i1, i2) = tobool(signed_N(i1) ≤ signed_N(i2))
 * Return `1` if `i1` is greater than or equal to `i2`, `0` otherwise.
 
 ```text
-igeu_N(i1, i2) = tobool(i1 ≥ i2)
+igeu_N(i1, i2) = tobool(i1 >= i2)
 ```
 
 #### `iges_N(i1, i2)`
@@ -472,7 +472,7 @@ igeu_N(i1, i2) = tobool(i1 ≥ i2)
 * Return `1` if `j1` is greater than or equal to `j2`, `0` otherwise.
 
 ```text
-iges_N(i1, i2) = tobool(signed_N(i1) ≥ signed_N(i2))
+iges_N(i1, i2) = tobool(signed_N(i1) >= signed_N(i2))
 ```
 
 #### `iextendMs_N(i)`
@@ -502,7 +502,7 @@ ibitselect_N(i1, i2, i3) = ior_N(iand_N(i1, i3), iand_N(i2, inot_N(i3)))
 * Else return the negation of `j`, modulo `2^N`.
 
 ```text
-iabs_N(i) = i            (iff signed_N(i) ≥ 0)
+iabs_N(i) = i            (iff signed_N(i) >= 0)
 iabs_N(i) = -signed_N(i) mod 2^N   (otherwise)
 ```
 
@@ -651,8 +651,8 @@ A real number `r` is converted to a floating-point value of bit width `N` as fol
 ```text
 ieee_N(0) = +0
 ieee_N(r) = r          (iff r ∈ F_exact_N)
-ieee_N(r) = +∞         (iff r ≥ +F_limit_N)
-ieee_N(r) = -∞         (iff r ≤ -F_limit_N)
+ieee_N(r) = +∞         (iff r >= +F_limit_N)
+ieee_N(r) = -∞         (iff r <= -F_limit_N)
 ieee_N(r) = F_closest_N(r, z1, z2)   (iff z1 < r < z2 ∧ (z1,z2) ∈ F_candidatepair_N)
 
 F_closest_N(r, z1, z2) = F_rectify_N(r, z1)   (iff |r-z1|<|r-z2|)
@@ -661,7 +661,7 @@ F_closest_N(r, z1, z2) = F_rectify_N(r, z1)   (iff |r-z1|=|r-z2| ∧ F_even_N(z1
 F_closest_N(r, z1, z2) = F_rectify_N(r, z2)   (iff |r-z1|=|r-z2| ∧ F_even_N(z2))
 
 F_rectify_N(r, ± F_limit_N) = ± ∞
-F_rectify_N(r, 0) = +0   (r ≥ 0)
+F_rectify_N(r, 0) = +0   (r >= 0)
 F_rectify_N(r, 0) = -0   (r < 0)
 F_rectify_N(r, z) = z
 ```
@@ -672,7 +672,7 @@ where:
 F_exact_N                     = fN ∩ ℚ
 F_limit_N                     = 2^(2^(expon(N)-1))
 F_candidate_N                 = F_exact_N ∪ {+F_limit_N, -F_limit_N}
-F_candidatepair_N             = { (z1, z2) ∈ F_candidate_N^2 | z1 < z2 ∧ ∀ z ∈ F_candidate_N, z ≤ z1 ∨ z ≥ z2 }
+F_candidatepair_N             = { (z1, z2) ∈ F_candidate_N^2 | z1 < z2 ∧ ∀ z ∈ F_candidate_N, z <= z1 ∨ z >= z2 }
 
 F_even_N((d + m·2^{-M})·2^e) ⇔ m mod 2 = 0
 F_even_N(± F_limit_N)        ⇔ true
@@ -691,7 +691,7 @@ The non-deterministic result is expressed by the following auxiliary function pr
 ```text
 nans_N{z*}            = { + NAN(canon_N) }
 exprofiles(PROFDET) nans_N{z*} = { + NAN(n), - NAN(n) | n = canon_N }   (iff {z*} ⊆ { + NAN(canon_N), - NAN(canon_N) }
-exprofiles(PROFDET) nans_N{z*} = { + NAN(n), - NAN(n) | n ≥ canon_N }   (iff {z*} ⊄ { + NAN(canon_N), - NAN(canon_N) }
+exprofiles(PROFDET) nans_N{z*} = { + NAN(n), - NAN(n) | n >= canon_N }   (iff {z*} ⊄ { + NAN(canon_N), - NAN(canon_N) }
 ```
 
 #### fadd_N(z1, z2)
@@ -865,8 +865,8 @@ fmin_N(- ∞, z2)         = - ∞
 fmin_N(z1, + ∞)         = z1
 fmin_N(z1, - ∞)         = - ∞
 fmin_N(± 0, ∓ 0)        = -0
-fmin_N(z1, z2)          = z1   (iff z1 ≤ z2)
-fmin_N(z1, z2)          = z2   (iff z2 ≤ z1)
+fmin_N(z1, z2)          = z1   (iff z1 <= z2)
+fmin_N(z1, z2)          = z2   (iff z2 <= z1)
 ```
 
 #### fmax_N(z1, z2)
@@ -885,8 +885,8 @@ fmax_N(- ∞, z2)         = z2
 fmax_N(z1, + ∞)         = + ∞
 fmax_N(z1, - ∞)         = z1
 fmax_N(± 0, ∓ 0)        = +0
-fmax_N(z1, z2)          = z1   (iff z1 ≥ z2)
-fmax_N(z1, z2)          = z2   (iff z2 ≥ z1)
+fmax_N(z1, z2)          = z1   (iff z1 >= z2)
+fmax_N(z1, z2)          = z2   (iff z2 >= z1)
 ```
 
 #### fcopysign_N(z1, z2)
@@ -959,7 +959,7 @@ fceil_N(± NAN(n)) = nans_N{± NAN(n)}
 fceil_N(± ∞)      = ± ∞
 fceil_N(± 0)      = ± 0
 fceil_N(- q)      = -0   (iff -1 < -q < 0)
-fceil_N(± q)      = ieee_N(i)   (iff ± q ≤ i < ± q + 1)
+fceil_N(± q)      = ieee_N(i)   (iff ± q <= i < ± q + 1)
 ```
 
 #### ffloor_N(z)
@@ -975,7 +975,7 @@ ffloor_N(± NAN(n)) = nans_N{± NAN(n)}
 ffloor_N(± ∞)      = ± ∞
 ffloor_N(± 0)      = ± 0
 ffloor_N(+ q)      = +0   (iff 0 < +q < 1)
-ffloor_N(± q)      = ieee_N(i)   (iff ± q - 1 < i ≤ ± q)
+ffloor_N(± q)      = ieee_N(i)   (iff ± q - 1 < i <= ± q)
 ```
 
 #### ftrunc_N(z)
@@ -993,7 +993,7 @@ ftrunc_N(± ∞)      = ± ∞
 ftrunc_N(± 0)      = ± 0
 ftrunc_N(+ q)      = +0   (iff 0 < +q < 1)
 ftrunc_N(- q)      = -0   (iff -1 < -q < 0)
-ftrunc_N(± q)      = ieee_N(± i)   (iff +q - 1 < i ≤ +q)
+ftrunc_N(± q)      = ieee_N(± i)   (iff +q - 1 < i <= +q)
 ```
 
 #### fnearest_N(z)
@@ -1009,8 +1009,8 @@ ftrunc_N(± q)      = ieee_N(± i)   (iff +q - 1 < i ≤ +q)
 fnearest_N(± NAN(n)) = nans_N{± NAN(n)}
 fnearest_N(± ∞)      = ± ∞
 fnearest_N(± 0)      = ± 0
-fnearest_N(+ q)      = +0   (iff 0 < +q ≤ 0.5)
-fnearest_N(- q)      = -0   (iff -0.5 ≤ -q < 0)
+fnearest_N(+ q)      = +0   (iff 0 < +q <= 0.5)
+fnearest_N(- q)      = -0   (iff -0.5 <= -q < 0)
 fnearest_N(± q)      = ieee_N(± i)   (iff |i - q| < 0.5)
 fnearest_N(± q)      = ieee_N(± i)   (iff |i - q| = 0.5 ∧ i even)
 ```
@@ -1040,7 +1040,7 @@ feq_N(z1, z2)       = tobool(z1 = z2)
 fne_N(± NAN(n), z2) = 1
 fne_N(z1, ± NAN(n)) = 1
 fne_N(± 0, ∓ 0)     = 0
-fne_N(z1, z2)       = tobool(z1 ≠ z2)
+fne_N(z1, z2)       = tobool(z1 != z2)
 ```
 
 #### flt_N(z1, z2)
@@ -1112,7 +1112,7 @@ fle_N(- ∞, z2)      = 1
 fle_N(z1, + ∞)      = 1
 fle_N(z1, - ∞)      = 0
 fle_N(± 0, ∓ 0)     = 1
-fle_N(z1, z2)       = tobool(z1 ≤ z2)
+fle_N(z1, z2)       = tobool(z1 <= z2)
 ```
 
 #### fge_N(z1, z2)
@@ -1136,7 +1136,7 @@ fge_N(- ∞, z2)      = 0
 fge_N(z1, + ∞)      = 0
 fge_N(z1, - ∞)      = 1
 fge_N(± 0, ∓ 0)     = 1
-fge_N(z1, z2)       = tobool(z1 ≥ z2)
+fge_N(z1, z2)       = tobool(z1 >= z2)
 ```
 
 #### fpmin_N(z1, z2)
@@ -1424,8 +1424,8 @@ vextunop_{iN1 x M1, iN2 x M2}(c) = lanes_{iN2 x M2}^{-1}(j*)
 
 ```text
 vextbinop_{iN1 x M1, iN2 x M2}(c1, c2) = lanes_{iN2 x M2}^{-1}(j*)
-  (iff i1*    = lanes_{iN1 x M1}(c1)[h slice k]
-   ∧ i2*      = lanes_{iN1 x M1}(c2)[h slice k]
+  (iff i1*    = lanes_{iN1 x M1}(c1)[h : k]
+   ∧ i2*      = lanes_{iN1 x M1}(c2)[h : k]
    ∧ i1'*     = extend^{sx}_{N1, N2}(i1)*
    ∧ i2'*     = extend^{sx}_{N1, N2}(i2)*
    ∧ j*       = f_{N2}(i1'*, i2'*))
@@ -1471,7 +1471,7 @@ vnarrow_sx_{iN1 x M1, iN2 x M2}(c1, c2) = lanes_{iN2 x M2}^{-1}(j*)
 ```text
 vcvtop_half?_zero?_{t1 x M1, t2 x M2}(i) = j
   (iff condition
-   ∧ c*        = lanes_{t1 x M1}(i)[h slice k]
+   ∧ c*        = lanes_{t1 x M1}(i)[h : k]
    ∧ c'* *     = × (vcvtop_{|t1|, |t2|}(c)* ⊕ (0)^n)
    ∧ j ∈ lanes_{t2 x M2}^{-1}(c'*)*)
 ```
@@ -1588,7 +1588,7 @@ The implementation-specific behaviour of this operation is determined by the glo
 * Else, return `relaxed(R_trunc_u)[ truncsatu_{M,N}(z), R ]`.
 
 ```text
-relaxedtruncu_{M,N}(± q) = truncu_{M,N}(± q)                  (iff 0 ≤ trunc(± q) < 2^N)
+relaxedtruncu_{M,N}(± q) = truncu_{M,N}(± q)                  (iff 0 <= trunc(± q) < 2^N)
 relaxedtruncu_{M,N}(z)   = relaxed(R_trunc_u)[ truncsatu_{M,N}(z), R ]   (otherwise)
 ```
 
@@ -1602,7 +1602,7 @@ The implementation-specific behaviour of this operation is determined by the glo
 * Else, return `relaxed(R_trunc_s)[ truncsats_{M,N}(z), R ]`.
 
 ```text
-relaxedtruncs_{M,N}(± q) = truncs_{M,N}(± q)                  (iff -2^{N-1} ≤ trunc(± q) < 2^{N-1})
+relaxedtruncs_{M,N}(± q) = truncs_{M,N}(± q)                  (iff -2^{N-1} <= trunc(± q) < 2^{N-1})
 relaxedtruncs_{M,N}(z)   = relaxed(R_trunc_s)[ truncsats_{M,N}(z), R ]   (otherwise)
 ```
 

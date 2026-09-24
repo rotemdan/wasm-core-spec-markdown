@@ -11,7 +11,7 @@ It is an invariant of the semantics that all types occurring during execution ar
 Any form of type can be *instantiated* into a closed type inside a module instance by substituting each type index `x` occurring in it with the corresponding defined type `moduleinst.ITYPES[x]`.
 
 ```text
-insttype_moduleinst(t) = t [ assignsubst moduleinst.ITYPES ]
+insttype_moduleinst(t) = t [ [:=] moduleinst.ITYPES ]
 ```
 
 > **Note:** This is the runtime equivalent to type closure, which is applied at validation time.

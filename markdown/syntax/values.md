@@ -38,17 +38,17 @@ The class `iN` defines *uninterpreted* integers, whose signedness interpretation
 
 ### Floating-Point
 
-*Floating-point* data represents 32 or 64 bit values that correspond to the respective binary formats of the IEEE 754 standard (Section 3.3).
+*Floating-point* data represents 32 or 64 bit values that correspond to the respective binary formats of the IEEE754 standard (Section 3.3).
 
-Every value has a *sign* and a *magnitude*. Magnitudes can either be expressed as *normal* numbers of the form `m0 . m1 m2 ... mm * 2^e`, where `e` is the exponent and `m` is the *significand* whose most significant bit `m0` is `1`, or as a *subnormal* number where the exponent is fixed to the smallest possible value and `m0` is `0`; among the subnormals are positive and negative zero values. Since the significands are binary values, normals are represented in the form `(1 + m * 2^-M) * 2^e` in the abstract syntax, where `M` is the bit width of `m`; similarly for subnormals.
+Every value has a *sign* and a *magnitude*. Magnitudes can either be expressed as *normal* numbers of the form `m0 . m1 m2 ... mm · 2^e`, where `e` is the exponent and `m` is the *significand* whose most significant bit `m0` is `1`, or as a *subnormal* number where the exponent is fixed to the smallest possible value and `m0` is `0`; among the subnormals are positive and negative zero values. Since the significands are binary values, normals are represented in the form `(1 + m · 2^-M) · 2^e` in the abstract syntax, where `M` is the bit width of `m`; similarly for subnormals.
 
 Possible magnitudes also include the special values `∞` (infinity) and `nan` (*NaN*, not a number). NaN values have a *payload* that describes the mantissa bits in the underlying binary representation. No distinction is made between signalling and quiet NaNs.
 
 ```text
 fN ::= +fNmag | -fNmag
 
-fNmag ::= (1 + m * 2^-M) * 2^e   (if m < 2^M && 2 - 2^(E-1) <= e <= 2^(E-1) - 1)
-        | (0 + m * 2^-M) * 2^e   (if m < 2^M && 2 - 2^(E-1) = e)
+fNmag ::= (1 + m · 2^-M) · 2^e   (if m < 2^M ∧ 2 - 2^(E-1) <= e <= 2^(E-1) - 1)
+        | (0 + m · 2^-M) · 2^e   (if m < 2^M ∧ 2 - 2^(E-1) = e)
         | ∞
         | nan(m)   (if 1 <= m < 2^M)
 ```
@@ -72,12 +72,12 @@ An *arithmetic NaN* is a floating-point value `±nan(m)` with `m >= canon_N`, su
 
 > **Note:** In the abstract syntax, subnormals are distinguished by the leading `0` of the significand. The exponent of subnormals has the same value as the smallest possible exponent of a normal number. Only in the binary representation the exponent of a subnormal is encoded differently than the exponent of any normal number.
 >
-> The notion of canonical NaN defined here is unrelated to the notion of canonical NaN that the IEEE 754 standard (Section 3.5.2) defines for decimal interchange formats.
+> The notion of canonical NaN defined here is unrelated to the notion of canonical NaN that the IEEE754 standard (Section 3.5.2) defines for decimal interchange formats.
 
 #### Conventions
 
 * The meta variable `z` ranges over floating-point values where clear from context.
-* Where clear from context, shorthands like `+1` denote floating point values like `+(1 + 0 * 2^-M) * 2^0`.
+* Where clear from context, shorthands like `+1` denote floating point values like `+(1 + 0 · 2^-M) · 2^0`.
 
 ### Vectors
 

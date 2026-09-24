@@ -102,7 +102,7 @@ These instructions get or set the values of respective variables. The `local.tee
 
 ### Table Instructions
 
-Instructions in this group are concerned with tables.
+Instructions in this group are concerned with tables table.
 
 ```text
 instr ::= ...
@@ -138,7 +138,7 @@ loadop_{iN} ::= sz_sx   (if sz < N)
 
 storeop_{iN} ::= sz   (if sz < N)
 
-vloadop_{vectype} ::= sz x M_sx   (if sz * M = |vectype| / 2)
+vloadop_{vectype} ::= sz x M_sx   (if sz · M = |vectype| / 2)
                    | sz_splat
                    | sz_zero   (if sz >= 32)
 
@@ -308,7 +308,7 @@ lanetype ::= numtype | packtype
 
 dim ::= 1 | 2 | 4 | 8 | 16
 
-shape ::= lanetype x dim   (if |lanetype| * dim = 128)
+shape ::= lanetype x dim   (if |lanetype| · dim = 128)
 
 ishape ::= shape   (if shlanetype(shape) = iN)
 
@@ -338,10 +338,10 @@ instr ::= ...
         | ishape_1 . vextunop_{ishape_2, ishape_1}_ishape_2
         | ishape_1 . vextbinop_{ishape_2, ishape_1}_ishape_2
         | ishape_1 . vextternop_{ishape_2, ishape_1}_ishape_2
-        | ishape_1 . vnarrow_ishape_2_sx   (if |shlanetype(ishape_2)| = 2 * |shlanetype(ishape_1)| <= 32)
+        | ishape_1 . vnarrow_ishape_2_sx   (if |shlanetype(ishape_2)| = 2 · |shlanetype(ishape_1)| <= 32)
         | shape_1 . vcvtop_{shape_2, shape_1}_shape_2
         | shape . vsplat
-        | shape . extractlane_sx? laneidx   (if sx? = ε <=> shlanetype(shape) ∈ i32 i64 f32 f64)
+        | shape . extractlane_sx? laneidx   (if sx? = ε ⇔ shlanetype(shape) ∈ i32 i64 f32 f64)
         | shape . replacelane laneidx
         | ...
 ```
@@ -389,10 +389,10 @@ vternop_{fN x M} ::= relaxed_madd | relaxed_nmadd
 vtestop_{iN x M} ::= all_true
 
 vrelop_{iN x M} ::= eq | ne
-                  | lt_sx   (if N != 64 || sx = s)
-                  | gt_sx   (if N != 64 || sx = s)
-                  | le_sx   (if N != 64 || sx = s)
-                  | ge_sx   (if N != 64 || sx = s)
+                  | lt_sx   (if N != 64 ∨ sx = s)
+                  | gt_sx   (if N != 64 ∨ sx = s)
+                  | le_sx   (if N != 64 ∨ sx = s)
+                  | ge_sx   (if N != 64 ∨ sx = s)
 
 vrelop_{fN x M} ::= eq | ne | lt | gt | le | ge
 
@@ -400,23 +400,23 @@ vswizzlop_{i8 x M} ::= swizzle | relaxed_swizzle
 
 vshiftop_{iN x M} ::= shl | shr_sx
 
-vextunop_{iN_1 x M_1, iN_2 x M_2} ::= extadd_pairwise_sx   (if 16 <= 2 * N_1 = N_2 <= 32)
+vextunop_{iN_1 x M_1, iN_2 x M_2} ::= extadd_pairwise_sx   (if 16 <= 2 · N_1 = N_2 <= 32)
 
-vextbinop_{iN_1 x M_1, iN_2 x M_2} ::= extmul_half_sx   (if 2 * N_1 = N_2 >= 16)
-                                     | dot_s   (if 2 * N_1 = N_2 = 32)
-                                     | relaxed_dot_s   (if 2 * N_1 = N_2 = 16)
+vextbinop_{iN_1 x M_1, iN_2 x M_2} ::= extmul_half_sx   (if 2 · N_1 = N_2 >= 16)
+                                     | dot_s   (if 2 · N_1 = N_2 = 32)
+                                     | relaxed_dot_s   (if 2 · N_1 = N_2 = 16)
 
-vextternop_{iN_1 x M_1, iN_2 x M_2} ::= relaxed_dot_add_s   (if 4 * N_1 = N_2 = 32)
+vextternop_{iN_1 x M_1, iN_2 x M_2} ::= relaxed_dot_add_s   (if 4 · N_1 = N_2 = 32)
 
-vcvtop_{iN_1 x M_1, iN_2 x M_2} ::= extend_half_sx   (if N_2 = 2 * N_1)
+vcvtop_{iN_1 x M_1, iN_2 x M_2} ::= extend_half_sx   (if N_2 = 2 · N_1)
 
-vcvtop_{iN_1 x M_1, fN_2 x M_2} ::= convert_half?_sx   (if N_2 = N_1 = 32 && half? = ε || N_2 = 2 * N_1 && half? = low)
+vcvtop_{iN_1 x M_1, fN_2 x M_2} ::= convert_half?_sx   (if N_2 = N_1 = 32 ∧ half? = ε ∨ N_2 = 2 · N_1 ∧ half? = low)
 
-vcvtop_{fN_1 x M_1, iN_2 x M_2} ::= trunc_sat_sx_zero?   (if N_1 = N_2 = 32 && zero? = ε || N_1 = 2 * N_2 && zero? = zero)
-                                    | relaxed_trunc_sx_zero?   (if N_1 = N_2 = 32 && zero? = ε || N_1 = 2 * N_2 && zero? = zero)
+vcvtop_{fN_1 x M_1, iN_2 x M_2} ::= trunc_sat_sx_zero?   (if N_1 = N_2 = 32 ∧ zero? = ε ∨ N_1 = 2 · N_2 ∧ zero? = zero)
+                                    | relaxed_trunc_sx_zero?   (if N_1 = N_2 = 32 ∧ zero? = ε ∨ N_1 = 2 · N_2 ∧ zero? = zero)
 
-vcvtop_{fN_1 x M_1, fN_2 x M_2} ::= demote_zero   (if N_1 = 2 * N_2)
-                                    | promote_low   (if 2 * N_1 = N_2)
+vcvtop_{fN_1 x M_1, fN_2 x M_2} ::= demote_zero   (if N_1 = 2 · N_2)
+                                    | promote_low   (if 2 · N_1 = N_2)
 ```
 
 Vector instructions can be grouped into several subcategories:
